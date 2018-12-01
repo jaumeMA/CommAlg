@@ -76,7 +76,7 @@ void* cMemoryPool::allocate(size_t numUnits, size_t unitSize) const
 
     cMemoryBank& currMemoryBank = m_memoryBankArr[m_currMemoryBank];
 
-    u8 *res = (u8 *)currMemoryBank.m_pRef + (currMemoryBank.m_nextFreeChunk << m_unitSizeBitPos);
+    char* res = (char*)currMemoryBank.m_pRef + (currMemoryBank.m_nextFreeChunk << m_unitSizeBitPos);
 
     if(currMemoryBank.m_mem_bufctl[currMemoryBank.m_nextFreeChunk] == currMemoryBank.m_nextFreeChunk)
     {
@@ -106,7 +106,7 @@ void cMemoryPool::deallocate(void *ptr) const
             cMemoryBank& currMemoryBank = *itBank;
             size_t objMemoryBankIndex = std::distance(m_memoryBankArr.begin(), itBank);
 
-            u32 objPos = ((u8 *)ptr - (u8 *)currMemoryBank.m_pRef) >> m_unitSizeBitPos;
+            unsigned int objPos = ((char*)ptr - (char*)currMemoryBank.m_pRef) >> m_unitSizeBitPos;
 
             ASSERT(objPos < m_maxNumChunks, "Unconsistent situation");
 

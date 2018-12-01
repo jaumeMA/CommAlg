@@ -636,8 +636,6 @@ inline double fastExp(double a)
     res.n.j = 0;
     res.n.i = (int)(expA*a + (1072692348 - expB));
 
-    printf("retornem %f\n",res.d);
-
     return res.d;
 }
 inline double fastPow(double a, double b)

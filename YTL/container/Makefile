@@ -5,9 +5,9 @@ OBJ_DIR = ../../bin/${Mode}/container
 INCLUDE_DIR = -I./ -I../ -I../../ -I../../System -I../../Utils -I../../Math
 BIN_DIR=./
 
-SRC_FILES = ${SRC_DIR}/cArray.cpp ${SRC_DIR}/cString.cpp ${SRC_DIR}/cTupla.cpp ${SRC_DIR}/cUnorderedMap.cpp ${SRC_DIR}/cIterableImpl.cpp
+SRC_FILES = ${SRC_DIR}/cArray.cpp ${SRC_DIR}/cTupla.cpp ${SRC_DIR}/cUnorderedMap.cpp ${SRC_DIR}/cIterableImpl.cpp
 
-OBJ_FILES = ${OBJ_DIR}/cArray.o ${OBJ_DIR}/cString.o ${OBJ_DIR}/cTupla.o ${OBJ_DIR}/cUnorderedMap.o ${OBJ_DIR}/cIterableImpl.o
+OBJ_FILES = ${OBJ_DIR}/cArray.o ${OBJ_DIR}/cTupla.o ${OBJ_DIR}/cUnorderedMap.o ${OBJ_DIR}/cIterableImpl.o
 
 #targets for full compilation chain
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp
