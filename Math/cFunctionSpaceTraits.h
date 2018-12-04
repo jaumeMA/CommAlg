@@ -15,6 +15,10 @@ struct FunctionSpaceSetTraits
 
 	static void init(underlying_type& o_value);
 	static void init(underlying_type& o_value, const underlying_type& i_value);
+	static void init(underlying_type& o_value, const typename underlying_type::return_type& i_constValue);
+    template<typename FunctionType>
+    requires ( mpl::is_base_of<extended_structure,FunctionType>::value )
+    static void init(underlying_type& o_value, const FunctionType& i_functionType);
 	static void deinit(underlying_type& o_value);
     static void assign(underlying_type& o_value, const underlying_type& i_value);
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);
@@ -32,7 +36,7 @@ struct FunctionSpaceGroupTraits
 	static void inv(underlying_type& res, const underlying_type& value);
 };
 
-template<ring_type Im, set_type Dom>
+template<module_type Im, set_type Dom>
 struct FunctionSpaceModuleTraits
 {
     typedef FunctionSpaceGroupTraits<Im,Dom> group_traits;

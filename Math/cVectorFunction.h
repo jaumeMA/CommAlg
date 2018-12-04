@@ -22,6 +22,23 @@ FUNC_NAME##_function_t() \
 static FUNC_NAME##_function_t<Real,R1> FUNC_NAME##r = FUNC_NAME##_function_t<Real,R1>(); \
 static FUNC_NAME##_function_t<Complex,C1> FUNC_NAME##c = FUNC_NAME##_function_t<Complex,C1>(); \
 } \
+} \
+
+#define DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION(NAME,OP) \
+namespace yame \
+{ \
+namespace math \
+{ \
+namespace detail \
+{ \
+template<ring_type Im, vector_space_type Dom> \
+detail::vector_function<Im,Dom> operator OP(const detail::vector_function<Im,Dom>& i_lhs, const detail::vector_function<Im,Dom>& i_rhs) \
+{ \
+    typedef typename detail::vector_function<Im,Dom>::base_function base_function; \
+    return static_cast<const base_function&>(i_lhs) OP static_cast<const base_function&>(i_rhs); \
+} \
+} \
+} \
 }
 
 namespace yame
@@ -35,6 +52,7 @@ template<ring_type Im, vector_space_type Dom>
 class vector_function : public mpl::homogeneous_callable<ytl::function,Im,typename Dom::particle,Dom::dimension()>::type
 {
 public:
+    typedef Im return_type;
     typedef typename mpl::homogeneous_callable<ytl::function,Im,typename Dom::particle,Dom::dimension()>::type base_function;
     typedef typename base_function::func_ptr_base func_ptr_base;
     using base_function::base_function;
@@ -43,6 +61,7 @@ public:
     using base_function::clone;
 
     vector_function() = default;
+    vector_function(const Im& i_constValue);
     vector_function(const base_function& i_base);
 	Im eval(const Dom& i_point) const;
     static vector_function<Im,Dom> clone(const func_ptr_base* i_funcPtr);
@@ -72,11 +91,19 @@ using constant_function = ytl::constant_function<typename detail::vector_functio
 template<ring_type Im, vector_space_type Dom>
 using projection = ytl::identity_function<typename detail::vector_function<Im,Dom>::base_function>;
 
+template<module_type Im, vector_space_type Dom>
+detail::vector_function<typename Im::traits::module_traits::ring,Dom> underlying_function_type(const Im&, const Dom&);
+
 template<ring_type Im, vector_space_type Dom>
 detail::vector_function<Im,Dom> underlying_function_type(const Im&, const Dom&);
 
 }
 }
+
+DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION(sum,+)
+DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION(subs,-)
+DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION(prod,*)
+DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION(div,/)
 
 DECLARE_MATH_FUNCTION(sin, yame::math::sin);
 DECLARE_MATH_FUNCTION(cos, yame::math::cos);

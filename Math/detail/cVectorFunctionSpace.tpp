@@ -6,12 +6,21 @@ namespace math
 namespace detail
 {
 
-template<ring_type Im, vector_space_type Dom>
+template<module_type Im, vector_space_type Dom>
+const typename ExtendedVectorFunctionSpaceSet<Im,Dom>::const_function_constructor ExtendedVectorFunctionSpaceSet<Im,Dom>::C = typename ExtendedVectorFunctionSpaceSet<Im,Dom>::const_function_constructor();
+
+template<module_type Im, vector_space_type Dom>
+auto ExtendedVectorFunctionSpaceSet<Im,Dom>::const_function_constructor::operator()(nested_im_t i_constantValue) const
+{
+    return vector_function<nested_im_t,Dom>(constant_function<nested_im_t,Dom>(i_constantValue));
+}
+
+template<module_type Im, vector_space_type Dom>
 typename ExtendedVectorFunctionSpaceSet<Im,Dom>::underlying_type ExtendedVectorFunctionSpaceSet<Im,Dom>::get_nested_function() const
 {
     return this->getValue();
 }
-template<ring_type Im, vector_space_type Dom>
+template<module_type Im, vector_space_type Dom>
 template<typename ... Args>
 auto ExtendedVectorFunctionSpaceSet<Im,Dom>::operator()(Args&& ... i_args) const
 {
@@ -20,7 +29,7 @@ auto ExtendedVectorFunctionSpaceSet<Im,Dom>::operator()(Args&& ... i_args) const
 
 	return thisCaller(static_cast<const cFunctionSpace<Im,Dom>&>(*this),mpl::forward<Args>(i_args) ...);
 }
-template<ring_type Im, vector_space_type Dom>
+template<module_type Im, vector_space_type Dom>
 template<typename ... Args>
 auto ExtendedVectorFunctionSpaceSet<Im,Dom>::eval(Args&& ... i_args) const
 {

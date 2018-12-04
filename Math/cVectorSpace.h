@@ -40,6 +40,7 @@ struct cMetricVectorSpaceTraits : cVectorSpaceTraits<F,V,N>, cVectorSpaceMetricS
 public:
     typedef typename cVectorSpaceTraits<F,V,N>::set_traits set_traits;
     typedef cVectorSpaceTraits<F,V,N> vector_space_traits;
+    typedef typename vector_space_traits::module_traits module_traits;
     typedef cVectorSpaceMetricSpaceTraits<V,N> metric_space_traits;
 	typedef typename cVectorSpaceTraits<F,V,N>::particle particle;
 	typedef typename cVectorSpaceTraits<F,V,N>::underlying_type underlying_type;

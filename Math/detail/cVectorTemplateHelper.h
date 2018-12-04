@@ -15,8 +15,8 @@ requires (Dimension <= VectorSpace::dimension())
 struct vector_subspace<VectorSpace,Dimension>
 {
 private:
-    template<ring_type F, group_type V, int N, template<typename> class FinalObject>
-    static FinalObject<cVectorSpaceTraits<F,V,Dimension>> _resolve_vector_space(const detail::cVectorSpaceImpl<cVectorSpaceTraits<F,V,N>,FinalObject<cVectorSpaceTraits<F,V,N>>>&);
+    template<template<ring_type,group_type,int> class VectorSpaceTraits, ring_type F, group_type V, int N, template<typename> class FinalObject>
+    static FinalObject<VectorSpaceTraits<F,V,Dimension>> _resolve_vector_space(const detail::cVectorSpaceImpl<cVectorSpaceTraits<F,V,N>,FinalObject<VectorSpaceTraits<F,V,N>>>&);
 
 public:
     typedef decltype(_resolve_vector_space(std::declval<VectorSpace>())) type;

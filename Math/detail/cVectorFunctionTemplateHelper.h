@@ -36,25 +36,29 @@ struct is_composition
     static const bool value = _is_composition<typename mpl::drop_reference<Types>::type...>::value;
 };
 
-template<ring_type Im, vector_space_type Dom>
+template<module_type Im, vector_space_type Dom>
 struct _specialization
 {
+    typedef typename Im::traits::module_traits::ring nested_im_t;
+    typedef typename resolve_underlying_vector_space<Dom>::type nested_dom_t;
+
     struct specializer
     {
     private:
         template<typename ... Types>
-        using nested_vector_subspace = typename vector_subspace<typename resolve_underlying_vector_space<Dom>::type,mpl::get_num_types<Types...>::value - mpl::get_num_of_types_of<mpl::is_place_holder,Types...>::value>::type;
+        using nested_vector_subspace = typename vector_subspace<nested_dom_t,mpl::get_num_types<Types...>::value - mpl::get_num_of_types_of<mpl::is_place_holder,Types...>::value>::type;
 
     public:
         template<typename ... Args>
-        inline detail::vector_function<Im,nested_vector_subspace<Args...>> operator()(const cFunctionSpace<Im,Dom>& i_func, Args&& ... i_args) const
+        inline detail::vector_function<nested_im_t,nested_vector_subspace<Args...>> operator()(const cFunctionSpace<Im,Dom>& i_func, Args&& ... i_args) const
         {
+            typedef typename cFunctionSpace<Im,Dom>::underlying_type underlying_type;
             typedef cFunctionSpace<Im,nested_vector_subspace<Args...>> ret_func_type;
             typedef typename ret_func_type::underlying_type nested_ret_func_type;
 
-            const vector_function<Im,Dom>& nestedFunc = i_func.getValue();
+            const underlying_type& nestedFunc = i_func.getValue();
 
-            const typename vector_function<Im,Dom>::func_ptr_base* nestedFuncPtr = nestedFunc.getFuncPtr();
+            const typename underlying_type::func_ptr_base* nestedFuncPtr = nestedFunc.getFuncPtr();
 
             nested_ret_func_type specFunc;
 
@@ -74,19 +78,19 @@ struct _specialization
     public:
         template<typename DDom, typename ... DDoms>
         requires ( is_vector_space<DDom>::value && mpl::are_same_type<DDom,DDoms...>::value && Dom::dimension() == mpl::get_num_types<DDoms...>::value + 1 )
-        inline detail::vector_function<Im,DDom> operator()(const cFunctionSpace<Im,Dom>& i_func, const cFunctionSpace<typename Dom::particle,DDom>& other, const cFunctionSpace<typename Dom::particle,DDoms>& ... others) const
+        inline detail::vector_function<nested_im_t,DDom> operator()(const cFunctionSpace<Im,Dom>& i_func, const cFunctionSpace<typename vector_subspace<Dom,1>::type,DDom>& other, const cFunctionSpace<typename vector_subspace<Dom,1>::type,DDoms>& ... others) const
         {
             return _invoke(i_func.getValue(),other.getValue(),others.getValue() ...);
         }
     };
 };
 
-template<ring_type Im, vector_space_type Dom>
+template<module_type Im, vector_space_type Dom>
 _specialization<Im,Dom> underlying_specialization_type(const detail::vector_function<Im,Dom>&);
 
 }
 
-template<ring_type Im, vector_space_type Dom>
+template<module_type Im, vector_space_type Dom>
 using specialization = detail::_specialization<Im,Dom>;
 
 }

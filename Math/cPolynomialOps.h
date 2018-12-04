@@ -32,17 +32,21 @@ struct expansion;
 template<size_t Component,typename Foo>
 struct expansion
 {
-static void is(const cFunctionSpace<Im,Dom>& i_function, const ytl::function<void(const cFunctionSpace<Im,Dom>&, const container::cTupla<size_t,Dom::dimension()>&)>& o_sink, const container::cTupla<size_t,Dom::dimension()>& i_indexes, int currOrder);
+static void is(const vector_function<Im,Dom>& i_function, const ytl::function<void(const vector_function<Im,Dom>&, const container::cTupla<size_t,Dom::dimension()>&)>& o_sink, const container::cTupla<size_t,Dom::dimension()>& i_indexes, int currOrder);
 };
 
 template<typename Foo>
 struct expansion<Dom::dimension()-1,Foo>
 {
-static void is(const cFunctionSpace<Im,Dom>& i_function, const ytl::function<void(const cFunctionSpace<Im,Dom>&, const container::cTupla<size_t,Dom::dimension()>&)>& o_sink, container::cTupla<size_t,Dom::dimension()> i_localIndexes, int currOrder);
+static void is(const vector_function<Im,Dom>& i_function, const ytl::function<void(const vector_function<Im,Dom>&, const container::cTupla<size_t,Dom::dimension()>&)>& o_sink, container::cTupla<size_t,Dom::dimension()> i_localIndexes, int currOrder);
 };
 
 static const size_t k_maxDerivativeOrder = 5;
 };
+
+template<typename Im, typename Dom, template<typename> class A = memory::cTypedSystemAllocator>
+requires ( math::is_ring<Im>::value && math::is_vector_space<Dom>::value && math::is_metric_space<Dom>::value )
+polynomial<Im,A> _taylorSeries(const vector_function<Im,Dom>& i_function, const Dom& i_point);
 
 }
 
@@ -53,8 +57,8 @@ template<size_t ... Components, typename T, template<typename> class A>
 inline container::cTupla<polynomial<T,A>, mpl::get_num_ranks<Components...>::value> derivative(const polynomial<T,A>& i_poly);
 
 template<typename Im, typename Dom, template<typename> class A = memory::cTypedSystemAllocator>
-requires requires { math::is_ring<Im>::value; math::is_vector_space<Dom>::value; math::is_metric_space<Dom>::value; }
-polynomial<Im,A> taylorSeries(const cFunctionSpace<Im,Dom>& i_function, const Dom& i_point);
+requires requires { math::is_module<Im>::value; math::is_vector_space<Dom>::value; math::is_metric_space<Dom>::value; }
+inline auto taylorSeries(const cFunctionSpace<Im,Dom>& i_function, const Dom& i_point);
 
 template<typename T>
 inline yame::math::polynomial<T> operator+(const yame::math::cMonomial<T>& i_lhs, const yame::math::cMonomial<T>& i_rhs);

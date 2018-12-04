@@ -18,18 +18,6 @@
 #define x_8 x_(8)
 #define x_9 x_(9)
 
-#define C_(_Value) _C_<_Value>()
-#define _0 C_(0)
-#define _1 C_(1)
-#define _2 C_(2)
-#define _3 C_(3)
-#define _4 C_(4)
-#define _5 C_(5)
-#define _6 C_(6)
-#define _7 C_(7)
-#define _8 C_(8)
-#define _9 C_(9)
-
 #define DECLARE_MATH_FUNCTION_SPACE(FUNC_NAME, NESTED_FUNC_NAME) \
 namespace yame \
 { \
@@ -47,11 +35,18 @@ namespace math
 namespace detail
 {
 
-template<ring_type Im, vector_space_type Dom>
+template<module_type Im, vector_space_type Dom>
 struct ExtendedVectorFunctionSpaceSet : virtual public detail::ISet<FunctionSpaceSetTraits<Im,Dom>>
 {
     typedef decltype(underlying_function_type(std::declval<Im>(),std::declval<Dom>())) underlying_type;
     typedef cFunctionSpace<Im,Dom> FinalObject;
+    typedef typename Im::traits::module_traits::ring nested_im_t;
+
+    struct const_function_constructor
+    {
+        const_function_constructor() = default;
+        auto operator()(nested_im_t i_constantValue) const;
+    };
 
     underlying_type get_nested_function() const;
     template<typename IIm, typename DDom>
@@ -66,22 +61,18 @@ struct ExtendedVectorFunctionSpaceSet : virtual public detail::ISet<FunctionSpac
     requires (Index < Dom::dimension())
     static inline underlying_type _x_()
     {
-        return projection<Im,Dom>(mpl::numeric_type<Index>{});
+        return projection<nested_im_t,Dom>(mpl::numeric_type<Index>{});
     }
-    template<size_t Value>
-    static inline underlying_type _C_()
-    {
-        return constant_function<Im,Dom>(Value);
-    }
+    static const const_function_constructor C;
 };
 
 }
 
-template<ring_type Im, vector_space_type Dom>
+template<module_type Im, vector_space_type Dom>
 detail::ExtendedVectorFunctionSpaceSet<Im,Dom> underlying_function_extension_type(const Im&,const Dom&);
 
-template<typename Dom>
-using FR = cFunctionSpace<Real,Dom>;
+template<vector_space_type Dom>
+using FR = cFunctionSpace<R1,Dom>;
 
 using FR1 = FR<R1>;
 using FR2 = FR<R2>;
@@ -90,8 +81,8 @@ using FR3 = FR<R3>;
 template<int N>
 using FRn = FR<Rn<N>>;
 
-template<typename Dom>
-using FC = cFunctionSpace<Complex,Dom>;
+template<vector_space_type Dom>
+using FC = cFunctionSpace<C1,Dom>;
 
 using FC1 = FC<C1>;
 using FC2 = FC<C2>;

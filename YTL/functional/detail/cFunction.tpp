@@ -30,7 +30,7 @@ function<Return(Types...)>::function(detail::function_impl_base<Return,container
 }
 template<typename Return, typename ... Types>
 template<typename T>
-requires (mpl::is_valid_functor<T>::value)
+requires (mpl::is_valid_functor<T>::value && requires(const T& i_callableObj){ i_callableObj(std::declval<Types>() ...); } )
 function<Return(Types...)>::function(T&& functor)
 {
     typedef detail::functor_impl<typename mpl::drop_constness<typename mpl::drop_reference<T>::type>::type,Return,Types...> Functor;
@@ -112,11 +112,6 @@ typename mpl::create_callable<function,Return, typename mpl::get_sub_parameter_p
 
     auto _specFuncPtr = _funcPtr->template specializeAt<ArgIndexs...>(specFunc.getArena(), this->getArenaSize(), mpl::forward<Args>(args)...);
 
-//    if(_specFuncPtr.empty() == false)
-//    {
-//        specFunc = _specFuncPtr.get_pointer();
-//    }
-
     //in rvo we trust
     return specFunc;
 }
@@ -176,7 +171,7 @@ function<Return()>::function(detail::function_impl_base<Return,container::parame
 }
 template<typename Return>
 template<typename T>
-requires (mpl::is_valid_functor<T>::value)
+requires (mpl::is_valid_functor<T>::value && requires(const T& i_callableObj){ i_callableObj(); } )
 function<Return()>::function(T&& functor)
 {
     typedef detail::functor_impl<typename mpl::drop_reference<T>::type,Return> Functor;

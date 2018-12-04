@@ -40,7 +40,7 @@ public:
     function(const function& other);
     function(function&& other);
     template<typename T>
-    requires (mpl::is_valid_functor<T>::value)
+    requires (mpl::is_valid_functor<T>::value && requires(const T& i_callableObj){ i_callableObj(); } )
     function(T&& functor);
     template<typename T>
     function(T *pRef, Return(T::*call)());
@@ -74,7 +74,7 @@ public:
     function(const function& other);
     function(function&& other);
     template<typename T>
-    requires (mpl::is_valid_functor<T>::value)
+    requires (mpl::is_valid_functor<T>::value && requires(const T& i_callableObj){ i_callableObj(std::declval<Types>() ...); } )
     function(T&& functor);
     template<typename T>
     function(T *pRef, Return(T::*call)(Types...));

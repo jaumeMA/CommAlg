@@ -7,6 +7,11 @@ namespace detail
 {
 
 template<ring_type Im, vector_space_type Dom>
+vector_function<Im,Dom>::vector_function(const Im& i_constValue)
+: base_function(constant_function<Im,Dom>{i_constValue})
+{
+}
+template<ring_type Im, vector_space_type Dom>
 vector_function<Im,Dom>::vector_function(const base_function& i_base)
 : base_function(i_base)
 {

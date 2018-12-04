@@ -110,11 +110,11 @@ container::detail::cMultiMapImpl<cPolynomialValue<T,A>,signed short,container::c
 
 template<template<typename> class A, typename Im, typename Dom>
 template<size_t Component,typename Foo>
-void taylor<A,Im,Dom>::expansion<Component,Foo>::is(const cFunctionSpace<Im,Dom>& i_function, const ytl::function<void(const cFunctionSpace<Im,Dom>&, const container::cTupla<size_t,Dom::dimension()>&)>& o_sink, const container::cTupla<size_t,Dom::dimension()>& i_indexes, int currOrder)
+void taylor<A,Im,Dom>::expansion<Component,Foo>::is(const vector_function<Im,Dom>& i_function, const ytl::function<void(const vector_function<Im,Dom>&, const container::cTupla<size_t,Dom::dimension()>&)>& o_sink, const container::cTupla<size_t,Dom::dimension()>& i_indexes, int currOrder)
 {
     container::cTupla<size_t,s_dimension> localIndexes = i_indexes;
     localIndexes[Component]++;
-    cFunctionSpace<Im,Dom> partialDerivative = derivative<Component>(i_function);
+    vector_function<Im,Dom> partialDerivative = derivative<Component>(i_function);
 
     //send current derivative
     o_sink.eval(partialDerivative, localIndexes);
@@ -131,10 +131,10 @@ void taylor<A,Im,Dom>::expansion<Component,Foo>::is(const cFunctionSpace<Im,Dom>
 
 template<template<typename> class A, typename Im, typename Dom>
 template<typename Foo>
-void taylor<A,Im,Dom>::expansion<Dom::dimension()-1,Foo>::is(const cFunctionSpace<Im,Dom>& i_function, const ytl::function<void(const cFunctionSpace<Im,Dom>&, const container::cTupla<size_t,Dom::dimension()>&)>& o_sink, container::cTupla<size_t,Dom::dimension()> i_localIndexes, int currOrder)
+void taylor<A,Im,Dom>::expansion<Dom::dimension()-1,Foo>::is(const vector_function<Im,Dom>& i_function, const ytl::function<void(const vector_function<Im,Dom>&, const container::cTupla<size_t,Dom::dimension()>&)>& o_sink, container::cTupla<size_t,Dom::dimension()> i_localIndexes, int currOrder)
 {
     i_localIndexes[s_dimension-1]++;
-    cFunctionSpace<Im,Dom> partialDerivative = derivative<s_dimension-1>(i_function);
+    vector_function<Im,Dom> partialDerivative = derivative<s_dimension-1>(i_function);
 
     //send current derivative
     o_sink.eval(partialDerivative, i_localIndexes);
@@ -144,6 +144,47 @@ void taylor<A,Im,Dom>::expansion<Dom::dimension()-1,Foo>::is(const cFunctionSpac
     {
         taylor<A,Im,Dom>::expansion<s_dimension-1,Foo>::is(partialDerivative, o_sink, i_localIndexes,currOrder+1);
     }
+}
+
+template<typename Im, typename Dom, template<typename> class A = memory::cTypedSystemAllocator>
+requires ( math::is_ring<Im>::value && math::is_vector_space<Dom>::value && math::is_metric_space<Dom>::value )
+polynomial<Im,A> _taylorSeries(const vector_function<Im,Dom>& i_function, const Dom& i_point)
+{
+    static const size_t s_dimension = Dom::dimension();
+    polynomial<Im,A> res;
+    res.at(0) = i_function.eval(i_point);
+    container::cTupla<size_t,s_dimension> indices;
+
+    ytl::function<void(const vector_function<Im,Dom>&,const container::cTupla<size_t,s_dimension>&)> derivativeSink =
+    [&res,&i_point](const vector_function<Im,Dom>& i_derivative, const container::cTupla<size_t,s_dimension>& i_indexes) -> void
+    {
+        Im derivativeValue = i_derivative.eval(i_point);
+
+        if(derivativeValue != Im::group::neutral_element())
+        {
+            container::cArray<size_t> factorials;
+            factorials.reserve(s_dimension);
+            bool firstMonomial = true;
+            polynomial<Im,A> currPoly;
+
+            for(size_t index=0;index<i_indexes.getSize();++index)
+            {
+                polynomial<Im,A> polyRoot;
+                polyRoot.at(0) = -i_point[index];
+                polyRoot.incognita(index) = Im::ring::neutral_element();
+                currPoly = (firstMonomial) ? polyRoot ^ i_indexes[index] : currPoly * (polyRoot ^ i_indexes[index]);
+                firstMonomial = false;
+            }
+
+            yame::transform(i_indexes,factorials,ytl::function<size_t(const size_t&)>(&math::factorial));
+
+            res += currPoly * derivativeValue * (Im::ring::neutral_element() / Im(yame::prod(factorials)));
+        }
+    };
+
+    detail::taylor<A,Im,Dom>::template expansion<0,void>::is(i_function, derivativeSink, indices,0);
+
+    return res;
 }
 
 }
@@ -277,44 +318,10 @@ container::cTupla<polynomial<T,A>, mpl::get_num_ranks<Components...>::value> der
 }
 
 template<typename Im, typename Dom, template<typename> class A = memory::cTypedSystemAllocator>
-requires requires { math::is_ring<Im>::value; math::is_vector_space<Dom>::value; math::is_metric_space<Dom>::value; }
-polynomial<Im,A> taylorSeries(const cFunctionSpace<Im,Dom>& i_function, const Dom& i_point)
+requires requires { math::is_module<Im>::value; math::is_vector_space<Dom>::value; math::is_metric_space<Dom>::value; }
+auto taylorSeries(const cFunctionSpace<Im,Dom>& i_function, const Dom& i_point)
 {
-    static const size_t s_dimension = Dom::dimension();
-    polynomial<Im,A> res;
-    res.at(0) = i_function.eval(i_point);
-    container::cTupla<size_t,s_dimension> indices;
-
-    ytl::function<void(const cFunctionSpace<Im,Dom>&,const container::cTupla<size_t,s_dimension>&)> derivativeSink =
-    [&res,&i_point](const cFunctionSpace<Im,Dom>& i_derivative, const container::cTupla<size_t,s_dimension>& i_indexes) -> void
-    {
-        Im derivativeValue = i_derivative.eval(i_point);
-
-        if(derivativeValue != Im::group::neutral_element())
-        {
-            container::cArray<size_t> factorials;
-            factorials.reserve(s_dimension);
-            bool firstMonomial = true;
-            polynomial<Im,A> currPoly;
-
-            for(size_t index=0;index<i_indexes.getSize();++index)
-            {
-                polynomial<Im,A> polyRoot;
-                polyRoot.at(0) = -i_point[index];
-                polyRoot.incognita(index) = Im::ring::neutral_element();
-                currPoly = (firstMonomial) ? polyRoot ^ i_indexes[index] : currPoly * (polyRoot ^ i_indexes[index]);
-                firstMonomial = false;
-            }
-
-            yame::transform(i_indexes,factorials,ytl::function<size_t(const size_t&)>(&math::factorial));
-
-            res += currPoly * derivativeValue * (Im::ring::neutral_element() / Im(yame::prod(factorials)));
-        }
-    };
-
-    detail::taylor<A,Im,Dom>::template expansion<0,void>::is(i_function, derivativeSink, indices,0);
-
-    return res;
+    return detail::_taylorSeries(i_function.getValue(),i_point);
 }
 
 template<typename T>
