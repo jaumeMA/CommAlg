@@ -213,8 +213,6 @@ protected:
 template<typename T>
 class cTupla_impl<T,1> : public cTuplaStorage<T,1>, public detail::cConstRandomAccessIterableBaseImpl<T&>
 {
-friend class cMatrix;
-
     typedef typename detail::cConstRandomAccessIterableBaseImpl<T&>::node_pointer_type node_pointer_type;
 
     using cTuplaStorage<T,1>::isAddressInside;

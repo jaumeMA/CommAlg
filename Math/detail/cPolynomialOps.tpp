@@ -110,11 +110,11 @@ container::detail::cMultiMapImpl<cPolynomialValue<T,A>,signed short,container::c
 
 template<template<typename> class A, typename Im, typename Dom>
 template<size_t Component,typename Foo>
-void taylor<A,Im,Dom>::expansion<Component,Foo>::is(const vector_function<Im,Dom>& i_function, const ytl::function<void(const vector_function<Im,Dom>&, const container::cTupla<size_t,Dom::dimension()>&)>& o_sink, const container::cTupla<size_t,Dom::dimension()>& i_indexes, int currOrder)
+void taylor<A,Im,Dom>::expansion<Component,Foo>::is(const scalar_function<Im,Dom>& i_function, const ytl::function<void(const scalar_function<Im,Dom>&, const container::cTupla<size_t,Dom::dimension()>&)>& o_sink, const container::cTupla<size_t,Dom::dimension()>& i_indexes, int currOrder)
 {
     container::cTupla<size_t,s_dimension> localIndexes = i_indexes;
     localIndexes[Component]++;
-    vector_function<Im,Dom> partialDerivative = derivative<Component>(i_function);
+    scalar_function<Im,Dom> partialDerivative = derivative<Component>(i_function);
 
     //send current derivative
     o_sink.eval(partialDerivative, localIndexes);
@@ -131,10 +131,10 @@ void taylor<A,Im,Dom>::expansion<Component,Foo>::is(const vector_function<Im,Dom
 
 template<template<typename> class A, typename Im, typename Dom>
 template<typename Foo>
-void taylor<A,Im,Dom>::expansion<Dom::dimension()-1,Foo>::is(const vector_function<Im,Dom>& i_function, const ytl::function<void(const vector_function<Im,Dom>&, const container::cTupla<size_t,Dom::dimension()>&)>& o_sink, container::cTupla<size_t,Dom::dimension()> i_localIndexes, int currOrder)
+void taylor<A,Im,Dom>::expansion<Dom::dimension()-1,Foo>::is(const scalar_function<Im,Dom>& i_function, const ytl::function<void(const scalar_function<Im,Dom>&, const container::cTupla<size_t,Dom::dimension()>&)>& o_sink, container::cTupla<size_t,Dom::dimension()> i_localIndexes, int currOrder)
 {
     i_localIndexes[s_dimension-1]++;
-    vector_function<Im,Dom> partialDerivative = derivative<s_dimension-1>(i_function);
+    scalar_function<Im,Dom> partialDerivative = derivative<s_dimension-1>(i_function);
 
     //send current derivative
     o_sink.eval(partialDerivative, i_localIndexes);
@@ -148,15 +148,15 @@ void taylor<A,Im,Dom>::expansion<Dom::dimension()-1,Foo>::is(const vector_functi
 
 template<typename Im, typename Dom, template<typename> class A = memory::cTypedSystemAllocator>
 requires ( math::is_ring<Im>::value && math::is_vector_space<Dom>::value && math::is_metric_space<Dom>::value )
-polynomial<Im,A> _taylorSeries(const vector_function<Im,Dom>& i_function, const Dom& i_point)
+polynomial<Im,A> _taylorSeries(const scalar_function<Im,Dom>& i_function, const Dom& i_point)
 {
     static const size_t s_dimension = Dom::dimension();
     polynomial<Im,A> res;
     res.at(0) = i_function.eval(i_point);
     container::cTupla<size_t,s_dimension> indices;
 
-    ytl::function<void(const vector_function<Im,Dom>&,const container::cTupla<size_t,s_dimension>&)> derivativeSink =
-    [&res,&i_point](const vector_function<Im,Dom>& i_derivative, const container::cTupla<size_t,s_dimension>& i_indexes) -> void
+    ytl::function<void(const scalar_function<Im,Dom>&,const container::cTupla<size_t,s_dimension>&)> derivativeSink =
+    [&res,&i_point](const scalar_function<Im,Dom>& i_derivative, const container::cTupla<size_t,s_dimension>& i_indexes) -> void
     {
         Im derivativeValue = i_derivative.eval(i_point);
 
@@ -185,6 +185,13 @@ polynomial<Im,A> _taylorSeries(const vector_function<Im,Dom>& i_function, const 
     detail::taylor<A,Im,Dom>::template expansion<0,void>::is(i_function, derivativeSink, indices,0);
 
     return res;
+}
+
+template<int ... Components, typename Im, typename Dom, template<typename> class A = memory::cTypedSystemAllocator>
+requires ( math::is_module<Im>::value && math::is_vector_space<Dom>::value && math::is_metric_space<Dom>::value )
+container::cTupla<polynomial<typename Im::traits::module_traits::ring,A>,Im::dimension()> _taylorSeries(const mpl::sequence<Components...>&, const vector_function<Im,Dom>& i_function, const Dom& i_point)
+{
+    return { _taylorSeries(i_function.template get<Components>(),i_point) ... };
 }
 
 }
@@ -318,10 +325,10 @@ container::cTupla<polynomial<T,A>, mpl::get_num_ranks<Components...>::value> der
 }
 
 template<typename Im, typename Dom, template<typename> class A = memory::cTypedSystemAllocator>
-requires requires { math::is_module<Im>::value; math::is_vector_space<Dom>::value; math::is_metric_space<Dom>::value; }
+requires ( math::is_module<Im>::value && requires { Im::dimension(); } && math::is_vector_space<Dom>::value && math::is_metric_space<Dom>::value )
 auto taylorSeries(const cFunctionSpace<Im,Dom>& i_function, const Dom& i_point)
 {
-    return detail::_taylorSeries(i_function.getValue(),i_point);
+    return detail::_taylorSeries(typename mpl::create_range_rank<0,Im::dimension()>::type{},i_function.getValue(),i_point);
 }
 
 template<typename T>

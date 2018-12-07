@@ -50,5 +50,8 @@ public:
 template<ring_type Im, set_type Dom>
 detail::ExtendedFunctionSpaceSet<Im,Dom> underlying_function_extension_type(const Im&,const Dom&);
 
+template<set_type Im, set_type Dom>
+using F = cFunctionSpace<Im,Dom>;
+
 }
 }

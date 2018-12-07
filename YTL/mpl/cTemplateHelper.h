@@ -565,7 +565,8 @@ struct make_type_place_holder
 template<typename T>
 struct is_place_holder
 {
-    static const bool value = is_same_type<T,place_holder>::value;
+    typedef typename mpl::drop_reference<typename mpl::drop_constness<T>::type>::type rawT;
+    static const bool value = is_same_type<rawT,place_holder>::value;
 };
 
 struct void_type

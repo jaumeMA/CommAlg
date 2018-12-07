@@ -10,11 +10,19 @@ template<module_type Im, vector_space_type Dom>
 const typename ExtendedVectorFunctionSpaceSet<Im,Dom>::const_function_constructor ExtendedVectorFunctionSpaceSet<Im,Dom>::C = typename ExtendedVectorFunctionSpaceSet<Im,Dom>::const_function_constructor();
 
 template<module_type Im, vector_space_type Dom>
-auto ExtendedVectorFunctionSpaceSet<Im,Dom>::const_function_constructor::operator()(nested_im_t i_constantValue) const
+auto ExtendedVectorFunctionSpaceSet<Im,Dom>::const_function_constructor::operator()(const nested_im_t& i_constantValue) const
 {
-    return vector_function<nested_im_t,Dom>(constant_function<nested_im_t,Dom>(i_constantValue));
+    return scalar_function<nested_im_t,Dom>(constant_function<nested_im_t,Dom>(i_constantValue));
 }
 
+template<module_type Im, vector_space_type Dom>
+template<int ... Components, typename ... Args>
+Im ExtendedVectorFunctionSpaceSet<Im,Dom>::_eval(const mpl::sequence<Components...>&, Args&& ... i_args) const
+{
+    const vector_function<Im,Dom>& nestedFunction = this->getValue();
+
+    return { nestedFunction.template get<Components>().eval(mpl::forward<Args>(i_args)...) ...};
+}
 template<module_type Im, vector_space_type Dom>
 typename ExtendedVectorFunctionSpaceSet<Im,Dom>::underlying_type ExtendedVectorFunctionSpaceSet<Im,Dom>::get_nested_function() const
 {
@@ -33,7 +41,7 @@ template<module_type Im, vector_space_type Dom>
 template<typename ... Args>
 auto ExtendedVectorFunctionSpaceSet<Im,Dom>::eval(Args&& ... i_args) const
 {
-    return this->getValue().eval(mpl::forward<Args>(i_args)...);
+    return _eval(typename mpl::create_range_rank<0,Im::dimension()>::type{},mpl::forward<Args>(i_args) ...);
 }
 
 }

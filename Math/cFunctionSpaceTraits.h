@@ -15,10 +15,9 @@ struct FunctionSpaceSetTraits
 
 	static void init(underlying_type& o_value);
 	static void init(underlying_type& o_value, const underlying_type& i_value);
-	static void init(underlying_type& o_value, const typename underlying_type::return_type& i_constValue);
-    template<typename FunctionType>
-    requires ( mpl::is_base_of<extended_structure,FunctionType>::value )
-    static void init(underlying_type& o_value, const FunctionType& i_functionType);
+    template<typename ... Args>
+    requires ( mpl::is_constructible<underlying_type,Args...>::value )
+    static void init(underlying_type& o_value, Args&& ... i_args);
 	static void deinit(underlying_type& o_value);
     static void assign(underlying_type& o_value, const underlying_type& i_value);
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);

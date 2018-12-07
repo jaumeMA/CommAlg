@@ -46,41 +46,53 @@ struct _specialization
     {
     private:
         template<typename ... Types>
-        using nested_vector_subspace = typename vector_subspace<nested_dom_t,mpl::get_num_types<Types...>::value - mpl::get_num_of_types_of<mpl::is_place_holder,Types...>::value>::type;
+        using nested_vector_subspace = typename vector_subspace<Dom,mpl::get_num_types<Types...>::value - mpl::get_num_of_types_of<mpl::is_place_holder,Types...>::value>::type;
+
+        template<int Component, typename ... Args>
+        inline detail::scalar_function<nested_im_t,nested_vector_subspace<Args...>> _invoke(const vector_function<Im,Dom>& i_func, Args&& ... i_args) const
+        {
+            const scalar_function<nested_im_t,Dom> nestedFunction = i_func.template get<Component>();
+
+            return nestedFunction(mpl::forward<Args>(i_args)...);
+        }
+        template<int ... Components, typename ... Args>
+        inline detail::vector_function<Im,nested_vector_subspace<Args...>> invoke(const mpl::sequence<Components...>&, const vector_function<Im,Dom>& i_func, Args&& ... i_args) const
+        {
+            return { _invoke<Components>(i_func, mpl::forward<Args>(i_args)...) ...};
+        }
 
     public:
         template<typename ... Args>
-        inline detail::vector_function<nested_im_t,nested_vector_subspace<Args...>> operator()(const cFunctionSpace<Im,Dom>& i_func, Args&& ... i_args) const
+        inline detail::vector_function<Im,nested_vector_subspace<Args...>> operator()(const cFunctionSpace<Im,Dom>& i_func, Args&& ... i_args) const
         {
-            typedef typename cFunctionSpace<Im,Dom>::underlying_type underlying_type;
-            typedef cFunctionSpace<Im,nested_vector_subspace<Args...>> ret_func_type;
-            typedef typename ret_func_type::underlying_type nested_ret_func_type;
-
-            const underlying_type& nestedFunc = i_func.getValue();
-
-            const typename underlying_type::func_ptr_base* nestedFuncPtr = nestedFunc.getFuncPtr();
-
-            nested_ret_func_type specFunc;
-
-            nestedFuncPtr->specialize(specFunc.getArena(), nestedFunc.getArenaSize(), mpl::forward<Args>(i_args)...);
-
-            return specFunc;
+            return invoke(typename mpl::create_range_rank<0,Im::dimension()>::type{},i_func.getValue(),mpl::forward<Args>(i_args) ...);
         }
     };
     struct composer
     {
     private:
         template<typename Type, typename ... Types, typename ... TTypes>
-        inline ytl::agnostic_composed_callable<Type(TTypes...)> _invoke(const ytl::function<Type(Types...)>& i_func, const ytl::function<typename mpl::drop_constness<typename mpl::drop_reference<Types>::type>::type(TTypes...)>& ... i_funcs) const
+        inline ytl::agnostic_composed_callable<Type(TTypes...)> __invoke(const ytl::function<Type(Types...)>& i_func, const ytl::function<typename mpl::drop_constness<typename mpl::drop_reference<Types>::type>::type(TTypes...)>& ... i_funcs) const
         {
             return ytl::agnostic_composed_callable<Type(TTypes...)>(ytl::pass_by_value_functor<Type(Types...)>(i_func),i_funcs ...);
         }
+        template<int Component, typename DDom, typename ... DDoms>
+        inline scalar_function<nested_im_t,DDom> _invoke(const vector_function<Im,Dom>& i_func, const vector_function<typename vector_subspace<Dom,1>::type,DDom>& other, const vector_function<typename vector_subspace<Dom,1>::type,DDoms>& ... others) const
+        {
+            return __invoke(i_func.template get<Component>(),other.template get<Component>(),others.template get<Component>() ... );
+        }
+        template<int ... Components, typename DDom, typename ... DDoms>
+        inline detail::vector_function<Im,DDom> invoke(const mpl::sequence<Components...>&, const vector_function<Im,Dom>& i_func, const vector_function<typename vector_subspace<Dom,1>::type,DDom>& other, const vector_function<typename vector_subspace<Dom,1>::type,DDoms>& ... others) const
+        {
+            return { _invoke<Components>(i_func,other,others ...) ... };
+        }
+
     public:
         template<typename DDom, typename ... DDoms>
         requires ( is_vector_space<DDom>::value && mpl::are_same_type<DDom,DDoms...>::value && Dom::dimension() == mpl::get_num_types<DDoms...>::value + 1 )
-        inline detail::vector_function<nested_im_t,DDom> operator()(const cFunctionSpace<Im,Dom>& i_func, const cFunctionSpace<typename vector_subspace<Dom,1>::type,DDom>& other, const cFunctionSpace<typename vector_subspace<Dom,1>::type,DDoms>& ... others) const
+        inline detail::vector_function<Im,DDom> operator()(const cFunctionSpace<Im,Dom>& i_func, const cFunctionSpace<typename vector_subspace<Dom,1>::type,DDom>& other, const cFunctionSpace<typename vector_subspace<Dom,1>::type,DDoms>& ... others) const
         {
-            return _invoke(i_func.getValue(),other.getValue(),others.getValue() ...);
+            return invoke(typename mpl::create_range_rank<0,Im::dimension()>::type{},i_func.getValue(),other.getValue(),others.getValue() ...);
         }
     };
 };

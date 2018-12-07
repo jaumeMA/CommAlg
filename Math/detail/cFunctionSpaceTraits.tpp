@@ -15,16 +15,11 @@ void FunctionSpaceSetTraits<Im,Dom>::init(underlying_type& o_value, const underl
     o_value = i_value;
 }
 template<set_type Im, set_type Dom>
-void FunctionSpaceSetTraits<Im,Dom>::init(underlying_type& o_value, const typename underlying_type::return_type& i_constValue)
+template<typename ... Args>
+requires ( mpl::is_constructible<typename FunctionSpaceSetTraits<Im,Dom>::underlying_type,Args...>::value )
+void FunctionSpaceSetTraits<Im,Dom>::init(underlying_type& o_value, Args&& ... i_args)
 {
-    o_value = constant_function<typename underlying_type::return_type,Dom>{i_constValue};
-}
-template<set_type Im, set_type Dom>
-template<typename FunctionType>
-requires ( mpl::is_base_of<typename FunctionSpaceSetTraits<Im,Dom>::extended_structure,FunctionType>::value )
-void FunctionSpaceSetTraits<Im,Dom>::init(underlying_type& o_value, const FunctionType& i_functionType)
-{
-    o_value = i_functionType.getValue();
+    o_value = underlying_type(mpl::forward<Args>(i_args) ...);
 }
 template<set_type Im, set_type Dom>
 void FunctionSpaceSetTraits<Im,Dom>::deinit(underlying_type& o_value)

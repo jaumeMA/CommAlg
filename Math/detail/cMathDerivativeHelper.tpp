@@ -11,7 +11,7 @@ namespace detail
 
 template<int Component, ring_type Im, vector_space_type Dom,  int ... Indexs>
 requires (is_metric_space<Im>::value && is_metric_space<typename Dom::particle>::value)
-vector_function<Im,Dom> derivative_helper_caller<0>::derivative(const mpl::sequence<Indexs...>&, const vector_function<Im,Dom>& i_function)
+scalar_function<Im,Dom> derivative_helper_caller<0>::derivative(const mpl::sequence<Indexs...>&, const scalar_function<Im,Dom>& i_function)
 {
     typedef typename Dom::particle underlying_type;
 
@@ -54,9 +54,9 @@ vector_function<Im,Dom> derivative_helper_caller<0>::derivative(const mpl::seque
 
 template<int Case>
 template<int Component,ring_type Im, vector_space_type Dom,  int ... Indexs>
-vector_function<Im,Dom> derivative_helper_caller<Case>::derivative(const mpl::sequence<Indexs...>& i_sequence, const vector_function<Im,Dom>& i_function)
+scalar_function<Im,Dom> derivative_helper_caller<Case>::derivative(const mpl::sequence<Indexs...>& i_sequence, const scalar_function<Im,Dom>& i_function)
 {
-    vector_function<Im,Dom> derivedFunc = derivative_register<Case>::type::template get_custom_derivative<Component>(i_function);
+    scalar_function<Im,Dom> derivedFunc = derivative_register<Case>::type::template get_custom_derivative<Component>(i_function);
 
     if(derivedFunc != null_ptr)
     {
@@ -69,7 +69,7 @@ vector_function<Im,Dom> derivative_helper_caller<Case>::derivative(const mpl::se
 }
 
 template<int Component,ring_type Im, vector_space_type Dom,  int currCase>
-vector_function<Im,Dom> derivative_helper::derivative(const vector_function<Im,Dom>& i_function)
+scalar_function<Im,Dom> derivative_helper::derivative(const scalar_function<Im,Dom>& i_function)
 {
     typedef typename mpl::create_range_rank<0,Dom::dimension()>::type rangeSeq;
 
@@ -77,7 +77,7 @@ vector_function<Im,Dom> derivative_helper::derivative(const vector_function<Im,D
 }
 
 template<ring_type Im, vector_space_type Dom,  int ... Indexs>
-vector_function<Im,Dom> derivative_helper::derivative(const mpl::sequence<Indexs...>& i_seq, const vector<Im,Dom::dimension()>& i_direction, const vector_function<Im,Dom>& i_function)
+scalar_function<Im,Dom> derivative_helper::derivative(const mpl::sequence<Indexs...>& i_seq, const vector<Im,Dom::dimension()>& i_direction, const scalar_function<Im,Dom>& i_function)
 {
     static const int Dimension = Dom::dimension();
     static_assert(mpl::get_num_ranks<Indexs...>::value == Dimension, "Mismatch between dimension and derivative indexs");
@@ -91,7 +91,7 @@ vector_function<Im,Dom> derivative_helper::derivative(const mpl::sequence<Indexs
 }
 
 template<int Component,ring_type Im, vector_space_type Dom, int DDimension,int ... DerivativeIndexs,typename Return,typename ... Types>
-vector_function<Im,Dom> composite_derivative_helper::derivative(const mpl::sequence<DerivativeIndexs...>&, const ytl::agnostic_composed_callable<Return(Types...)>& i_callable)
+scalar_function<Im,Dom> composite_derivative_helper::derivative(const mpl::sequence<DerivativeIndexs...>&, const ytl::agnostic_composed_callable<Return(Types...)>& i_callable)
 {
     static const int Dimension = Dom::dimension();
     static_assert(DDimension == mpl::get_num_ranks<DerivativeIndexs...>::value, "Mismatch between indexs and dimension");
@@ -106,8 +106,8 @@ vector_function<Im,Dom> composite_derivative_helper::derivative(const mpl::seque
         typedef typename vector_subspace<Dom,DDimension>::type DDom;
         const homogeneous_pass_by_value_functor& passByValueFunctor = functor->getCallable();
 
-//        return ( derivative_helper::derivative<DerivativeIndexs>(vector_function<Im,DDom>::clone(passByValueFunctor.getForwardedFunction().getFuncPtr()))(static_cast<const typename vector_function<Im,Dom>::func_base&>(vector_function<Im,Dom>::clone(i_callable.template getNestedCallable<DerivativeIndexs,typename mpl::transform_index_type<DerivativeIndexs>::template to<Im>::type ...>())) ...) * derivative_helper::derivative<Component>(vector_function<Im,Dom>::clone(i_callable.template getNestedCallable<DerivativeIndexs,typename mpl::transform_index_type<DerivativeIndexs>::template to<Im>::type ...>())) + ... );
-        return yame::sum(container::cTupla<typename vector_function<Im,Dom>::func_base,DDimension>{ derivative_helper::derivative<DerivativeIndexs>(vector_function<Im,DDom>::clone(passByValueFunctor.getForwardedFunction().getFuncPtr()))(static_cast<const typename vector_function<Im,Dom>::func_base&>(vector_function<Im,Dom>::clone(i_callable.template getNestedCallable<DerivativeIndexs,typename mpl::transform_index_type<DerivativeIndexs>::template to<Im>::type ...>())) ...) * derivative_helper::derivative<Component>(vector_function<Im,Dom>::clone(i_callable.template getNestedCallable<DerivativeIndexs,typename mpl::transform_index_type<DerivativeIndexs>::template to<Im>::type ...>())) ... });
+//        return ( derivative_helper::derivative<DerivativeIndexs>(scalar_function<Im,DDom>::clone(passByValueFunctor.getForwardedFunction().getFuncPtr()))(static_cast<const typename scalar_function<Im,Dom>::func_base&>(scalar_function<Im,Dom>::clone(i_callable.template getNestedCallable<DerivativeIndexs,typename mpl::transform_index_type<DerivativeIndexs>::template to<Im>::type ...>())) ...) * derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(i_callable.template getNestedCallable<DerivativeIndexs,typename mpl::transform_index_type<DerivativeIndexs>::template to<Im>::type ...>())) + ... );
+        return yame::sum(container::cTupla<typename scalar_function<Im,Dom>::func_base,DDimension>{ derivative_helper::derivative<DerivativeIndexs>(scalar_function<Im,DDom>::clone(passByValueFunctor.getForwardedFunction().getFuncPtr()))(static_cast<const typename scalar_function<Im,Dom>::func_base&>(scalar_function<Im,Dom>::clone(i_callable.template getNestedCallable<DerivativeIndexs,typename mpl::transform_index_type<DerivativeIndexs>::template to<Im>::type ...>())) ...) * derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(i_callable.template getNestedCallable<DerivativeIndexs,typename mpl::transform_index_type<DerivativeIndexs>::template to<Im>::type ...>())) ... });
     }
     else
     {
@@ -115,22 +115,22 @@ vector_function<Im,Dom> composite_derivative_helper::derivative(const mpl::seque
     }
 }
 template<int Component,ring_type Im, vector_space_type Dom, int DDimension,typename Return,typename ... Types>
-vector_function<Im,Dom> composite_derivative_helper::derivative(const ytl::agnostic_composed_callable<Return(Types...)>& i_callable)
+scalar_function<Im,Dom> composite_derivative_helper::derivative(const ytl::agnostic_composed_callable<Return(Types...)>& i_callable)
 {
     typedef typename mpl::create_range_rank<0,DDimension>::type derivative_index;
 
     return derivative<Component,Im,Dom,DDimension>(derivative_index(),i_callable);
 }
 template<int Component,ring_type Im, vector_space_type Dom, int ... MaxComponent,typename Return,typename ... Types>
-vector_function<Im,Dom> composite_derivative_helper::derivative(const mpl::sequence<MaxComponent...>&, const ytl::agnostic_composed_callable<Return(Types...)>& i_callable)
+scalar_function<Im,Dom> composite_derivative_helper::derivative(const mpl::sequence<MaxComponent...>&, const ytl::agnostic_composed_callable<Return(Types...)>& i_callable)
 {
-    typedef vector_function<Im,Dom>(*dimensioned_func)(const ytl::agnostic_composed_callable<Return(Types...)>&);
+    typedef scalar_function<Im,Dom>(*dimensioned_func)(const ytl::agnostic_composed_callable<Return(Types...)>&);
     static const dimensioned_func _funcs[mpl::get_num_ranks<MaxComponent...>::value] = {&derivative<Component,Im,Dom,MaxComponent,Return,Types...> ...};
 
     return _funcs[i_callable.getNumIntermediateTypes()-1](i_callable);
 }
 template<int Component,ring_type Im, vector_space_type Dom>
-vector_function<Im,Dom> composite_derivative_helper::get_custom_derivative(const vector_function<Im,Dom>& i_function)
+scalar_function<Im,Dom> composite_derivative_helper::get_custom_derivative(const scalar_function<Im,Dom>& i_function)
 {
     static const int Dimension = Dom::dimension();
     typedef typename Dom::particle underlying_type;
@@ -152,7 +152,7 @@ vector_function<Im,Dom> composite_derivative_helper::get_custom_derivative(const
 }
 
 template<int Component, ring_type Im, vector_space_type Dom>
-vector_function<Im,Dom> identity_derivative_helper::get_custom_derivative(const vector_function<Im,Dom>& i_function)
+scalar_function<Im,Dom> identity_derivative_helper::get_custom_derivative(const scalar_function<Im,Dom>& i_function)
 {
     static const int Dimension = Dom::dimension();
     typedef typename Dom::particle underlying_type;
@@ -170,7 +170,7 @@ vector_function<Im,Dom> identity_derivative_helper::get_custom_derivative(const 
 }
 
 template<int Component, ring_type Im, vector_space_type Dom>
-vector_function<Im,Dom> constant_derivative_helper::get_custom_derivative(const vector_function<Im,Dom>& i_function)
+scalar_function<Im,Dom> constant_derivative_helper::get_custom_derivative(const scalar_function<Im,Dom>& i_function)
 {
     static const int Dimension = Dom::dimension();
     typedef typename Dom::particle underlying_type;
@@ -186,7 +186,7 @@ vector_function<Im,Dom> constant_derivative_helper::get_custom_derivative(const 
 }
 
 template<int Component, ring_type Im, vector_space_type Dom>
-vector_function<Im,Dom> neg_derivative_helper::get_custom_derivative(const vector_function<Im,Dom>& i_function)
+scalar_function<Im,Dom> neg_derivative_helper::get_custom_derivative(const scalar_function<Im,Dom>& i_function)
 {
     static const int Dimension = Dom::dimension();
     typedef typename Dom::particle underlying_type;
@@ -196,7 +196,7 @@ vector_function<Im,Dom> neg_derivative_helper::get_custom_derivative(const vecto
     {
         const neg_homogeneous_callable& negCallable = functor->getCallable();
 
-        return -derivative_helper::derivative<Component>(vector_function<Im,Dom>::clone(negCallable.template getNestedCallable<0>()));
+        return -derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(negCallable.template getNestedCallable<0>()));
     }
     else
 	{
@@ -205,7 +205,7 @@ vector_function<Im,Dom> neg_derivative_helper::get_custom_derivative(const vecto
 }
 
 template<int Component, ring_type Im, vector_space_type Dom>
-vector_function<Im,Dom> sum_derivative_helper::get_custom_derivative(const vector_function<Im,Dom>& i_function)
+scalar_function<Im,Dom> sum_derivative_helper::get_custom_derivative(const scalar_function<Im,Dom>& i_function)
 {
     static const int Dimension = Dom::dimension();
     typedef typename Dom::particle underlying_type;
@@ -215,7 +215,7 @@ vector_function<Im,Dom> sum_derivative_helper::get_custom_derivative(const vecto
     {
         const sum_homogeneous_callable& sumCallable = functor->getCallable();
 
-        return derivative_helper::derivative<Component>(vector_function<Im,Dom>::clone(sumCallable.template getNestedCallable<0>())) + derivative_helper::derivative<Component>(vector_function<Im,Dom>::clone(sumCallable.template getNestedCallable<1>()));
+        return derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(sumCallable.template getNestedCallable<0>())) + derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(sumCallable.template getNestedCallable<1>()));
     }
     else
 	{
@@ -224,7 +224,7 @@ vector_function<Im,Dom> sum_derivative_helper::get_custom_derivative(const vecto
 }
 
 template<int Component, ring_type Im, vector_space_type Dom>
-vector_function<Im,Dom> subs_derivative_helper::get_custom_derivative(const vector_function<Im,Dom>& i_function)
+scalar_function<Im,Dom> subs_derivative_helper::get_custom_derivative(const scalar_function<Im,Dom>& i_function)
 {
     static const int Dimension = Dom::dimension();
     typedef typename Dom::particle underlying_type;
@@ -234,7 +234,7 @@ vector_function<Im,Dom> subs_derivative_helper::get_custom_derivative(const vect
     {
         const subs_homogeneous_callable& subsCallable = functor->getCallable();
 
-        return derivative_helper::derivative<Component>(vector_function<Im,Dom>::clone(subsCallable.template getNestedCallable<0>())) - derivative_helper::derivative<Component>(vector_function<Im,Dom>::clone(subsCallable.template getNestedCallable<1>()));
+        return derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(subsCallable.template getNestedCallable<0>())) - derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(subsCallable.template getNestedCallable<1>()));
     }
     else
 	{
@@ -243,7 +243,7 @@ vector_function<Im,Dom> subs_derivative_helper::get_custom_derivative(const vect
 }
 
 template<int Component, ring_type Im, vector_space_type Dom>
-vector_function<Im,Dom> prod_derivative_helper::get_custom_derivative(const vector_function<Im,Dom>& i_function)
+scalar_function<Im,Dom> prod_derivative_helper::get_custom_derivative(const scalar_function<Im,Dom>& i_function)
 {
     static const int Dimension = Dom::dimension();
     typedef typename Dom::particle underlying_type;
@@ -253,7 +253,7 @@ vector_function<Im,Dom> prod_derivative_helper::get_custom_derivative(const vect
     {
         const prod_homogeneous_callable& prodCallable = functor->getCallable();
 
-        return derivative_helper::derivative<Component>(vector_function<Im,Dom>::clone(prodCallable.template getNestedCallable<0>())) * vector_function<Im,Dom>::clone(prodCallable.template getNestedCallable<1>()) + vector_function<Im,Dom>::clone(prodCallable.template getNestedCallable<0>()) * derivative_helper::derivative<Component>(vector_function<Im,Dom>::clone(prodCallable.template getNestedCallable<1>()));
+        return derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(prodCallable.template getNestedCallable<0>())) * scalar_function<Im,Dom>::clone(prodCallable.template getNestedCallable<1>()) + scalar_function<Im,Dom>::clone(prodCallable.template getNestedCallable<0>()) * derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(prodCallable.template getNestedCallable<1>()));
     }
     else
 	{
@@ -262,7 +262,7 @@ vector_function<Im,Dom> prod_derivative_helper::get_custom_derivative(const vect
 }
 
 template<int Component, ring_type Im, vector_space_type Dom>
-vector_function<Im,Dom> div_derivative_helper::get_custom_derivative(const vector_function<Im,Dom>& i_function)
+scalar_function<Im,Dom> div_derivative_helper::get_custom_derivative(const scalar_function<Im,Dom>& i_function)
 {
     static const int Dimension = Dom::dimension();
     typedef typename Dom::particle underlying_type;
@@ -272,7 +272,7 @@ vector_function<Im,Dom> div_derivative_helper::get_custom_derivative(const vecto
     {
         const div_homogeneous_callable& divCallable = functor->getCallable();
 
-        return (derivative_helper::derivative<Component>(vector_function<Im,Dom>::clone(divCallable.template getNestedCallable<0>())) * vector_function<Im,Dom>::clone(divCallable.template getNestedCallable<1>()) - vector_function<Im,Dom>::clone(divCallable.template getNestedCallable<0>()) * derivative_helper::derivative<Component>(vector_function<Im,Dom>::clone(divCallable.template getNestedCallable<1>()))) / (vector_function<Im,Dom>::clone(divCallable.template getNestedCallable<1>()) * vector_function<Im,Dom>::clone(divCallable.template getNestedCallable<1>()));
+        return (derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<0>())) * scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<1>()) - scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<0>()) * derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<1>()))) / (scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<1>()) * scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<1>()));
     }
     else
 	{
@@ -281,7 +281,7 @@ vector_function<Im,Dom> div_derivative_helper::get_custom_derivative(const vecto
 }
 
 template<int Component>
-vector_function<Real,R1> sin_derivative_helper::get_custom_derivative(const vector_function<Real,R1>& i_function)
+scalar_function<Real,R1> sin_derivative_helper::get_custom_derivative(const scalar_function<Real,R1>& i_function)
 {
     static Real(*const addr)(const Real&) = &sin;
 
@@ -296,7 +296,7 @@ vector_function<Real,R1> sin_derivative_helper::get_custom_derivative(const vect
     return null_ptr;
 }
 template<int Component>
-vector_function<Complex,C1> sin_derivative_helper::get_custom_derivative(const vector_function<Complex,C1>& i_function)
+scalar_function<Complex,C1> sin_derivative_helper::get_custom_derivative(const scalar_function<Complex,C1>& i_function)
 {
     static Complex(*const addr)(const Complex&) = &sin;
 
@@ -312,7 +312,7 @@ vector_function<Complex,C1> sin_derivative_helper::get_custom_derivative(const v
 }
 
 template<int Component>
-vector_function<Real,R1> cos_derivative_helper::get_custom_derivative(const vector_function<Real,R1>& i_function)
+scalar_function<Real,R1> cos_derivative_helper::get_custom_derivative(const scalar_function<Real,R1>& i_function)
 {
     static Real(*const addr)(const Real&) = &cos;
 
@@ -327,7 +327,7 @@ vector_function<Real,R1> cos_derivative_helper::get_custom_derivative(const vect
     return null_ptr;
 }
 template<int Component>
-vector_function<Complex,C1> cos_derivative_helper::get_custom_derivative(const vector_function<Complex,C1>& i_function)
+scalar_function<Complex,C1> cos_derivative_helper::get_custom_derivative(const scalar_function<Complex,C1>& i_function)
 {
     static Complex(*const addr)(const Complex&) = &cos;
 
@@ -343,7 +343,7 @@ vector_function<Complex,C1> cos_derivative_helper::get_custom_derivative(const v
 }
 
 template<int Component>
-vector_function<Real,R1> tan_derivative_helper::get_custom_derivative(const vector_function<Real,R1>& i_function)
+scalar_function<Real,R1> tan_derivative_helper::get_custom_derivative(const scalar_function<Real,R1>& i_function)
 {
     static Real(*const addr)(const Real&) = &tan;
 
@@ -358,7 +358,7 @@ vector_function<Real,R1> tan_derivative_helper::get_custom_derivative(const vect
     return null_ptr;
 }
 template<int Component>
-vector_function<Complex,C1> tan_derivative_helper::get_custom_derivative(const vector_function<Complex,C1>& i_function)
+scalar_function<Complex,C1> tan_derivative_helper::get_custom_derivative(const scalar_function<Complex,C1>& i_function)
 {
     static Complex(*const addr)(const Complex&) = &tan;
 
@@ -374,7 +374,7 @@ vector_function<Complex,C1> tan_derivative_helper::get_custom_derivative(const v
 }
 
 template<int Component>
-vector_function<Real,R1> exp_derivative_helper::get_custom_derivative(const vector_function<Real,R1>& i_function)
+scalar_function<Real,R1> exp_derivative_helper::get_custom_derivative(const scalar_function<Real,R1>& i_function)
 {
     static Real(*const addr)(const Real&) = &exp;
 
@@ -389,7 +389,7 @@ vector_function<Real,R1> exp_derivative_helper::get_custom_derivative(const vect
     return null_ptr;
 }
 template<int Component>
-vector_function<Complex,C1> exp_derivative_helper::get_custom_derivative(const vector_function<Complex,C1>& i_function)
+scalar_function<Complex,C1> exp_derivative_helper::get_custom_derivative(const scalar_function<Complex,C1>& i_function)
 {
     static Complex(*const addr)(const Complex&) = &exp;
 
@@ -405,7 +405,7 @@ vector_function<Complex,C1> exp_derivative_helper::get_custom_derivative(const v
 }
 
 template<int Component>
-vector_function<Real,R1> log_derivative_helper::get_custom_derivative(const vector_function<Real,R1>& i_function)
+scalar_function<Real,R1> log_derivative_helper::get_custom_derivative(const scalar_function<Real,R1>& i_function)
 {
     typedef ytl::function<Real(const Real&)> real_function;
     static Real(*const addr)(const Real&) = &log;
@@ -421,7 +421,7 @@ vector_function<Real,R1> log_derivative_helper::get_custom_derivative(const vect
     return null_ptr;
 }
 template<int Component>
-vector_function<Complex,C1> log_derivative_helper::get_custom_derivative(const vector_function<Complex,C1>& i_function)
+scalar_function<Complex,C1> log_derivative_helper::get_custom_derivative(const scalar_function<Complex,C1>& i_function)
 {
     typedef ytl::function<Complex(const Complex&)> complex_function;
     static Complex(*const addr)(const Complex&) = &log;

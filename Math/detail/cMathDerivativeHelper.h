@@ -2,6 +2,7 @@
 
 #include "YTL/mpl/cStaticCounter.h"
 #include "Math/detail/cAlgebraTemplateHelper.h"
+#include "Math/cScalarFunction.h"
 
 #define REGISTER_DERIVATIVE(helper_name) \
 namespace yame \
@@ -49,7 +50,7 @@ struct derivative_helper_caller
 {
 
 template<int Component,ring_type Im, vector_space_type Dom, int ... Indexs>
-inline static vector_function<Im,Dom> derivative(const mpl::sequence<Indexs...>& i_seq, const vector_function<Im,Dom>& i_function);
+inline static scalar_function<Im,Dom> derivative(const mpl::sequence<Indexs...>& i_seq, const scalar_function<Im,Dom>& i_function);
 
 };
 
@@ -59,7 +60,7 @@ struct derivative_helper_caller<0>
 
 template<int Component, ring_type Im, vector_space_type Dom, int ... Indexs>
 requires (is_metric_space<Im>::value && is_metric_space<typename Dom::particle>::value)
-inline static vector_function<Im,Dom> derivative(const mpl::sequence<Indexs...>&, const vector_function<Im,Dom>& i_function);
+inline static scalar_function<Im,Dom> derivative(const mpl::sequence<Indexs...>&, const scalar_function<Im,Dom>& i_function);
 
 };
 
@@ -70,23 +71,23 @@ struct derivative_helper : mpl::static_counter<derivative_helper>
 {
 
 template<int Component,ring_type Im, vector_space_type Dom, int currCase = mpl::static_counter<derivative_helper>::get_curr_count()>
-static vector_function<Im,Dom> derivative(const vector_function<Im,Dom>& i_function);
+static scalar_function<Im,Dom> derivative(const scalar_function<Im,Dom>& i_function);
 
 template<ring_type Im, vector_space_type Dom, int ... Indexs>
-static vector_function<Im,Dom> derivative(const mpl::sequence<Indexs...>& i_seq, const vector<Im,Dom::dimension()>& i_direction, const vector_function<Im,Dom>& i_function);
+static scalar_function<Im,Dom> derivative(const mpl::sequence<Indexs...>& i_seq, const vector<Im,Dom::dimension()>& i_direction, const scalar_function<Im,Dom>& i_function);
 };
 
 struct composite_derivative_helper
 {
 
 template<int Component,ring_type Im, vector_space_type Dom,int DDimension,int ... DerivativeIndexs,typename Return,typename ... Types>
-inline static vector_function<Im,Dom> derivative(const mpl::sequence<DerivativeIndexs...>&, const ytl::agnostic_composed_callable<Return(Types...)>& i_callable);
+inline static scalar_function<Im,Dom> derivative(const mpl::sequence<DerivativeIndexs...>&, const ytl::agnostic_composed_callable<Return(Types...)>& i_callable);
 template<int Component,ring_type Im, vector_space_type Dom,int DDimension,typename Return,typename ... Types>
-inline static vector_function<Im,Dom> derivative(const ytl::agnostic_composed_callable<Return(Types...)>& i_callable);
+inline static scalar_function<Im,Dom> derivative(const ytl::agnostic_composed_callable<Return(Types...)>& i_callable);
 template<int Component,ring_type Im, vector_space_type Dom,int ... MaxComponent,typename Return,typename ... Types>
-inline  static vector_function<Im,Dom> derivative(const mpl::sequence<MaxComponent...>&, const ytl::agnostic_composed_callable<Return(Types...)>& i_callable);
+inline  static scalar_function<Im,Dom> derivative(const mpl::sequence<MaxComponent...>&, const ytl::agnostic_composed_callable<Return(Types...)>& i_callable);
 template<int Component, ring_type Im, vector_space_type Dom>
-inline static vector_function<Im,Dom> get_custom_derivative(const vector_function<Im,Dom>& i_function);
+inline static scalar_function<Im,Dom> get_custom_derivative(const scalar_function<Im,Dom>& i_function);
 
 };
 
@@ -94,7 +95,7 @@ struct identity_derivative_helper
 {
 
 template<int Component, ring_type Im, vector_space_type Dom>
-inline static vector_function<Im,Dom> get_custom_derivative(const vector_function<Im,Dom>& i_function);
+inline static scalar_function<Im,Dom> get_custom_derivative(const scalar_function<Im,Dom>& i_function);
 
 };
 
@@ -102,7 +103,7 @@ struct constant_derivative_helper
 {
 
 template<int Component, ring_type Im, vector_space_type Dom>
-inline static vector_function<Im,Dom> get_custom_derivative(const vector_function<Im,Dom>& i_function);
+inline static scalar_function<Im,Dom> get_custom_derivative(const scalar_function<Im,Dom>& i_function);
 
 };
 
@@ -110,7 +111,7 @@ struct neg_derivative_helper
 {
 
 template<int Component, ring_type Im, vector_space_type Dom>
-inline static vector_function<Im,Dom> get_custom_derivative(const vector_function<Im,Dom>& i_function);
+inline static scalar_function<Im,Dom> get_custom_derivative(const scalar_function<Im,Dom>& i_function);
 
 };
 
@@ -118,7 +119,7 @@ struct sum_derivative_helper
 {
 
 template<int Component,ring_type Im, vector_space_type Dom>
-inline static vector_function<Im,Dom> get_custom_derivative(const vector_function<Im,Dom>& i_function);
+inline static scalar_function<Im,Dom> get_custom_derivative(const scalar_function<Im,Dom>& i_function);
 
 };
 
@@ -126,7 +127,7 @@ struct subs_derivative_helper
 {
 
 template<int Component, ring_type Im, vector_space_type Dom>
-inline static vector_function<Im,Dom> get_custom_derivative(const vector_function<Im,Dom>& i_function);
+inline static scalar_function<Im,Dom> get_custom_derivative(const scalar_function<Im,Dom>& i_function);
 
 };
 
@@ -134,7 +135,7 @@ struct prod_derivative_helper
 {
 
 template<int Component, ring_type Im, vector_space_type Dom>
-inline static vector_function<Im,Dom> get_custom_derivative(const vector_function<Im,Dom>& i_function);
+inline static scalar_function<Im,Dom> get_custom_derivative(const scalar_function<Im,Dom>& i_function);
 
 };
 
@@ -142,7 +143,7 @@ struct div_derivative_helper
 {
 
 template<int Component, ring_type Im, vector_space_type Dom>
-inline static vector_function<Im,Dom> get_custom_derivative(const vector_function<Im,Dom>& i_function);
+inline static scalar_function<Im,Dom> get_custom_derivative(const scalar_function<Im,Dom>& i_function);
 
 };
 
@@ -150,18 +151,18 @@ struct sin_derivative_helper
 {
 
 template<int Component>
-inline static vector_function<Real,R1> get_custom_derivative(const vector_function<Real,R1>& i_function);
+inline static scalar_function<Real,R1> get_custom_derivative(const scalar_function<Real,R1>& i_function);
 template<int Component>
-inline static vector_function<Complex,C1> get_custom_derivative(const vector_function<Complex,C1>& i_function);
+inline static scalar_function<Complex,C1> get_custom_derivative(const scalar_function<Complex,C1>& i_function);
 
 };
 struct cos_derivative_helper
 {
 
 template<int Component>
-inline static vector_function<Real,R1> get_custom_derivative(const vector_function<Real,R1>& i_function);
+inline static scalar_function<Real,R1> get_custom_derivative(const scalar_function<Real,R1>& i_function);
 template<int Component>
-inline static vector_function<Complex,C1> get_custom_derivative(const vector_function<Complex,C1>& i_function);
+inline static scalar_function<Complex,C1> get_custom_derivative(const scalar_function<Complex,C1>& i_function);
 
 };
 
@@ -169,9 +170,9 @@ struct tan_derivative_helper
 {
 
 template<int Component>
-inline static vector_function<Real,R1> get_custom_derivative(const vector_function<Real,R1>& i_function);
+inline static scalar_function<Real,R1> get_custom_derivative(const scalar_function<Real,R1>& i_function);
 template<int Component>
-inline static vector_function<Complex,C1> get_custom_derivative(const vector_function<Complex,C1>& i_function);
+inline static scalar_function<Complex,C1> get_custom_derivative(const scalar_function<Complex,C1>& i_function);
 
 };
 
@@ -179,9 +180,9 @@ struct exp_derivative_helper
 {
 
 template<int Component>
-inline static vector_function<Real,R1> get_custom_derivative(const vector_function<Real,R1>& i_function);
+inline static scalar_function<Real,R1> get_custom_derivative(const scalar_function<Real,R1>& i_function);
 template<int Component>
-inline static vector_function<Complex,C1> get_custom_derivative(const vector_function<Complex,C1>& i_function);
+inline static scalar_function<Complex,C1> get_custom_derivative(const scalar_function<Complex,C1>& i_function);
 
 };
 
@@ -189,9 +190,9 @@ struct log_derivative_helper
 {
 
 template<int Component>
-inline static vector_function<Real,R1> get_custom_derivative(const vector_function<Real,R1>& i_function);
+inline static scalar_function<Real,R1> get_custom_derivative(const scalar_function<Real,R1>& i_function);
 template<int Component>
-inline static vector_function<Complex,C1> get_custom_derivative(const vector_function<Complex,C1>& i_function);
+inline static scalar_function<Complex,C1> get_custom_derivative(const scalar_function<Complex,C1>& i_function);
 
 };
 

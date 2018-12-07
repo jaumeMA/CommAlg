@@ -38,16 +38,20 @@ namespace detail
 template<module_type Im, vector_space_type Dom>
 struct ExtendedVectorFunctionSpaceSet : virtual public detail::ISet<FunctionSpaceSetTraits<Im,Dom>>
 {
-    typedef decltype(underlying_function_type(std::declval<Im>(),std::declval<Dom>())) underlying_type;
+    typedef vector_function<Im,Dom> underlying_type;
     typedef cFunctionSpace<Im,Dom> FinalObject;
     typedef typename Im::traits::module_traits::ring nested_im_t;
 
     struct const_function_constructor
     {
         const_function_constructor() = default;
-        auto operator()(nested_im_t i_constantValue) const;
+        auto operator()(const nested_im_t& i_constantValue) const;
     };
+private:
+    template<int ... Components, typename ... Args>
+    Im _eval(const mpl::sequence<Components...>&, Args&& ... i_args) const;
 
+public:
     underlying_type get_nested_function() const;
     template<typename IIm, typename DDom>
     requires (mpl::is_type_constructible<Im,IIm>::value && mpl::is_type_constructible<Dom,DDom>::value )
@@ -59,9 +63,9 @@ struct ExtendedVectorFunctionSpaceSet : virtual public detail::ISet<FunctionSpac
 
     template<size_t Index>
     requires (Index < Dom::dimension())
-    static inline underlying_type _x_()
+    static inline auto _x_()
     {
-        return projection<nested_im_t,Dom>(mpl::numeric_type<Index>{});
+        return scalar_function<nested_im_t,Dom>(projection<nested_im_t,Dom>(mpl::numeric_type<Index>{}));
     }
     static const const_function_constructor C;
 };
