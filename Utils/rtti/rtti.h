@@ -88,7 +88,14 @@ TT* staticCast(T* i_ptr)
 }
 
 template<typename TT, typename T>
-TT* dynamicCast(T* i_ptr)
+requires (mpl::is_base_of<TT,T>::value && mpl::is_virtual_base_of<TT,T>::value == false)
+inline TT* dynamicCast(T* i_ptr)
+{
+    return i_ptr;
+}
+
+template<typename TT, typename T>
+inline TT* dynamicCast(T* i_ptr, ...)
 {
     typedef typename mpl::static_if<mpl::is_const<T>::value,const char*,char*>::type char_type;
     typedef typename mpl::drop_constness<T>::type non_const_T;

@@ -43,5 +43,9 @@ container::string format(long i_value)
 {
     return container::string::Format("%ld", i_value);
 }
+container::string format(const container::string& i_value)
+{
+    return i_value;
+}
 
 }

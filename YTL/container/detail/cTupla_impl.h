@@ -67,9 +67,9 @@ public:
     cSubTuple<T,rank,ranks...>(void *ref);
     SUB_TUPLE(T,ranks)& operator[](size_t index);
     SUB_TUPLE(T,ranks) operator[](size_t index) const;
+    size_t getDim() const;
+    size_t getRank() const;
     cSubTuple<T,rank,ranks...>& operator=(const cSubTuple<T,rank,ranks...>& other);
-    void print() const;
-    int getRank(int dim, int counter);
 };
 
 template<typename T>
@@ -90,7 +90,10 @@ public:
     operator const T&() const;
     cSubTuple<T>& operator=(const cSubTuple<T>& other);
     cSubTuple<T>& operator=(const T& other);
-    int getRank(int dim, int counter);
+    T& operator[](size_t index);
+    const T& operator[](size_t index) const;
+    size_t getDim() const;
+    size_t getRank() const;
 };
 
 //specialization for nested tuples
@@ -113,9 +116,10 @@ public:
     operator const cSubTuple<T,rank,ranks...>&() const;
     SUB_TUPLE(T,ranks)& operator[](size_t index);
     SUB_TUPLE(T,ranks) operator[](size_t index) const;
+    size_t getDim() const;
+    size_t getRank() const;
     cSubTuple<cSubTuple<T,rank,ranks...> >& operator=(const cSubTuple<cSubTuple<T,rank,ranks...> >& other);
     cSubTuple<cSubTuple<T,rank,ranks...> >& operator=(const cSubTuple<T,rank,ranks...>& other);
-    int getRank(int dim, int counter);
 };
 
 
@@ -177,9 +181,9 @@ public:
     cTupla_impl<T,rank,ranks...>& operator=(const cTupla_impl<T,rank,ranks...>& other);
     bool operator==(const cTupla_impl<T,rank,ranks...>& other) const;
     bool operator!=(const cTupla_impl<T,rank,ranks...>& other) const;
-    size_t getDim();
-    size_t getTotalRank();
-    size_t getRank(int dim);
+    size_t getDim() const;
+    size_t getRank() const;
+    size_t getTotalRank() const;
     const primitive_type* getAsPtr() const;
     template<int Index, int ... Indexs>
     T& get();
@@ -242,9 +246,9 @@ public:
     cTupla_impl<T,1>& operator=(const cTupla_impl<T,1>& other);
     bool operator==(const cTupla_impl<T,1>& other) const;
     bool operator!=(const cTupla_impl<T,1>& other) const;
-    size_t getDim();
-    size_t getTotalRank();
-    size_t getRank(int dim);
+    size_t getDim() const;
+    size_t getTotalRank() const;
+    size_t getRank() const;
     const primitive_type* getAsPtr() const;
     template<int Index>
     T& get();

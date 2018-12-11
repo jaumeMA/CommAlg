@@ -36,8 +36,8 @@ public:
     using detail::cTupla_interface<T,rank,ranks...>::operator==;
     using detail::cTupla_interface<T,rank,ranks...>::operator!=;
     using detail::cTupla_interface<T,rank,ranks...>::getDim;
-    using detail::cTupla_interface<T,rank,ranks...>::getTotalRank;
     using detail::cTupla_interface<T,rank,ranks...>::getRank;
+    using detail::cTupla_interface<T,rank,ranks...>::getTotalRank;
     using detail::cTupla_interface<T,rank,ranks...>::getAsPtr;
 };
 }

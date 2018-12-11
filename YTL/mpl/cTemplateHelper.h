@@ -711,7 +711,7 @@ struct _nth_val_of;
 template<int pos, typename Arg, typename ... Args>
 struct _nth_val_of<pos,Arg,Args...>
 {
-    static constexpr typename nth_type_of<pos,Arg,Args...>::type is(Arg arg, Args...args)
+    static inline constexpr typename nth_type_of<pos,Arg,Args...>::type is(Arg arg, Args...args)
     {
         return _nth_val_of<pos-1,Args...>::is(mpl::forward<Args>(args)...);
     }
@@ -720,7 +720,7 @@ struct _nth_val_of<pos,Arg,Args...>
 template<typename Arg, typename ... Args>
 struct _nth_val_of<0,Arg,Args...>
 {
-    static constexpr Arg is(Arg arg, Args...args)
+    static inline constexpr Arg is(Arg arg, Args...args)
     {
         return mpl::forward<Arg>(arg);
     }
@@ -729,18 +729,16 @@ struct _nth_val_of<0,Arg,Args...>
 template<>
 struct _nth_val_of<0>
 {
-    static void is()
+    static inline constexpr void is()
     {
         return;
     }
 };
 
 template<int pos, typename ... Args>
-constexpr typename nth_type_of<pos,Args&&...>::type nth_val_of(Args&& ... args)
+requires ( (pos >= 0) && pos < get_num_types<Args...>::value )
+inline constexpr typename nth_type_of<pos,Args&&...>::type nth_val_of(Args&& ... args)
 {
-    static_assert(pos >= 0 && pos < get_num_types<Args...>::value, "Index out of bounds");
-
-    //do it 0 based
     return mpl::forward<typename nth_type_of<pos,Args&&...>::type>(_nth_val_of<pos,Args&&...>::is(mpl::forward<Args&&>(args)...));
 }
 

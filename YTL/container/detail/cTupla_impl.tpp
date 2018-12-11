@@ -74,6 +74,16 @@ SUB_TUPLE(T,ranks) cSubTuple<T,rank,ranks...>::operator[](size_t index) const
     return res;
 }
 template<typename T, int rank, int ... ranks>
+size_t cSubTuple<T,rank,ranks...>::getDim() const
+{
+    return 1 + mpl::get_num_ranks<ranks...>::value;
+}
+template<typename T, int rank, int ... ranks>
+size_t cSubTuple<T,rank,ranks...>::getRank() const
+{
+    return rank;
+}
+template<typename T, int rank, int ... ranks>
 cSubTuple<T,rank,ranks...>& cSubTuple<T,rank,ranks...>::operator=(const cSubTuple<T,rank,ranks...>& other)
 {
     for(size_t i=0;i<rank;i++)
@@ -83,29 +93,6 @@ cSubTuple<T,rank,ranks...>& cSubTuple<T,rank,ranks...>::operator=(const cSubTupl
 
     return *this;
 }
-template<typename T, int rank, int ... ranks>
-void cSubTuple<T,rank,ranks...>::print() const
-{
-    for(size_t i=0;i<rank;i++)
-    {
-        m_subTuple[i].print();
-    }
-
-    return;
-}
-template<typename T, int rank, int ... ranks>
-int cSubTuple<T,rank,ranks...>::getRank(int dim, int counter)
-{
-    int res = rank;
-
-    if(dim > counter)
-    {
-        res += m_subTuple[0].getRank(dim,counter+1);
-    }
-
-    return res;
-}
-
 
 template<typename T>
 void cSubTuple<T>::reference_tuple(const cSubTuple<T>& other)
@@ -138,6 +125,30 @@ cSubTuple<T>::operator const T&() const
     return *m_ref;
 }
 template<typename T>
+T& cSubTuple<T>::operator[](size_t index)
+{
+    ASSERT(index==0, "Index out of bounds");
+
+    return *m_ref;
+}
+template<typename T>
+const T& cSubTuple<T>::operator[](size_t index) const
+{
+    ASSERT(index==0, "Index out of bounds");
+
+    return *m_ref;
+}
+template<typename T>
+size_t cSubTuple<T>::getDim() const
+{
+    return 1;
+}
+template<typename T>
+size_t cSubTuple<T>::getRank() const
+{
+    return 1;
+}
+template<typename T>
 cSubTuple<T>& cSubTuple<T>::operator=(const cSubTuple<T>& other)
 {
     if(m_ref && other.m_ref)
@@ -154,12 +165,6 @@ cSubTuple<T>& cSubTuple<T>::operator=(const T& other)
 
     return *this;
 }
-template<typename T>
-int cSubTuple<T>::getRank(int dim, int counter)
-{
-    return 0;
-}
-
 
 template<typename T, int rank, int ... ranks>
 cSubTuple<cSubTuple<T,rank,ranks...> >::cSubTuple()
@@ -196,6 +201,16 @@ SUB_TUPLE(T,ranks) cSubTuple<cSubTuple<T,rank,ranks...> >::operator[](size_t ind
     return res;
 }
 template<typename T, int rank, int ... ranks>
+size_t cSubTuple<cSubTuple<T,rank,ranks...> >::getDim() const
+{
+    return 1 + mpl::get_num_ranks<ranks...>::value;
+}
+template<typename T, int rank, int ... ranks>
+size_t cSubTuple<cSubTuple<T,rank,ranks...> >::getRank() const
+{
+    return rank;
+}
+template<typename T, int rank, int ... ranks>
 cSubTuple<cSubTuple<T,rank,ranks...> >& cSubTuple<cSubTuple<T,rank,ranks...> >::operator=(const cSubTuple<cSubTuple<T,rank,ranks...> >& other)
 {
     m_subTuple = other.m_subTuple;
@@ -223,12 +238,6 @@ void cSubTuple<cSubTuple<T,rank,ranks...> >::reference_tuple(void* ref)
 
     return;
 }
-template<typename T, int rank, int ... ranks>
-int cSubTuple<cSubTuple<T,rank,ranks...> >::getRank(int dim, int counter)
-{
-    return m_subTuple.getRank(dim,counter);
-}
-
 
 template<typename T, int rank, int ... ranks>
 cTupla_impl<T,rank,ranks...>::cTupla_impl()
@@ -355,26 +364,19 @@ bool cTupla_impl<T,rank,ranks...>::operator!=(const cTupla_impl<T,rank,ranks...>
     return !operator==(other);
 }
 template<typename T, int rank, int ... ranks>
-size_t cTupla_impl<T,rank,ranks...>::getDim()
+size_t cTupla_impl<T,rank,ranks...>::getDim() const
 {
     return m_dim;
 }
 template<typename T, int rank, int ... ranks>
-size_t cTupla_impl<T,rank,ranks...>::getTotalRank()
+size_t cTupla_impl<T,rank,ranks...>::getTotalRank() const
 {
     return m_rank;
 }
 template<typename T, int rank, int ... ranks>
-size_t cTupla_impl<T,rank,ranks...>::getRank(int dim)
+size_t cTupla_impl<T,rank,ranks...>::getRank() const
 {
-    int res = rank;
-
-    if(dim > 0)
-    {
-        res += m_subTuple[0].getRank(dim,1);
-    }
-
-    return res;
+    return rank;
 }
 template<typename T, int rank, int ... ranks>
 const typename cTupla_impl<T,rank,ranks...>::primitive_type* cTupla_impl<T,rank,ranks...>::getAsPtr() const
@@ -539,17 +541,17 @@ bool cTupla_impl<T,1>::operator!=(const cTupla_impl<T,1>& other) const
     return m_subTuple!=other.m_subTuple;
 }
 template<typename T>
-size_t cTupla_impl<T,1>::getDim()
+size_t cTupla_impl<T,1>::getDim() const
 {
     return 0;
 }
 template<typename T>
-size_t cTupla_impl<T,1>::getTotalRank()
+size_t cTupla_impl<T,1>::getRank() const
 {
     return 1;
 }
 template<typename T>
-size_t cTupla_impl<T,1>::getRank(int dim)
+size_t cTupla_impl<T,1>::getTotalRank() const
 {
     return 1;
 }

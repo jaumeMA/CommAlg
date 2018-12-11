@@ -35,7 +35,7 @@ public:
     typedef typename base_type::iterable_public_interface iterable_public_interface;
     static const detail::ReferenceCategory category = base_type::category;
 
-    cTupla_interface(){};
+    cTupla_interface() = default;
 
     using base_type::base_type;
     using base_type::operator[];
@@ -43,8 +43,8 @@ public:
     using base_type::operator==;
     using base_type::operator!=;
     using base_type::getDim;
-    using base_type::getTotalRank;
     using base_type::getRank;
+    using base_type::getTotalRank;
     using base_type::getAsPtr;
 
     using base_type::begin;

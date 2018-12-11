@@ -19,12 +19,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 #include "YTL/container/cArray.h"
 #include "YTL/container/cString.h"
 #include "YTL/container/cQueue.h"
+#include "YTL/container/cTupla.h"
 #include "YTL/types/smartPtr/ptr_utils.h"
 #include <SDL/SDL_image.h>
 #include "System/time/cTime.h"
-
-extern inline void *jmalloc(size_t size);
-extern inline void jfree(void* ptr);
 
 namespace yame
 {
@@ -38,11 +36,13 @@ namespace yame
     container::string format(double i_value);
     container::string format(unsigned long i_value);
     container::string format(long i_value);
+    container::string format(const container::string& i_value);
+    template<typename T, typename A>
+    inline container::string format(const container::cArray<T,A>& i_value);
+    template<typename T, int ... ranks>
+    inline container::string format(const container::detail::cSubTuple<T,ranks...>& i_value);
+    template<typename T, int ... ranks>
+    inline container::string format(const container::cTupla<T,ranks...>& i_value);
 }
 
-#define START_TIME_PROFILE() \
-   u32 _startTicks = yame::time::getTicks();
-
-#define STOP_TIME_PROFILE() \
-    u32 _stopTicks = yame::time::getTicks() - _startTicks; \
-    print("elapsed ticks: %d\n",_stopTicks);
+#include "Utils/detail/engine.tpp"
