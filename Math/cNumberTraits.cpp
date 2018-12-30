@@ -43,10 +43,10 @@ void RationalSetTraits::assign(underlying_type& o_value, const underlying_type& 
 {
     mpq_set(o_value, i_value);
 }
-void RationalSetTraits::assign(underlying_type& o_value, const rationalPair& i_value)
-{
-    mpq_set_si(o_value, i_value[0], i_value[1]);
-}
+//void RationalSetTraits::assign(underlying_type& o_value, const rationalPair& i_value)
+//{
+//    mpq_set_si(o_value, i_value[0], i_value[1]);
+//}
 bool RationalSetTraits::cmp(const underlying_type& i_lhs, const underlying_type& i_rhs)
 {
     return mpq_cmp(i_lhs, i_rhs) == 0;

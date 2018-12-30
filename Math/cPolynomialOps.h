@@ -60,9 +60,9 @@ inline yame::container::cArray<yame::math::polynomial<T,A>> grobnerBase(const ya
 template<size_t ... Components, typename T, template<typename> class A>
 inline container::cTupla<polynomial<T,A>, mpl::get_num_ranks<Components...>::value> derivative(const polynomial<T,A>& i_poly);
 
-template<typename Im, typename Dom, template<typename> class A = memory::cTypedSystemAllocator>
+template<typename Im, typename Dom, typename Function, template<typename> class A = memory::cTypedSystemAllocator>
 requires ( math::is_module<Im>::value && requires { Im::dimension(); } && math::is_vector_space<Dom>::value && math::is_metric_space<Dom>::value )
-inline auto taylorSeries(const cFunctionSpace<Im,Dom>& i_function, const Dom& i_point);
+inline auto taylorSeries(const cFunctionSpace<Im,Dom,Function>& i_function, const Dom& i_point);
 
 template<typename T>
 inline yame::math::polynomial<T> operator+(const yame::math::cMonomial<T>& i_lhs, const yame::math::cMonomial<T>& i_rhs);

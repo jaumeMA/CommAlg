@@ -243,10 +243,11 @@ inline typename cRandomAccessIterator<T>::difference_type distance(cRandomAccess
     return itEnd - itInit;
 }
 
-template<typename Iterator>
-inline Iterator initialize(Iterator& itInit, Iterator& itEnd, const std::initializer_list<typename Iterator::value_type>& i_initializerList)
+template<typename Iterator, typename Value>
+requires ( mpl::is_constructible<typename Iterator::value_type,Value>::value )
+inline Iterator initialize(Iterator& itInit, Iterator& itEnd, const std::initializer_list<Value>& i_initializerList)
 {
-    const typename Iterator::value_type* currElem = i_initializerList.begin();
+    const Value* currElem = i_initializerList.begin();
 
     for(;currElem!=i_initializerList.end() && itInit!=itEnd;++currElem,++itInit)
     {
@@ -547,13 +548,15 @@ inline typename T::difference_type distance(T itInit, T itEnd)
 {
     return container::detail::distance(itInit, itEnd);
 }
-template<typename T>
-inline T initialize(T itInit, T itEnd, const std::initializer_list<typename T::value_type>& i_initializerList)
+template<typename Iterator, typename Value>
+requires ( mpl::is_constructible<typename Iterator::value_type,Value>::value )
+inline Iterator initialize(Iterator itInit, Iterator itEnd, const std::initializer_list<Value>& i_initializerList)
 {
     return container::detail::initialize(itInit, itEnd, i_initializerList);
 }
-template<typename Iterator>
-inline typename Iterator::iterator_type initialize(container::detail::cConstIterableBase<Iterator>& iterable, const std::initializer_list<typename Iterator::value_type>& i_initializerList)
+template<typename Iterator, typename Value>
+requires ( mpl::is_constructible<typename Iterator::value_type,Value>::value )
+inline typename Iterator::iterator_type initialize(container::detail::cConstIterableBase<Iterator>& iterable, const std::initializer_list<Value>& i_initializerList)
 {
     typename Iterator::iterator_type itInit = iterable.begin();
     typename Iterator::iterator_type itEnd = iterable.end();

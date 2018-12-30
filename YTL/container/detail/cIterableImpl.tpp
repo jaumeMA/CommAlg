@@ -14,7 +14,7 @@ cConstIterableImpl<Traits,mpl::sequence<indexs...>>::cConstIterableImpl(const It
 {
     static_assert(iterable_category_compliant<void, Iterables::category ...>::value, "You have to follow category rules for iterables, look .h file for more details");
     static_assert(iterable_constness_compliant<void, Iterables...>::value, "You cannot have non const iterables with const nested iterables");
-    bool circularDepDetected = iterable_circular_dep_compliant<void,Iterables...>::checkCircularDep(*this, i_iterables...);
+    const bool circularDepDetected = iterable_circular_dep_compliant<void,Iterables...>::checkCircularDep(*this, i_iterables...);
     ASSERT(circularDepDetected == false, "Circular dependency detected in nested iterables");
 }
 template<typename Traits, int ... indexs>

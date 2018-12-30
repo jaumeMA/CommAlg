@@ -18,13 +18,13 @@ container::string format(const math::Complex& i_value)
 {
     math::complexPair thisValue = i_value.get_raw();
 
-    return container::string::Format("%f + %fi", thisValue[0], thisValue[1]);
+    return container::string::Format("(%f + %fi)", thisValue[0], thisValue[1]);
 }
 container::string format(const math::Quaternion& i_value)
 {
     math::quaternionQuartet thisValue = i_value.get_raw();
 
-    return container::string::Format("%f + %fi + %fj + %fk", thisValue[0], thisValue[1], thisValue[2], thisValue[3]);
+    return container::string::Format("(%f + %fi + %fj + %fk)", thisValue[0], thisValue[1], thisValue[2], thisValue[3]);
 }
 
 }

@@ -53,18 +53,41 @@ struct is_local_invariant<T,TT...>
 };
 
 template<typename>
-struct is_function;
+struct _is_function;
 
 template<typename>
-struct is_function
+struct _is_function
 {
     static const bool value = false;
 };
 
 template<typename Return,typename ... Types>
-struct is_function<ytl::function<Return(Types...)>>
+struct _is_function<ytl::function<Return(Types...)>>
 {
     static const bool value = true;
+};
+
+template<typename Function>
+struct is_function
+{
+    static const bool value = _is_function<typename mpl::drop_constness<typename mpl::drop_reference<Function>::type>::type>::value;
+};
+
+template<typename Return, typename ... Types>
+inline constexpr bool _is_base_of_function(const ytl::function<Return,Types...>*)
+{
+    return true;
+}
+
+inline constexpr bool _is_base_of_function(...)
+{
+    return false;
+}
+
+template<typename Function>
+struct is_base_of_function
+{
+    static const bool value = _is_base_of_function(mpl::instantiatePointer<const Function>::value);
 };
 
 template<template <typename...> class M, typename Return, typename Type, int Dimension>
@@ -81,7 +104,7 @@ struct _homogeneous_callable
 {
 
 template<typename ... TTypes>
-static M<Return(TTypes...,typename add_reference<typename add_constness<Type>::type>::type)> addType(const M<Return(TTypes...)>&);
+static M<Return(TTypes...,Type)> addType(const M<Return(TTypes...)>&);
 
 typedef decltype(addType(*reinterpret_cast<const typename _homogeneous_callable<M,Return,Type,Dimension-1>::type*>(0))) type;
 };

@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 #include "YTL/mpl/cTemplateHelper.h"
 #include "YTL/container/cIterableBase.h"
 #include "YTL/container/cContainerView.h"
+#include "YTL/container/detail/cTuplaTemplateHelper.h"
 #include <initializer_list>
 
 #define SIGNATURE(T,dim) typename yame::mpl::create_function_signature<T,dim>::template is<>::type
@@ -50,41 +51,46 @@ class cSubTuple;
 template<typename T, int rank, int ... ranks>
 class cSubTuple<T,rank,ranks...>
 {
+    template<typename TT, int ... rranks>
+    friend class cTupla_impl;
+    template<typename TT, int ... rranks>
+    friend class cSubTuple;
+
 public:
+    cSubTuple<T,rank,ranks...>();
+    cSubTuple<T,rank,ranks...>(const cSubTuple<T,rank,ranks...>& other);
+    cSubTuple<T,rank,ranks...>(const cTupla_impl<T,rank,ranks...>& other);
+    cSubTuple<T,rank,ranks...>(void *ref);
+    void reference_tuple(const cSubTuple<T,rank,ranks...>& other);
+    void reference_tuple(void* ref);
+    SUB_TUPLE(T,ranks)& operator[](size_t index);
+    const SUB_TUPLE(T,ranks)& operator[](size_t index) const;
+    size_t getDim() const;
+    size_t getRank() const;
+    cSubTuple<T,rank,ranks...>& operator=(const cSubTuple<T,rank,ranks...>& other);
+    template<typename TT>
+    requires ( mpl::is_constructible<T,TT>::value )
+    cSubTuple<T,rank,ranks...>& operator=(const cSubTuple<TT,rank,ranks...>& other);
+    cSubTuple<T,rank,ranks...>& operator=(const cTupla_impl<T,rank,ranks...>& other);
+
+private:
     cSubTuple<T,ranks...>   m_subTuple[rank];
     static const size_t m_rank=mpl::Prod<rank,ranks...>::value;
     DEFINE_PRIMITIVE_TYPE(T);
     DEFINE_BASE_TYPE(T);
-
-public:
-    void reference_tuple(const cSubTuple<T,rank,ranks...>& other);
-    void reference_tuple(void* ref);
-
-public:
-    cSubTuple<T,rank,ranks...>();
-    cSubTuple<T,rank,ranks...>(const cSubTuple<T,rank,ranks...>& other)=delete;
-    cSubTuple<T,rank,ranks...>(const cTupla_impl<T,rank,ranks...>& other);
-    cSubTuple<T,rank,ranks...>(void *ref);
-    SUB_TUPLE(T,ranks)& operator[](size_t index);
-    SUB_TUPLE(T,ranks) operator[](size_t index) const;
-    size_t getDim() const;
-    size_t getRank() const;
-    cSubTuple<T,rank,ranks...>& operator=(const cSubTuple<T,rank,ranks...>& other);
 };
 
 template<typename T>
 class cSubTuple<T>
 {
-public:
-    T                       *m_ref;
-    DEFINE_PRIMITIVE_TYPE(T);
-    DEFINE_BASE_TYPE(T);
+    template<typename TT, int ... rranks>
+    friend class cTupla_impl;
 
 public:
     void reference_tuple(const cSubTuple<T>& other);
     void reference_tuple(void* ref);
     cSubTuple<T>();
-    cSubTuple<T>(const cSubTuple<T>& other)=delete;
+    cSubTuple<T>(const cSubTuple<T>& other);
     explicit cSubTuple<T>(void *ref);
     operator T&();
     operator const T&() const;
@@ -94,32 +100,39 @@ public:
     const T& operator[](size_t index) const;
     size_t getDim() const;
     size_t getRank() const;
+
+private:
+    T                       *m_ref;
+    DEFINE_PRIMITIVE_TYPE(T);
+    DEFINE_BASE_TYPE(T);
 };
 
 //specialization for nested tuples
 template<typename T, int rank, int ... ranks>
 class cSubTuple<cSubTuple<T,rank,ranks...> >
 {
-public:
-    cSubTuple<T,rank,ranks...>   m_subTuple;
-    DEFINE_PRIMITIVE_TYPE(T);
-    DEFINE_BASE_TYPE(T);
+    template<typename TT, int ... rranks>
+    friend class cTupla_impl;
 
 public:
-    void reference_tuple(const cSubTuple<cSubTuple<T,rank,ranks...> >& other);
-    void reference_tuple(void* ref);
-public:
     cSubTuple();
-    cSubTuple(const cSubTuple<cSubTuple<T,rank,ranks...> >& other)=delete;
+    void reference_tuple(const cSubTuple<cSubTuple<T,rank,ranks...> >& other);
+    cSubTuple(const cSubTuple<cSubTuple<T,rank,ranks...> >& other) = delete;
     explicit cSubTuple(void *ref);
     operator cSubTuple<T,rank,ranks...>&();
     operator const cSubTuple<T,rank,ranks...>&() const;
+    void reference_tuple(void* ref);
     SUB_TUPLE(T,ranks)& operator[](size_t index);
-    SUB_TUPLE(T,ranks) operator[](size_t index) const;
+    const SUB_TUPLE(T,ranks)& operator[](size_t index) const;
     size_t getDim() const;
     size_t getRank() const;
     cSubTuple<cSubTuple<T,rank,ranks...> >& operator=(const cSubTuple<cSubTuple<T,rank,ranks...> >& other);
     cSubTuple<cSubTuple<T,rank,ranks...> >& operator=(const cSubTuple<T,rank,ranks...>& other);
+
+private:
+    cSubTuple<T,rank,ranks...>   m_subTuple;
+    DEFINE_PRIMITIVE_TYPE(T);
+    DEFINE_BASE_TYPE(T);
 };
 
 
@@ -154,6 +167,11 @@ class cTupla_impl<T,rank,ranks...> : public cTuplaStorage<T,PROD_RANKS(rank,rank
 
     using cTuplaStorage<T,PROD_RANKS(rank,ranks)>::isAddressInside;
 
+    template<typename TT, int ... rranks>
+    friend class cTupla_impl;
+    template<typename TT, int ... rranks>
+    friend class cSubTuple;
+
 public:
     typedef T value_type;
     typedef detail::cConstRandomAccessIterableBaseImpl<T&> iterable_type;
@@ -167,18 +185,20 @@ public:
 
     cTupla_impl();
     cTupla_impl(T *values);
-    template<typename ... Args>
-    cTupla_impl(const T& arg, Args&& ... i_args);
-    template<typename ... Args>
-    cTupla_impl(T&& arg, Args&& ... i_args);
     cTupla_impl(const cTupla_impl<T,rank,ranks...>& other);
     cTupla_impl(const cSubTuple<T,rank,ranks...>& other);
+    template<typename TT>
+    requires (mpl::is_constructible<T,TT>::value )
+    cTupla_impl(const cTupla_impl<TT,rank,ranks...>& other);
     template<typename TT>
     cTupla_impl(const std::initializer_list<TT>& i_tupleList);
     ~cTupla_impl();
     SUB_TUPLE(T,ranks)& operator[](size_t index);
     const SUB_TUPLE(T,ranks)& operator[](size_t index) const;
     cTupla_impl<T,rank,ranks...>& operator=(const cTupla_impl<T,rank,ranks...>& other);
+    template<typename TT>
+    requires (mpl::is_constructible<T,TT>::value )
+    cTupla_impl<T,rank,ranks...>& operator=(const cTupla_impl<TT,rank,ranks...>& other);
     bool operator==(const cTupla_impl<T,rank,ranks...>& other) const;
     bool operator!=(const cTupla_impl<T,rank,ranks...>& other) const;
     size_t getDim() const;
@@ -186,9 +206,9 @@ public:
     size_t getTotalRank() const;
     const primitive_type* getAsPtr() const;
     template<int Index, int ... Indexs>
-    T& get();
+    SUB_TUPLE(T,ranks)& get();
     template<int Index, int ... Indexs>
-    const T& get() const;
+    const SUB_TUPLE(T,ranks)& get() const;
 
     //const iterable implementation
     size_t getSize() const override;
@@ -237,6 +257,7 @@ public:
     cTupla_impl();
     cTupla_impl(T value);
     cTupla_impl(const cTupla_impl<T,1>& other);
+    cTupla_impl(const cSubTuple<T,1>& other);
     template<typename TT>
     cTupla_impl(const std::initializer_list<TT>& i_tupleList);
     T& operator[](size_t index);

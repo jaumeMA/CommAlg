@@ -142,11 +142,11 @@ public:
 template<module_traits_type Traits, typename FinalObject>
 class cModuleImpl : public cGroupImpl<typename Traits::group_traits,FinalObject>, public inherit_extended_structure<Traits>::type, public module_tag
 {
-	typedef typename Traits::ring ring;
 protected:
     typedef typename cGroupImpl<typename Traits::group_traits,FinalObject>::set_traits set_traits;
 public:
     typedef Traits traits;
+	typedef typename traits::ring ring;
     typedef cGroupImpl<typename Traits::group_traits,FinalObject> group;
     using cGroupImpl<typename Traits::group_traits,FinalObject>::cGroupImpl;
 	using cGroupImpl<typename Traits::group_traits,FinalObject>::operator=;

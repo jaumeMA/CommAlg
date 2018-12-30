@@ -106,15 +106,16 @@ public:
     : function<Return(Types...)>([i_constantValue](Types ... i_args) { return i_constantValue; })
     {}
 };
+
 template<typename>
-class identity_function;
+class projection_function;
 
 template<typename Return, typename ... Types>
-class identity_function<function<Return(Types...)>> : public function<Return(Types...)>
+class projection_function<function<Return(Types...)>> : public function<Return(Types...)>
 {
 public:
     template<size_t Component>
-    identity_function(const mpl::numeric_type<Component>&)
+    projection_function(const mpl::numeric_type<Component>&)
     : function<Return(Types...)>([](Types ... i_args){ return Return(mpl::nth_val_of<Component>(mpl::forward<Types>(i_args)...));})
     , m_component(Component)
     {}
@@ -133,31 +134,6 @@ inline yame::ytl::curried_function<Return>& operator<<(yame::ytl::curried_functi
 
 template<typename Return, typename Type, typename ... Types>
 inline yame::ytl::curried_function<Return,Type,Types...>& operator<<(yame::ytl::curried_function<Return,Type,Types...>& i_lhs, const yame::ytl::function<Return(Type,Types...)>& i_rhs);
-
-//add the algebra of functions
-//template<typename Return, typename ... Types>
-//inline yame::ytl::function<Return(Types...)> operator*(const Return& i_lhs, const yame::ytl::function<Return(Types...)>& i_rhs);
-//
-//template<typename Return, typename ... Types>
-//inline yame::ytl::function<Return(Types...)> operator*(const yame::ytl::function<Return(Types...)>& i_lhs, const Return& i_rhs);
-//
-//template<typename Return, typename ... Types>
-//inline yame::ytl::function<Return(Types...)> operator+(const Return& i_lhs, const yame::ytl::function<Return(Types...)>& i_rhs);
-//
-//template<typename Return, typename ... Types>
-//inline yame::ytl::function<Return(Types...)> operator+(const yame::ytl::function<Return(Types...)>& i_lhs, const Return& i_rhs);
-//
-//template<typename Return, typename ... Types>
-//inline yame::ytl::function<Return(Types...)> operator-(const Return& i_lhs, const yame::ytl::function<Return(Types...)>& i_rhs);
-//
-//template<typename Return, typename ... Types>
-//inline yame::ytl::function<Return(Types...)> operator-(const yame::ytl::function<Return(Types...)>& i_lhs, const Return& i_rhs);
-//
-//template<typename Return, typename ... Types>
-//inline yame::ytl::function<Return(Types...)> operator/(const Return& i_lhs, const yame::ytl::function<Return(Types...)>& i_rhs);
-//
-//template<typename Return, typename ... Types>
-//inline yame::ytl::function<Return(Types...)> operator/(const yame::ytl::function<Return(Types...)>& i_lhs, const Return& i_rhs);
 
 }
 }

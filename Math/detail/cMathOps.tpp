@@ -31,7 +31,7 @@ scalar_function<Im,Dom> derivative(const Dom& i_direction, const scalar_function
 template<int Component, int ... Components, module_type Im, vector_space_type Dom>
 vector_function<Im,Dom> derivative(const mpl::sequence<Components...>&, const vector_function<Im,Dom>& i_function)
 {
-    return vector_function<Im,Dom>(detail::derivative_helper::derivative<Component>(i_function.template get<Components>()) ...);
+    return vector_function<Im,Dom>({detail::derivative_helper::derivative<Component>(i_function.template get<Components>()) ...});
 }
 
 template<int ... Components, int ... CComponents, module_type Im, vector_space_type Dom>
@@ -68,17 +68,17 @@ vector_function<Im,Dom> derivative(const Dom& i_direction, const vector_function
 
 }
 
-template<int ... Components, module_type Im, vector_space_type Dom>
-container::cTupla<cFunctionSpace<Im,Dom>,mpl::get_num_ranks<Components...>::value> derivative(const cFunctionSpace<Im,Dom>& i_function)
+template<int ... Components, module_type Im, vector_space_type Dom, callable_type Function>
+container::cTupla<cFunctionSpace<Im,Dom,Function>,mpl::get_num_ranks<Components...>::value> derivative(const cFunctionSpace<Im,Dom,Function>& i_function)
 {
     static_assert(mpl::get_num_ranks<Components...>::value <= Dom::dimension(), "Deriving more than can be done");
     static_assert(mpl::check_monotonic_range<Components...>::cond, "You shall provide a monotonically increasing components");
 
-    return { cFunctionSpace<Im,Dom>(detail::derivative<Components>(typename mpl::create_range_rank<0,Im::dimension()>::type{},i_function.getValue())) ... };
+    return { cFunctionSpace<Im,Dom,Function>(detail::derivative<Components>(typename mpl::create_range_rank<0,Im::dimension()>::type{},i_function.getValue())) ... };
 }
 
-template<module_type Im, vector_space_type Dom>
-cFunctionSpace<Im,Dom> derivative(const Dom& i_direction, const cFunctionSpace<Im,Dom>& i_function)
+template<module_type Im, vector_space_type Dom, callable_type Function>
+cFunctionSpace<Im,Dom,Function> derivative(const Dom& i_direction, const cFunctionSpace<Im,Dom,Function>& i_function)
 {
     return detail::derivative(typename mpl::create_range_rank<0,Im::dimension()>::type{},i_direction, i_function.getValue());
 }

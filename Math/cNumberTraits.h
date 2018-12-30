@@ -20,7 +20,6 @@ struct ExtendedRationalSet : virtual public detail::ISet<Traits>
     rationalPair get_raw() const;
     int numerator() const;
     int denominator() const;
-    detail::ISet<Traits>& operator=(const rationalPair& i_value);
 };
 
 struct RationalSetTraits
@@ -33,7 +32,6 @@ struct RationalSetTraits
 	static void init(underlying_type& o_value, int i_numerator, unsigned int i_denominator);
 	static void deinit(underlying_type& o_value);
     static void assign(underlying_type& o_value, const underlying_type& i_value);
-    static void assign(underlying_type& o_value, const rationalPair& i_value);
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);
 };
 
@@ -178,7 +176,6 @@ struct ExtendedComplexSet : virtual public detail::ISet<Traits>
 {
     typedef complexPair raw_type;
     complexPair get_raw() const;
-    detail::ISet<Traits>& operator=(const complexPair& i_value);
     double real() const;
     double imag() const;
 };
@@ -201,11 +198,10 @@ struct ComplexSetTraits
 
 	static void init(underlying_type& o_value);
 	static void init(underlying_type& o_value, const underlying_type& i_value);
-	static void init(underlying_type& o_value, double real, double imag);
-	static void init(underlying_type& o_value, double real);
+	static void init(underlying_type& o_value, double real, double imag = 0.f);
 	static void deinit(underlying_type& o_value);
     static void assign(underlying_type& o_value, const underlying_type& i_value);
-    static void assign(underlying_type& o_value, const complexPair& i_value);
+    static void assign(underlying_type& o_value, double real, double imag = 0.f);
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);
     static void conjugate(underlying_type& o_value, const underlying_type& i_value);
 };
@@ -282,7 +278,6 @@ struct ExtendedQuaternionSet : virtual public detail::ISet<Traits>
 {
     typedef quaternionQuartet raw_type;
     quaternionQuartet get_raw() const;
-    detail::ISet<Traits>& operator=(const quaternionQuartet& i_value);
     double n_part() const;
     double i_part() const;
     double j_part() const;
@@ -307,10 +302,10 @@ struct QuaternionSetTraits
 
 	static void init(underlying_type& o_value);
 	static void init(underlying_type& o_value, const underlying_type& i_value);
-	static void init(underlying_type& o_value, double i_n, double i_i, double i_j, double i_k);
+	static void init(underlying_type& o_value, double i_n, double i_i = 0.f, double i_j = 0.f, double i_k = 0.f);
 	static void deinit(underlying_type& o_value);
     static void assign(underlying_type& o_value, const underlying_type& i_value);
-    static void assign(underlying_type& o_value, const quaternionQuartet& i_value);
+    static void assign(underlying_type& o_value, double i_n, double i_i = 0.f, double i_j = 0.f, double i_k = 0.f);
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);
     void conjugate(underlying_type& res, const underlying_type& i_quat);
 };

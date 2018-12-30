@@ -71,6 +71,11 @@ const typename VectorSpaceExtendedAccess<Traits>::particle& VectorSpaceExtendedA
 
     return thisValue.get<Indexs...>();
 }
+template<typename Traits>
+VectorSpaceExtendedAccess<Traits>::operator const underlying_type&() const
+{
+    return this->getValue();
+}
 
 template<set_type V, int N>
 void cVectorSpaceSetTraits<V,N>::init(underlying_type& o_value)
@@ -87,6 +92,7 @@ void cVectorSpaceSetTraits<V,N>::init(underlying_type& o_value, const underlying
 }
 template<set_type V, int N>
 template<typename ... Args>
+requires ( mpl::are_constructible<V,Args...>::value )
 void cVectorSpaceSetTraits<V,N>::init(underlying_type& o_value, Args&& ... i_args)
 {
     std::initializer_list<V> vals({ V(mpl::forward<Args>(i_args)) ... });
@@ -144,12 +150,14 @@ void cVectorSpaceGroupTraits<V,N>::inv(underlying_type& o_res, const underlying_
 template<ring_type F, group_type V, int N>
 typename cVectorSpaceModuleTraits<F,V,N>::underlying_type cVectorSpaceModuleTraits<F,V,N>::base(size_t i_index)
 {
-    underlying_type res = 0;
+    underlying_type res;
 
     for(size_t index=0;index<N;++index)
     {
         res[index] = V::group::neutral_element();
     }
+
+    res[i_index] = F::neutral_element();
 
     return res;
 }
@@ -192,16 +200,31 @@ double cVectorSpaceMetricSpaceTraits<V,N>::distance(const typename cVectorSpaceS
     }
 }
 
+template<typename Traits>
+typename MatrixVectorSpaceExtendedAccess<Traits>::particle MatrixVectorSpaceExtendedAccess<Traits>::operator[](size_t i_index) const
+{
+    const underlying_type& thisValue = this->getValue();
+
+    return thisValue[i_index];
+}
+template<typename Traits>
+template<int Index>
+typename MatrixVectorSpaceExtendedAccess<Traits>::particle MatrixVectorSpaceExtendedAccess<Traits>::get() const
+{
+    const underlying_type& thisValue = this->getValue();
+
+    return thisValue[Index];
+}
+template<typename Traits>
+MatrixVectorSpaceExtendedAccess<Traits>::operator const typename MatrixVectorSpaceExtendedAccess<Traits>::underlying_type&() const
+{
+    return this->getValue();
+}
+
 template<set_type V, int N, int M>
 void cMatrixVectorSpaceSetTraits<V,N,M>::init(underlying_type& o_value)
 {
-    for(size_t indexI=0;indexI<N;++indexI)
-    {
-        for(size_t indexJ=0;indexJ<M;++indexJ)
-        {
-            V::Traits::init(o_value[indexI][indexJ]);
-        }
-    }
+    //already handled by V
 }
 template<set_type V, int N, int M>
 void cMatrixVectorSpaceSetTraits<V,N,M>::init(underlying_type& o_value, const underlying_type& i_value)
@@ -216,28 +239,31 @@ void cMatrixVectorSpaceSetTraits<V,N,M>::init(underlying_type& o_value, const un
 }
 template<set_type V, int N, int M>
 template<typename ... Args>
+requires ( mpl::get_num_types<Args...>::value == N && mpl::are_type_of<is_vector_space,Args...>::value )
 void cMatrixVectorSpaceSetTraits<V,N,M>::init(underlying_type& o_value, Args&& ... i_args)
 {
-    std::initializer_list<V> vals({ mpl::forward<Args>(i_args) ... });
+    size_t indexI = 0;
+    const auto res = { o_value[indexI++] = i_args ...};
+}
+template<set_type V, int N, int M>
+template<typename ... Args>
+requires ( mpl::get_num_types<Args...>::value == N*M && mpl::are_constructible<V,Args...>::value )
+void cMatrixVectorSpaceSetTraits<V,N,M>::init(underlying_type& o_value, Args&& ... i_args)
+{
+    const V vals[mpl::get_num_types<Args...>::value] = { i_args ...};
 
     for(size_t indexI=0;indexI<N;++indexI)
     {
         for(size_t indexJ=0;indexJ<M;++indexJ)
         {
-            V::Traits::init(o_value[indexI][indexJ], vals[indexI*N + indexJ]);
+            o_value[indexI][indexJ] = vals[indexI*M + indexJ];
         }
     }
 }
 template<set_type V, int N, int M>
 void cMatrixVectorSpaceSetTraits<V,N,M>::deinit(underlying_type& o_value)
 {
-    for(size_t indexI=0;indexI<N;++indexI)
-    {
-        for(size_t indexJ=0;indexJ<M;++indexJ)
-        {
-            V::Traits::deinit(o_value[indexI][indexJ]);
-        }
-    }
+    //done by destructor of V
 }
 template<set_type V, int N, int M>
 void cMatrixVectorSpaceSetTraits<V,N,M>::assign(underlying_type& o_value, const underlying_type& i_value)
@@ -300,6 +326,23 @@ void cMatrixVectorSpaceGroupTraits<V,N,M>::inv(underlying_type& o_res, const und
     }
 }
 
+template<ring_type F, group_type V, int N,int M>
+typename cMatrixVectorSpaceModuleTraits<F,V,N,M>::underlying_type cMatrixVectorSpaceModuleTraits<F,V,N,M>::base(size_t i_index)
+{
+    underlying_type res;
+
+    for(size_t indexI=0;indexI<N;++indexI)
+    {
+        for(size_t indexJ;indexJ<M;++indexJ)
+        {
+            res[indexI][indexJ] = V::group::neutral_element();
+        }
+    }
+
+    res[i_index / N][i_index%N] = F::neutral_element();
+
+    return res;
+}
 template<ring_type F, group_type V, int N,int M>
 void cMatrixVectorSpaceModuleTraits<F,V,N,M>::modProd(underlying_type& o_res, const ring& i_lhs, const underlying_type& i_rhs)
 {

@@ -87,7 +87,7 @@ scalar_function<Im,Dom> derivative_helper::derivative(const mpl::sequence<Indexs
         return i_direction * vector<Im,Dimension>(mpl::forward<Im>(i_args) ...);
     };
 
-    return yame::ytl::composed_callable<decltype(derivativeTransform),const typename mpl::transform_index_type<Indexs>::template to<Im>::type& ...>(derivativeTransform, derivative<Indexs>(i_function) ...);
+    return yame::ytl::composed_callable<decltype(derivativeTransform),typename mpl::transform_index_type<Indexs>::template to<Im>::type ...>(derivativeTransform, derivative<Indexs>(i_function) ...);
 }
 
 template<int Component,ring_type Im, vector_space_type Dom, int DDimension,int ... DerivativeIndexs,typename Return,typename ... Types>
@@ -157,9 +157,9 @@ scalar_function<Im,Dom> identity_derivative_helper::get_custom_derivative(const 
     static const int Dimension = Dom::dimension();
     typedef typename Dom::particle underlying_type;
 
-    if(const detail::functor_impl<projection<Im,Dom>,Im,Dom>* functor = rtti::dynamicCast<const detail::functor_impl<projection<Im,Dom>,Im,Dom>>(i_function.template getFuncPtr()))
+    if(const detail::functor_impl<projection_function<Im,Dom>,Im,Dom>* functor = rtti::dynamicCast<const detail::functor_impl<projection_function<Im,Dom>,Im,Dom>>(i_function.template getFuncPtr()))
     {
-        const projection<Im,Dom>& identityCallable = functor->getCallable();
+        const projection_function<Im,Dom>& identityCallable = functor->getCallable();
 
         return (identityCallable.getComponent() == Component) ? constant_function<Im,Dom>(Im::neutral_element()) : constant_function<Im,Dom>(Im::group::neutral_element());
     }
@@ -283,7 +283,7 @@ scalar_function<Im,Dom> div_derivative_helper::get_custom_derivative(const scala
 template<int Component>
 scalar_function<Real,R1> sin_derivative_helper::get_custom_derivative(const scalar_function<Real,R1>& i_function)
 {
-    static Real(*const addr)(const Real&) = &sin;
+    static Real(*const addr)(Real) = &sin;
 
     if(const detail::free_function_impl<Real,R1>* func = rtti::dynamicCast<const detail::free_function_impl<Real,R1>>(i_function.getFuncPtr()))
     {
@@ -298,7 +298,7 @@ scalar_function<Real,R1> sin_derivative_helper::get_custom_derivative(const scal
 template<int Component>
 scalar_function<Complex,C1> sin_derivative_helper::get_custom_derivative(const scalar_function<Complex,C1>& i_function)
 {
-    static Complex(*const addr)(const Complex&) = &sin;
+    static Complex(*const addr)(Complex) = &sin;
 
     if(const detail::free_function_impl<Complex,C1>* func = rtti::dynamicCast<const detail::free_function_impl<Complex,C1>>(i_function.getFuncPtr()))
     {
@@ -314,7 +314,7 @@ scalar_function<Complex,C1> sin_derivative_helper::get_custom_derivative(const s
 template<int Component>
 scalar_function<Real,R1> cos_derivative_helper::get_custom_derivative(const scalar_function<Real,R1>& i_function)
 {
-    static Real(*const addr)(const Real&) = &cos;
+    static Real(*const addr)(Real) = &cos;
 
     if(const detail::free_function_impl<Real,R1>* func = rtti::dynamicCast<const detail::free_function_impl<Real,R1>>(i_function.getFuncPtr()))
     {
@@ -329,7 +329,7 @@ scalar_function<Real,R1> cos_derivative_helper::get_custom_derivative(const scal
 template<int Component>
 scalar_function<Complex,C1> cos_derivative_helper::get_custom_derivative(const scalar_function<Complex,C1>& i_function)
 {
-    static Complex(*const addr)(const Complex&) = &cos;
+    static Complex(*const addr)(Complex) = &cos;
 
     if(const detail::free_function_impl<Complex,C1>* func = rtti::dynamicCast<const detail::free_function_impl<Complex,C1>>(i_function.getFuncPtr()))
     {
@@ -345,7 +345,7 @@ scalar_function<Complex,C1> cos_derivative_helper::get_custom_derivative(const s
 template<int Component>
 scalar_function<Real,R1> tan_derivative_helper::get_custom_derivative(const scalar_function<Real,R1>& i_function)
 {
-    static Real(*const addr)(const Real&) = &tan;
+    static Real(*const addr)(Real) = &tan;
 
     if(const detail::free_function_impl<Real,R1>* func = rtti::dynamicCast<const detail::free_function_impl<Real,R1>>(i_function.getFuncPtr()))
     {
@@ -360,7 +360,7 @@ scalar_function<Real,R1> tan_derivative_helper::get_custom_derivative(const scal
 template<int Component>
 scalar_function<Complex,C1> tan_derivative_helper::get_custom_derivative(const scalar_function<Complex,C1>& i_function)
 {
-    static Complex(*const addr)(const Complex&) = &tan;
+    static Complex(*const addr)(Complex) = &tan;
 
     if(const detail::free_function_impl<Complex,C1>* func = rtti::dynamicCast<const detail::free_function_impl<Complex,C1>>(i_function.getFuncPtr()))
     {
@@ -376,7 +376,7 @@ scalar_function<Complex,C1> tan_derivative_helper::get_custom_derivative(const s
 template<int Component>
 scalar_function<Real,R1> exp_derivative_helper::get_custom_derivative(const scalar_function<Real,R1>& i_function)
 {
-    static Real(*const addr)(const Real&) = &exp;
+    static Real(*const addr)(Real) = &exp;
 
     if(const detail::free_function_impl<Real,R1>* func = rtti::dynamicCast<const detail::free_function_impl<Real,R1>>(i_function.getFuncPtr()))
     {
@@ -391,7 +391,7 @@ scalar_function<Real,R1> exp_derivative_helper::get_custom_derivative(const scal
 template<int Component>
 scalar_function<Complex,C1> exp_derivative_helper::get_custom_derivative(const scalar_function<Complex,C1>& i_function)
 {
-    static Complex(*const addr)(const Complex&) = &exp;
+    static Complex(*const addr)(Complex) = &exp;
 
     if(const detail::free_function_impl<Complex,C1>* func = rtti::dynamicCast<const detail::free_function_impl<Complex,C1>>(i_function.getFuncPtr()))
     {
@@ -407,14 +407,14 @@ scalar_function<Complex,C1> exp_derivative_helper::get_custom_derivative(const s
 template<int Component>
 scalar_function<Real,R1> log_derivative_helper::get_custom_derivative(const scalar_function<Real,R1>& i_function)
 {
-    typedef ytl::function<Real(const Real&)> real_function;
-    static Real(*const addr)(const Real&) = &log;
+    typedef ytl::function<Real(Real)> real_function;
+    static Real(*const addr)(Real) = &log;
 
     if(const detail::free_function_impl<Real,R1>* func = rtti::dynamicCast<const detail::free_function_impl<Real,R1>>(i_function.getFuncPtr()))
     {
         if(func->getFuncAddr() == addr)
         {
-            return constant_function<Real,R1>(Real::ring::neutral_element()) / projection<Real,R1>(mpl::numeric_type<0>{});
+            return constant_function<Real,R1>(Real::ring::neutral_element()) / projection_function<Real,R1>(mpl::numeric_type<0>{});
         }
     }
 
@@ -423,14 +423,14 @@ scalar_function<Real,R1> log_derivative_helper::get_custom_derivative(const scal
 template<int Component>
 scalar_function<Complex,C1> log_derivative_helper::get_custom_derivative(const scalar_function<Complex,C1>& i_function)
 {
-    typedef ytl::function<Complex(const Complex&)> complex_function;
-    static Complex(*const addr)(const Complex&) = &log;
+    typedef ytl::function<Complex(Complex)> complex_function;
+    static Complex(*const addr)(Complex) = &log;
 
     if(const detail::free_function_impl<Complex,C1>* func = rtti::dynamicCast<const detail::free_function_impl<Complex,C1>>(i_function.getFuncPtr()))
     {
         if(func->getFuncAddr() == addr)
         {
-            return constant_function<Complex,C1>(Complex::ring::neutral_element()) / projection<Complex,C1>(mpl::numeric_type<0>{});
+            return constant_function<Complex,C1>(Complex::ring::neutral_element()) / projection_function<Complex,C1>(mpl::numeric_type<0>{});
         }
     }
 

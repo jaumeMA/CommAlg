@@ -324,9 +324,9 @@ container::cTupla<polynomial<T,A>, mpl::get_num_ranks<Components...>::value> der
     return { polynomial<T,A>(detail::derivative<Components>(i_poly.get_raw())) ...};
 }
 
-template<typename Im, typename Dom, template<typename> class A = memory::cTypedSystemAllocator>
+template<typename Im, typename Dom, typename Function, template<typename> class A = memory::cTypedSystemAllocator>
 requires ( math::is_module<Im>::value && requires { Im::dimension(); } && math::is_vector_space<Dom>::value && math::is_metric_space<Dom>::value )
-auto taylorSeries(const cFunctionSpace<Im,Dom>& i_function, const Dom& i_point)
+auto taylorSeries(const cFunctionSpace<Im,Dom,Function>& i_function, const Dom& i_point)
 {
     return detail::_taylorSeries(typename mpl::create_range_rank<0,Im::dimension()>::type{},i_function.getValue(),i_point);
 }

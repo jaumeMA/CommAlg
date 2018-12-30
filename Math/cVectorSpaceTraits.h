@@ -22,8 +22,8 @@ struct VectorSpaceExtendedAccess : virtual public detail::ISet<Traits>
     particle& get();
     template<int ... Indexs>
     const particle& get() const;
+    operator const underlying_type&() const;
 };
-
 
 template<set_type V, int N>
 struct cVectorSpaceSetTraits
@@ -36,6 +36,7 @@ struct cVectorSpaceSetTraits
     static void init(underlying_type& o_value);
     static void init(underlying_type& o_value, const underlying_type& i_value);
     template<typename ... Args>
+    requires ( mpl::are_constructible<V,Args...>::value )
     static void init(underlying_type& o_value, Args&& ... i_args);
     static void deinit(underlying_type& o_value);
     static void assign(underlying_type& o_value, const underlying_type& i_value);
@@ -69,7 +70,7 @@ struct cVectorSpaceModuleTraits
     static underlying_type base(size_t i_index);
     static void modProd(underlying_type& o_res, const ring& i_lhs, const underlying_type& i_rhs);
     static void modProd(underlying_type& o_res, const underlying_type& i_lhs, const ring& i_rhs);
-    static const size_t dimension = N;
+    static const size_t Dimension = N;
 };
 
 template<ring_type F, group_type V, int N>
@@ -95,11 +96,24 @@ struct cVectorSpaceMetricSpaceTraits
     static double distance(const typename cVectorSpaceSetTraits<V,N>::underlying_type& i_lhs, const typename cVectorSpaceSetTraits<V,N>::underlying_type& i_rhs);
 };
 
+template<typename Traits>
+struct MatrixVectorSpaceExtendedAccess : virtual public detail::ISet<Traits>
+{
+    typedef typename Traits::underlying_type underlying_type;
+    typedef typename Traits::particle particle;
+
+    inline particle operator[](size_t i_index) const;
+    template<int Index>
+    particle get() const;
+    operator const underlying_type&() const;
+};
+
 template<set_type V, int N, int M>
 struct cMatrixVectorSpaceSetTraits
 {
+    typedef MatrixVectorSpaceExtendedAccess<cMatrixVectorSpaceSetTraits<V,N,M>> extended_structure;
     typedef container::cTupla<V,N,M> underlying_type;
-    typedef V particle;
+    typedef container::cTupla<V,M> particle;
     static const size_t dimension = N * M;
 
     static const particle& access(const underlying_type& i_value, size_t i_index);
@@ -107,6 +121,10 @@ struct cMatrixVectorSpaceSetTraits
     static void init(underlying_type& o_value);
     static void init(underlying_type& o_value, const underlying_type& i_value);
     template<typename ... Args>
+    requires ( mpl::get_num_types<Args...>::value == N && mpl::are_type_of<is_vector_space,Args ...>::value )
+    static void init(underlying_type& o_value, Args&& ... i_args);
+    template<typename ... Args>
+    requires ( mpl::get_num_types<Args...>::value == N*M && mpl::are_constructible<V,Args...>::value )
     static void init(underlying_type& o_value, Args&& ... i_args);
     static void deinit(underlying_type& o_value);
     static void assign(underlying_type& o_value, const underlying_type& i_value);
@@ -138,8 +156,11 @@ struct cMatrixVectorSpaceModuleTraits
 	static const bool is_leftModule = true;
 	static const bool is_rightModule = true;
 
+    static underlying_type base(size_t i_index);
     static void modProd(underlying_type& o_res, const ring& i_lhs, const underlying_type& i_rhs);
     static void modProd(underlying_type& o_res, const underlying_type& i_lhs, const ring& i_rhs);
+
+    static const size_t Dimension = N * M;
 };
 
 template<ring_type F, group_type V, int N, int M>
@@ -152,6 +173,9 @@ public:
 	typedef typename module_traits::underlying_type underlying_type;
 	typedef typename module_traits::particle particle;
     typedef F ring;
+    typedef F field;
+
+    static const int Dimension = N * M;
 };
 
 }

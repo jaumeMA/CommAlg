@@ -21,14 +21,19 @@ public: \
 template<typename T> \
 struct is_##_STRUCTURE_NAME \
 { \
-    typedef char yes[2]; \
-    typedef char no[1]; \
+    typedef typename mpl::drop_constness<typename mpl::drop_reference<T>::type>::type raw_type; \
     \
-    static yes& _is(const detail::_STRUCTURE_NAME##_tag*); \
-    static no& _is(...); \
+    static constexpr bool _is(const detail::_STRUCTURE_NAME##_tag*) \
+    { \
+        return true; \
+    } \
+    static constexpr bool _is(...) \
+    { \
+        return false; \
+    } \
  \
  \
-    static const bool value = sizeof(_is(std::declval<const T*>())) == sizeof(yes); \
+    static const bool value = _is(mpl::instantiatePointer<const raw_type>::value); \
 };
 
 namespace yame

@@ -35,11 +35,19 @@ cSubTuple<T,rank,ranks...>::cSubTuple()
     }
 }
 template<typename T, int rank, int ... ranks>
+cSubTuple<T,rank,ranks...>::cSubTuple(const cSubTuple<T,rank,ranks...>& other)
+{
+    for(size_t i=0;i<rank;i++)
+    {
+        m_subTuple[i] = other.m_subTuple[i];
+    }
+}
+template<typename T, int rank, int ... ranks>
 cSubTuple<T,rank,ranks...>::cSubTuple(const cTupla_impl<T,rank,ranks...>& other)
 {
     for(size_t i=0;i<rank;i++)
     {
-        m_subTuple[i] = cSubTuple<T,ranks...>(other.m_subTuple[i]);
+        m_subTuple[i] = other.m_subTuple[i];
     }
 }
 template<typename T, int rank, int ... ranks>
@@ -62,14 +70,11 @@ SUB_TUPLE(T,ranks)& cSubTuple<T,rank,ranks...>::operator[](size_t index)
     return res;
 }
 template<typename T, int rank, int ... ranks>
-SUB_TUPLE(T,ranks) cSubTuple<T,rank,ranks...>::operator[](size_t index) const
+const SUB_TUPLE(T,ranks)& cSubTuple<T,rank,ranks...>::operator[](size_t index) const
 {
-    SUB_TUPLE(T,ranks) res;
+    ASSERT(index<rank,"Index out of bounds");
 
-    if(index < rank)
-    {
-        res = m_subTuple[index];
-    }
+    const SUB_TUPLE(T,ranks) &res = m_subTuple[index];
 
     return res;
 }
@@ -93,6 +98,28 @@ cSubTuple<T,rank,ranks...>& cSubTuple<T,rank,ranks...>::operator=(const cSubTupl
 
     return *this;
 }
+template<typename T, int rank, int ... ranks>
+template<typename TT>
+requires ( mpl::is_constructible<T,TT>::value )
+cSubTuple<T,rank,ranks...>& cSubTuple<T,rank,ranks...>::operator=(const cSubTuple<TT,rank,ranks...>& other)
+{
+    for(size_t i=0;i<rank;i++)
+    {
+        m_subTuple[i] = other.m_subTuple[i];
+    }
+
+    return *this;
+}
+template<typename T, int rank, int ... ranks>
+cSubTuple<T,rank,ranks...>& cSubTuple<T,rank,ranks...>::operator=(const cTupla_impl<T,rank,ranks...>& other)
+{
+    for(size_t i=0;i<rank;i++)
+    {
+        m_subTuple[i] = other.m_subTuple[i];
+    }
+
+    return *this;
+}
 
 template<typename T>
 void cSubTuple<T>::reference_tuple(const cSubTuple<T>& other)
@@ -108,6 +135,11 @@ template<typename T>
 cSubTuple<T>::cSubTuple()
 {
     m_ref = NULL;
+}
+template<typename T>
+cSubTuple<T>::cSubTuple(const cSubTuple<T>& other)
+{
+    m_ref = other.m_ref;
 }
 template<typename T>
 cSubTuple<T>::cSubTuple(void* ref)
@@ -193,12 +225,11 @@ SUB_TUPLE(T,ranks)& cSubTuple<cSubTuple<T,rank,ranks...> >::operator[](size_t in
     return m_subTuple[index];
 }
 template<typename T, int rank, int ... ranks>
-SUB_TUPLE(T,ranks) cSubTuple<cSubTuple<T,rank,ranks...> >::operator[](size_t index) const
+const SUB_TUPLE(T,ranks)& cSubTuple<cSubTuple<T,rank,ranks...> >::operator[](size_t index) const
 {
     ASSERT(index<rank, "Index out of bounds!");
-    SUB_TUPLE(T,ranks) res = m_subTuple[index];
 
-    return res;
+    return m_subTuple[index];
 }
 template<typename T, int rank, int ... ranks>
 size_t cSubTuple<cSubTuple<T,rank,ranks...> >::getDim() const
@@ -254,22 +285,6 @@ cTupla_impl<T,rank,ranks...>::cTupla_impl(T *values)
     memcpy(&(this->m_tupla[0]),values,m_rank*sizeof(T));
 }
 template<typename T, int rank, int ... ranks>
-template<typename ... Args>
-cTupla_impl<T,rank,ranks...>::cTupla_impl(const T& arg, Args&& ... i_args)
-{
-    reference_tuple();
-
-    yame::initialize(*this, {arg, mpl::forward<Args>(i_args) ...});
-}
-template<typename T, int rank, int ... ranks>
-template<typename ... Args>
-cTupla_impl<T,rank,ranks...>::cTupla_impl(T&& arg, Args&& ... i_args)
-{
-    reference_tuple();
-
-    yame::initialize(*this, {mpl::move(arg), mpl::forward<Args>(i_args) ...});
-}
-template<typename T, int rank, int ... ranks>
 cTupla_impl<T,rank,ranks...>::cTupla_impl(const cTupla_impl<T,rank,ranks...>& other)
 : cTuplaStorage<T,PROD_RANKS(rank,ranks)>()
 {
@@ -301,6 +316,20 @@ cTupla_impl<T,rank,ranks...>::cTupla_impl(const std::initializer_list<TT>& i_tup
     reference_tuple();
 
     yame::initialize(*this, i_tupleList);
+}
+template<typename T, int rank, int ... ranks>
+template<typename TT>
+requires (mpl::is_constructible<T,TT>::value )
+cTupla_impl<T,rank,ranks...>::cTupla_impl(const cTupla_impl<TT,rank,ranks...>& other)
+: cTuplaStorage<T,PROD_RANKS(rank,ranks)>()
+{
+    reference_tuple();
+
+    //and then initialize
+    for(size_t i=0;i<rank;i++)
+    {
+        m_subTuple[i] = other.m_subTuple[i];
+    }
 }
 template<typename T, int rank, int ... ranks>
 cTupla_impl<T,rank,ranks...>::~cTupla_impl()
@@ -339,6 +368,18 @@ const SUB_TUPLE(T,ranks)& cTupla_impl<T,rank,ranks...>::operator[](size_t index)
 }
 template<typename T, int rank, int ... ranks>
 cTupla_impl<T,rank,ranks...>& cTupla_impl<T,rank,ranks...>::operator=(const cTupla_impl<T,rank,ranks...>& other)
+{
+    for(size_t i=0;i<rank;i++)
+    {
+        m_subTuple[i] = other.m_subTuple[i];
+    }
+
+    return *this;
+}
+template<typename T, int rank, int ... ranks>
+template<typename TT>
+requires (mpl::is_constructible<T,TT>::value )
+cTupla_impl<T,rank,ranks...>& cTupla_impl<T,rank,ranks...>::operator=(const cTupla_impl<TT,rank,ranks...>& other)
 {
     for(size_t i=0;i<rank;i++)
     {
@@ -451,7 +492,7 @@ size_t cTupla_impl<T,rank,ranks...>::getIndexOfNode(node_pointer_type node) cons
 }
 template<typename T, int rank, int ... ranks>
 template<int Index, int ... Indexs>
-T& cTupla_impl<T,rank,ranks...>::get()
+SUB_TUPLE(T,ranks)& cTupla_impl<T,rank,ranks...>::get()
 {
     static_assert(Index < rank, "Index out of bounds");
 
@@ -459,11 +500,13 @@ T& cTupla_impl<T,rank,ranks...>::get()
 }
 template<typename T, int rank, int ... ranks>
 template<int Index, int ... Indexs>
-const T& cTupla_impl<T,rank,ranks...>::get() const
+const SUB_TUPLE(T,ranks)& cTupla_impl<T,rank,ranks...>::get() const
 {
     static_assert(Index < rank, "Index out of bounds");
 
-    return this->m_tupla[Index];
+    const SUB_TUPLE(T,ranks) &res = m_subTuple[Index];
+
+    return res;
 }
 
 template<typename T>
@@ -479,6 +522,14 @@ cTupla_impl<T,1>::cTupla_impl(const cTupla_impl<T,1>& other)
     reference_tuple();
 
     m_subTuple = other.m_subTuple;
+}
+template<typename T>
+cTupla_impl<T,1>::cTupla_impl(const cSubTuple<T,1>& other)
+: cTuplaStorage<T,1>()
+{
+    reference_tuple();
+
+    m_subTuple = m_subTuple[0];
 }
 template<typename T>
 cTupla_impl<T,1>::cTupla_impl(T value)

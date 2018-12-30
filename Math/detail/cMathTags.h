@@ -15,6 +15,7 @@ struct field_tag{};
 struct module_tag{};
 struct algebra_tag{};
 struct vector_space_tag{};
+struct affine_space_tag{};
 struct metric_space_tag{};
 struct function_space_tag{};
 

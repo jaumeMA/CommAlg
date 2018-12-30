@@ -56,27 +56,17 @@ struct _get_bases_prime_id<Base,Bases...>
 template<typename Type, typename ... Bases>
 struct get_bases_prime_id<Type,yame::container::parameter_pack<Bases...>>
 {
-private:
-    static inline long double frac_prod(const long double& i_lhs, const long double& i_rhs)
-    {
-        const unsigned long long i_lhs_whole = static_cast<unsigned long long>(i_lhs);
-        const long double i_lhs_fractional = i_lhs - i_lhs_whole;
-        const unsigned long long i_rhs_whole = static_cast<unsigned long long>(i_rhs);
-        const long double i_rhs_fractional = i_rhs - i_rhs_whole;
-
-        return i_lhs_whole * i_rhs_fractional + i_rhs_whole * i_lhs_fractional + i_lhs_fractional * i_rhs_fractional;
-    }
 public:
     static constexpr prod_uint512 value = getPrimeValue<Bases...>(yame::math::getPrimeNumber(yame::mpl::static_counter<typename __rtti_tag<Type>::type>::get_next_count()));
     static const bool expand = (value.empty() == false);
     static const prod_double512 invValue;
     static inline long double inverse(const prod_uint512& i_value)
     {
-        long double prod[2] = {(i_value.m_value[0] * invValue.m_value[0]) * (i_value.m_value[1] * invValue.m_value[1]),
-                                (i_value.m_value[2] * invValue.m_value[2]) * (i_value.m_value[3] * invValue.m_value[3])};
+        const long double prod[4] = {(static_cast<long double>(i_value.m_value[0]) * invValue.m_value[0]), (static_cast<long double>(i_value.m_value[1]) * invValue.m_value[1]),
+                                        (static_cast<long double>(i_value.m_value[2]) * invValue.m_value[2]), (static_cast<long double>(i_value.m_value[3]) * invValue.m_value[3])};
 
-
-        return frac_prod(prod[0],prod[1]);
+        //this approach suffers from very unbalanced products (i.e. when value is very big and invValue need a lot of decimals)
+        return prod[0] * prod[1] * prod[2] * prod[3];
     }
 };
 

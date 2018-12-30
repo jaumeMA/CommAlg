@@ -34,14 +34,14 @@ public:
     cSet<Traits>& operator=(cSet<Traits>&& other) override;
     cSet<Traits>& operator=(const underlying_type& i_value) override;
     cSet<Traits>& operator=(underlying_type&& i_value) override;
-	inline bool operator==(const cSet<Traits>& other) const override;
-	inline bool operator!=(const cSet<Traits>& other) const override;
-    inline const underlying_type& getValue() const override;
-    inline underlying_type& getValue() override;
+	bool operator==(const cSet<Traits>& other) const override;
+	bool operator!=(const cSet<Traits>& other) const override;
+    const underlying_type& getValue() const override;
+    underlying_type& getValue() override;
 
 protected:
-    inline void setValue(const underlying_type& i_value) override;
-    inline underlying_type&& extractValue();
+    void setValue(const underlying_type& i_value) override;
+    underlying_type&& extractValue();
 
 private:
 	underlying_type m_value;

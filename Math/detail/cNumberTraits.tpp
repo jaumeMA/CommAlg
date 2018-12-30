@@ -58,12 +58,7 @@ rationalPair ExtendedRationalSet<Traits>::get_raw() const
     mpz_clear(numerat);
     mpz_clear(denom);
 
-    return rationalPair(num, den);
-}
-template<typename Traits>
-detail::ISet<Traits>& ExtendedRationalSet<Traits>::operator=(const rationalPair& i_value)
-{
-    Traits::assign(this->getValue(), i_value);
+    return rationalPair({num, den});
 }
 template<typename Traits>
 double ExtendedRealSet<Traits>::get_raw() const
@@ -81,12 +76,7 @@ complexPair ExtendedComplexSet<Traits>::get_raw() const
 {
     const typename Traits::underlying_type& thisValue = this->getValue();
 
-    return complexPair(mpf_get_d(thisValue.real), mpf_get_d(thisValue.imag));
-}
-template<typename Traits>
-detail::ISet<Traits>& ExtendedComplexSet<Traits>::operator=(const complexPair& i_value)
-{
-    Traits::assign(this->getValue(), i_value);
+    return complexPair({mpf_get_d(thisValue.real), mpf_get_d(thisValue.imag)});
 }
 template<typename Traits>
 double ExtendedComplexSet<Traits>::real() const
@@ -107,12 +97,7 @@ quaternionQuartet ExtendedQuaternionSet<Traits>::get_raw() const
 {
     const typename Traits::underlying_type& thisValue = this->getValue();
 
-    return quaternionQuartet(mpf_get_d(thisValue.n), mpf_get_d(thisValue.i), mpf_get_d(thisValue.j), mpf_get_d(thisValue.k));
-}
-template<typename Traits>
-detail::ISet<Traits>& ExtendedQuaternionSet<Traits>::operator=(const quaternionQuartet& i_value)
-{
-    Traits::assign(this->getValue(), i_value);
+    return quaternionQuartet({mpf_get_d(thisValue.n), mpf_get_d(thisValue.i), mpf_get_d(thisValue.j), mpf_get_d(thisValue.k)});
 }
 template<typename Traits>
 double ExtendedQuaternionSet<Traits>::n_part() const
@@ -363,11 +348,6 @@ void RealMetricSpaceTraits<Precision>::get_next_elem(underlying_type& o_currPoin
 }
 
 template<unsigned char Precision>
-bool ComplexSetTraits<Precision>::complex_pair::operator==(const complex_pair& other) const
-{
-    return mpf_cmp(real,other.real) == 0 && mpf_cmp(imag,other.imag) == 0;
-}
-template<unsigned char Precision>
 void ComplexSetTraits<Precision>::init(underlying_type& o_value)
 {
     mpf_init2(o_value.real,Precision);
@@ -392,15 +372,6 @@ void ComplexSetTraits<Precision>::init(underlying_type& o_value, double real, do
     mpf_set_d(o_value.imag, imag);
 }
 template<unsigned char Precision>
-void ComplexSetTraits<Precision>::init(underlying_type& o_value, double real)
-{
-    mpf_init2(o_value.real,Precision);
-    mpf_set_d(o_value.real, real);
-
-    mpf_init2(o_value.imag,Precision);
-    mpf_set_d(o_value.imag, 0.f);
-}
-template<unsigned char Precision>
 void ComplexSetTraits<Precision>::deinit(underlying_type& o_value)
 {
     mpf_clear(o_value.real);
@@ -413,10 +384,10 @@ void ComplexSetTraits<Precision>::assign(underlying_type& o_value, const underly
     mpf_set(o_value.imag, i_value.imag);
 }
 template<unsigned char Precision>
-void ComplexSetTraits<Precision>::assign(underlying_type& o_value, const complexPair& i_value)
+void ComplexSetTraits<Precision>::assign(underlying_type& o_value, double real, double imag)
 {
-    mpf_set_d(o_value.real, i_value[0]);
-    mpf_set_d(o_value.imag, i_value[1]);
+    mpf_set_d(o_value.real, real);
+    mpf_set_d(o_value.imag, imag);
 }
 template<unsigned char Precision>
 bool ComplexSetTraits<Precision>::cmp(const underlying_type& i_lhs, const underlying_type& i_rhs)
@@ -677,12 +648,12 @@ void QuaternionSetTraits<Precision>::assign(underlying_type& o_value, const unde
     mpf_set(o_value.k, i_value.k);
 }
 template<unsigned char Precision>
-void QuaternionSetTraits<Precision>::assign(underlying_type& o_value, const quaternionQuartet& i_value)
+void QuaternionSetTraits<Precision>::assign(underlying_type& o_value, double i_n, double i_i, double i_j, double i_k)
 {
-    mpf_set_d(o_value.n, i_value[0]);
-    mpf_set_d(o_value.i, i_value[1]);
-    mpf_set_d(o_value.j, i_value[2]);
-    mpf_set_d(o_value.k, i_value[3]);
+    mpf_set_d(o_value.n, i_n);
+    mpf_set_d(o_value.i, i_i);
+    mpf_set_d(o_value.j, i_j);
+    mpf_set_d(o_value.k, i_k);
 }
 template<unsigned char Precision>
 bool QuaternionSetTraits<Precision>::cmp(const underlying_type& i_lhs, const underlying_type& i_rhs)

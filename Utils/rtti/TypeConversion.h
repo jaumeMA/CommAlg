@@ -51,7 +51,7 @@ struct rtti_static_conversor<T,TT,void>
 {
     static_assert(mpl::is_base_of<TT,T>::value, "You shall provide inherited classes");
 
-    constexpr static const T* s_rhsPtr = mpl::instantiatePointer<T>::value;
+    constexpr static const T* s_rhsPtr = mpl::instantiatePointer<const T>::value;
     constexpr static const TT* s_lhsPtr = s_rhsPtr;
 
     friend constexpr std::ptrdiff_t _relate_static(const rtti_conversor_tag<T,TT>&)
@@ -75,7 +75,7 @@ struct rtti_static_conversor
     static_assert(mpl::is_base_of<T,Joint>::value, "You shall provide inherited classes");
     static_assert(mpl::is_base_of<TT,Joint>::value, "You shall provide inherited classes");
 
-    constexpr static const Joint* s_refPtr = mpl::instantiatePointer<Joint>::value;
+    constexpr static const Joint* s_refPtr = mpl::instantiatePointer<const Joint>::value;
     constexpr static const T* s_lhsPtr = s_refPtr;
     constexpr static const TT* s_rhsPtr = s_refPtr;
 

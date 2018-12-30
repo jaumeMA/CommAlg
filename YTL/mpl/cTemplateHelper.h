@@ -273,6 +273,18 @@ struct are_same_type<A,B,BBs...>
     static const bool value = mpl::is_same_type<A,B>::value && are_same_type<A,BBs...>::value;
 };
 
+template<template <typename> typename Predicate, typename T>
+struct is_type_of
+{
+    static const bool value = Predicate<T>::value;
+};
+
+template<template <typename> typename Predicate, typename ... Types>
+struct are_type_of
+{
+    static const bool value = (Predicate<Types>::value && ...);
+};
+
 template<typename T>
 struct is_pointer;
 
@@ -569,9 +581,26 @@ struct is_place_holder
     static const bool value = is_same_type<rawT,place_holder>::value;
 };
 
+template<typename T>
+struct is_not_place_holder
+{
+    typedef typename mpl::drop_reference<typename mpl::drop_constness<T>::type>::type rawT;
+    static const bool value = (is_same_type<rawT,place_holder>::value == false);
+};
+
 struct void_type
 {
     //empty class for representing void type.
+};
+
+template<typename T>
+struct instantiatePointer
+{
+private:
+    static T __arr[0];
+
+public:
+    constexpr static T* value = __arr;
 };
 
 template<size_t Value, typename Numeric = size_t>
@@ -753,24 +782,49 @@ struct is_base_of<T,T>
 };
 
 template<typename T, typename TT>
+struct is_base_of<T&,TT&>
+{
+    static const bool value = is_base_of<T,TT>::value;
+};
+
+template<typename T, typename TT>
+struct is_base_of<T&&,TT&&>
+{
+    static const bool value = is_base_of<T,TT>::value;
+};
+
+template<typename T, typename TT>
 struct is_base_of
 {
-    typedef char (&yes)[2];
-    typedef char (&no)[1];
-    typedef typename mpl::drop_reference<TT>::type rawTT;
-    typedef typename mpl::drop_reference<T>::type rawT;
-
     struct Tester
     {
-        operator rawT* () const;
-        operator rawTT* ();
+        constexpr operator T* () const
+        {
+            return NULL;
+        }
+        constexpr operator TT* ()
+        {
+            return NULL;
+        }
     };
 
     template<typename TTT>
-    static yes Test(rawTT*,TTT);
-    static no Test(rawT*,int);
+    static constexpr bool Test(TT*,TTT)
+    {
+        return true;
+    }
+    static constexpr bool Test(T*,int)
+    {
+        return false;
+    }
 
-    static const bool value = sizeof(Test(Tester(),0)) == sizeof(yes);
+    static const bool value = Test(Tester(),0);
+};
+
+template<typename Type, typename ... Types>
+struct are_base_of
+{
+    static const bool value = (is_base_of<Type,Types>::value && ...);
 };
 
 template<typename T, typename TT>
@@ -807,16 +861,6 @@ struct is_virtual_base_of
     }
 
     static const bool value = is_base_of<T,TT>::value && detectVirtuality<>();
-};
-
-template<typename T>
-struct instantiatePointer
-{
-private:
-    static T __arr[0];
-
-public:
-    constexpr static const T* value = __arr;
 };
 
 template<typename T>
@@ -885,6 +929,12 @@ struct is_constructible<Type,Args...>
     static constexpr bool Test(...) { return false; }
 
     static const bool value = Test<Type>(0);
+};
+
+template<typename Type, typename ... Args>
+struct are_constructible
+{
+    static const bool value = (is_constructible<Type,Args>::value && ...);
 };
 
 template<typename T>

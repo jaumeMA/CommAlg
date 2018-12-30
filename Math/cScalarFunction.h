@@ -5,6 +5,7 @@
 #include "Math/cVectorSpace.h"
 #include "Math/detail/cStdMathOps.h"
 #include <utility>
+#include "YTL/functional/detail/cFunctionConceptHelper.h"
 
 #define DECLARE_MATH_FUNCTION(FUNC_NAME, NESTED_FUNC_NAME) \
 namespace yame \
@@ -41,6 +42,29 @@ detail::scalar_function<Im,Dom> operator OP(const detail::scalar_function<Im,Dom
 } \
 }
 
+#define DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION_CONSTANT(NAME,OP) \
+namespace yame \
+{ \
+namespace math \
+{ \
+namespace detail \
+{ \
+template<ring_type Im, vector_space_type Dom> \
+detail::scalar_function<Im,Dom> operator OP(const detail::scalar_function<Im,Dom>& i_lhs, const typename Dom::ring& i_rhs) \
+{ \
+    typedef typename detail::scalar_function<Im,Dom>::base_function base_function; \
+    return static_cast<const base_function&>(i_lhs) OP constant_function<typename Dom::ring,Dom>(i_rhs); \
+} \
+template<ring_type Im, vector_space_type Dom> \
+detail::scalar_function<Im,Dom> operator OP(const typename Dom::ring& i_lhs, const detail::scalar_function<Im,Dom>& i_rhs) \
+{ \
+    typedef typename detail::scalar_function<Im,Dom>::base_function base_function; \
+    return constant_function<typename Dom::ring,Dom>(i_lhs) OP static_cast<const base_function&>(i_rhs); \
+} \
+} \
+} \
+}
+
 namespace yame
 {
 namespace math
@@ -52,6 +76,12 @@ template<ring_type Im, vector_space_type Dom>
 class scalar_function : public mpl::homogeneous_callable<ytl::function,Im,typename Dom::particle,Dom::dimension()>::type
 {
 public:
+    template<ring_type IIm, vector_space_type DDom>
+    struct move_to
+    {
+        typedef scalar_function<IIm,DDom> type;
+    };
+
     typedef Im return_type;
     typedef typename mpl::homogeneous_callable<ytl::function,Im,typename Dom::particle,Dom::dimension()>::type base_function;
     typedef typename base_function::func_ptr_base func_ptr_base;
@@ -61,10 +91,14 @@ public:
     using base_function::clone;
 
     scalar_function() = default;
-    scalar_function(const Im& i_constValue);
+    scalar_function(const Dom& i_constValue);
     scalar_function(const base_function& i_base);
 	Im eval(const Dom& i_point) const;
     static scalar_function<Im,Dom> clone(const func_ptr_base* i_funcPtr);
+    template<callable_type Return, typename ... Args>
+    Return specialize(Args&& ... i_args) const;
+
+    scalar_function& operator=(const Dom& i_constValue);
 
 private:
     template<int ... Indexs>
@@ -89,7 +123,24 @@ template<ring_type Im, vector_space_type Dom>
 using constant_function = ytl::constant_function<typename detail::scalar_function<Im,Dom>::base_function>;
 
 template<ring_type Im, vector_space_type Dom>
-using projection = ytl::identity_function<typename detail::scalar_function<Im,Dom>::base_function>;
+using projection_function = ytl::projection_function<typename detail::scalar_function<Im,Dom>::base_function>;
+
+template<ring_type Im, vector_space_type Dom>
+class apply_function : public detail::scalar_function<Im,Dom>
+{
+    typedef typename detail::scalar_function<Im,Dom> func_base;
+    typedef typename mpl::homogeneous_callable<ytl::function,Im,typename Dom::particle,Dom::dimension()>::type homogeneous_callable_t;
+
+    template<typename Return,typename ... Types>
+    apply_function(const Dom& i_applyValue, const ytl::function<Return(Types...)>*)
+    : func_base([i_applyValue](Types ... i_args){ return Return(i_applyValue * Dom{mpl::forward<Types>(i_args) ...});})
+    {}
+public:
+    apply_function(const Dom& i_applyValue)
+    : apply_function(i_applyValue,reinterpret_cast<const homogeneous_callable_t*>(NULL))
+    {}
+};
+
 
 template<module_type Im, vector_space_type Dom>
 detail::scalar_function<typename Im::traits::module_traits::ring,Dom> underlying_function_type(const Im&, const Dom&);
@@ -104,6 +155,11 @@ DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION(sum,+)
 DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION(subs,-)
 DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION(prod,*)
 DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION(div,/)
+
+DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION_CONSTANT(sum,+)
+DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION_CONSTANT(subs,-)
+DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION_CONSTANT(prod,*)
+DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION_CONSTANT(div,/)
 
 DECLARE_MATH_FUNCTION(sin, yame::math::sin);
 DECLARE_MATH_FUNCTION(cos, yame::math::cos);

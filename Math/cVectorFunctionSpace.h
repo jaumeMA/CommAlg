@@ -2,6 +2,7 @@
 
 #include "Math/detail/cVectorTemplateHelper.h"
 #include "Math/cVectorFunction.h"
+#include "Math/cLinearVectorFunction.h"
 #include "Math/cFunctionSpace.h"
 #include "Math/detail/cVectorFunctionTemplateHelper.h"
 #include "Math/cMathOps.h"
@@ -23,8 +24,8 @@ namespace yame \
 { \
 namespace math \
 { \
-static FR1 FUNC_NAME##Real = FR1(NESTED_FUNC_NAME##r); \
-static FC1 FUNC_NAME##Complex = FC1(NESTED_FUNC_NAME##c); \
+static VFR1 FUNC_NAME##Real = VFR1(NESTED_FUNC_NAME##r); \
+static VFC1 FUNC_NAME##Complex = VFC1(NESTED_FUNC_NAME##c); \
 } \
 }
 
@@ -35,18 +36,13 @@ namespace math
 namespace detail
 {
 
-template<module_type Im, vector_space_type Dom>
-struct ExtendedVectorFunctionSpaceSet : virtual public detail::ISet<FunctionSpaceSetTraits<Im,Dom>>
+template<module_type Im, vector_space_type Dom, callable_type Function>
+struct ExtendedVectorFunctionSpaceSet : virtual public detail::ISet<FunctionSpaceSetTraits<Im,Dom,Function>>
 {
-    typedef vector_function<Im,Dom> underlying_type;
-    typedef cFunctionSpace<Im,Dom> FinalObject;
+    typedef Function underlying_type;
+    typedef cFunctionSpace<Im,Dom,Function> FinalObject;
     typedef typename Im::traits::module_traits::ring nested_im_t;
 
-    struct const_function_constructor
-    {
-        const_function_constructor() = default;
-        auto operator()(const nested_im_t& i_constantValue) const;
-    };
 private:
     template<int ... Components, typename ... Args>
     Im _eval(const mpl::sequence<Components...>&, Args&& ... i_args) const;
@@ -55,7 +51,7 @@ public:
     underlying_type get_nested_function() const;
     template<typename IIm, typename DDom>
     requires (mpl::is_type_constructible<Im,IIm>::value && mpl::is_type_constructible<Dom,DDom>::value )
-    static void init(underlying_type& o_value, const cFunctionSpace<IIm,DDom>& i_value);
+    static void init(underlying_type& o_value, const cFunctionSpace<IIm,DDom,Function>& i_value);
     template<typename ... Args>
     auto operator()(Args&& ... i_args) const;
     template<typename ... Args>
@@ -63,37 +59,86 @@ public:
 
     template<size_t Index>
     requires (Index < Dom::dimension())
-    static inline auto _x_()
+    static inline linear_function<nested_im_t,Dom> _x_()
     {
-        return scalar_function<nested_im_t,Dom>(projection<nested_im_t,Dom>(mpl::numeric_type<Index>{}));
+        static const projection_function<nested_im_t,Dom> s_componentFunction(mpl::numeric_type<Index>{});
+
+        return s_componentFunction;
     }
-    static const const_function_constructor C;
+};
+
+template<module_type Im, vector_space_type Dom, callable_type Function>
+struct ExtendedLinearVectorFunctionSpaceSet : public ExtendedVectorFunctionSpaceSet<Im,Dom,Function>
+{
+public:
+    using ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::get_nested_function;
+    using ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::operator();
+    using ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::eval;
+    using ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::_x_;
+
+    matrix<typename Im::ring,Im::dimension(),Dom::dimension() + 1> as_matrix() const;
 };
 
 }
 
 template<module_type Im, vector_space_type Dom>
-detail::ExtendedVectorFunctionSpaceSet<Im,Dom> underlying_function_extension_type(const Im&,const Dom&);
+detail::ExtendedVectorFunctionSpaceSet<Im,Dom,detail::vector_function<Im,Dom>> underlying_function_extension_type(const detail::vector_function<Im,Dom>&, const Im&,const Dom&);
+
+template<module_type Im, vector_space_type Dom>
+detail::ExtendedLinearVectorFunctionSpaceSet<Im,Dom,detail::linear_vector_function<Im,Dom>> underlying_function_extension_type(const detail::linear_vector_function<Im,Dom>&, const Im&,const Dom&);
+
+template<module_type Im, vector_space_type Dom, callable_type Function = decltype(underlying_function_type(std::declval<Im>(),std::declval<Dom>()))>
+using F = cFunctionSpace<Im,Dom,Function>;
+
+//linear and non linear vector functions
+
+template<module_type Im, vector_space_type Dom>
+using VF = F<Im,Dom,detail::vector_function<Im,Dom>>;
 
 template<vector_space_type Dom>
-using FR = cFunctionSpace<R1,Dom>;
+using VFR = VF<R1,Dom>;
 
-using FR1 = FR<R1>;
-using FR2 = FR<R2>;
-using FR3 = FR<R3>;
+using VFR1 = VFR<R1>;
+using VFR2 = VFR<R2>;
+using VFR3 = VFR<R3>;
 
 template<int N>
-using FRn = FR<Rn<N>>;
+using VFRn = VFR<Rn<N>>;
 
 template<vector_space_type Dom>
-using FC = cFunctionSpace<C1,Dom>;
+using VFC = VF<C1,Dom>;
 
-using FC1 = FC<C1>;
-using FC2 = FC<C2>;
-using FC3 = FC<C3>;
+using VFC1 = VFC<C1>;
+using VFC2 = VFC<C2>;
+using VFC3 = VFC<C3>;
 
 template<int N>
-using FCn = FC<Cn<N>>;
+using VFCn = VFC<Cn<N>>;
+
+//linear vector functions
+
+template<module_type Im, vector_space_type Dom>
+using LF = F<Im,Dom,detail::linear_vector_function<Im,Dom>>;
+
+template<vector_space_type Dom>
+using LFR = LF<R1,Dom>;
+
+using LFR1 = LFR<R1>;
+using LFR2 = LFR<R2>;
+using LFR3 = LFR<R3>;
+
+template<int N>
+using LFRn = LFR<Rn<N>>;
+
+template<vector_space_type Dom>
+using LFC = LF<C1,Dom>;
+
+using LFC1 = LFC<C1>;
+using LFC2 = LFC<C2>;
+using LFC3 = LFC<C3>;
+
+template<int N>
+using LFCn = LFC<Cn<N>>;
 
 }
 }
