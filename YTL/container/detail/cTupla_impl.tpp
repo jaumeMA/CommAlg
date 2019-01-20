@@ -28,16 +28,20 @@ cSubTuple<T,rank,ranks...>::cSubTuple(T* ref)
 template<typename T, int rank, int ... ranks>
 cSubTuple<T,ranks...> cSubTuple<T,rank,ranks...>::operator[](size_t index)
 {
+    static const size_t s_scale = mpl::Prod<ranks...>::value;
+
     ASSERT(index<rank,"Index out of bounds");
 
-    return cSubTuple<T,ranks...>(m_ref + index);
+    return cSubTuple<T,ranks...>(m_ref + index * s_scale);
 }
 template<typename T, int rank, int ... ranks>
 cSubTuple<const T,ranks...> cSubTuple<T,rank,ranks...>::operator[](size_t index) const
 {
+    static const size_t s_scale = mpl::Prod<ranks...>::value;
+
     ASSERT(index<rank,"Index out of bounds");
 
-    return cSubTuple<T,ranks...>(m_ref + index);
+    return cSubTuple<T,ranks...>(m_ref + index * s_scale);
 }
 template<typename T, int rank, int ... ranks>
 template<typename TT>

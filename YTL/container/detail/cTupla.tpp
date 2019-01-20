@@ -44,16 +44,20 @@ cTupla<T,rank,ranks...>::~cTupla()
 template<typename T, int rank, int ... ranks>
 detail::cSubTuple<T,ranks...> cTupla<T,rank,ranks...>::operator[](size_t index)
 {
+    static const size_t s_scale = mpl::Prod<ranks...>::value;
+
     ASSERT(index < rank,"Index out of bounds");
 
-    return detail::cSubTuple<T,ranks...>(this->address(index));
+    return detail::cSubTuple<T,ranks...>(this->address(index * s_scale));
 }
 template<typename T, int rank, int ... ranks>
 detail::cSubTuple<const T,ranks...> cTupla<T,rank,ranks...>::operator[](size_t index) const
 {
+    static const size_t s_scale = mpl::Prod<ranks...>::value;
+
     ASSERT(index < rank,"Index out of bounds");
 
-    return detail::cSubTuple<const T,ranks...>(this->address(index));
+    return detail::cSubTuple<const T,ranks...>(this->address(index * s_scale));
 }
 template<typename T, int rank, int ... ranks>
 cTupla<T,rank,ranks...>& cTupla<T,rank,ranks...>::operator=(const cTupla<T,rank,ranks...>& other)
@@ -89,7 +93,7 @@ size_t cTupla<T,rank,ranks...>::getSize() const
 template<typename T, int rank, int ... ranks>
 typename cTupla<T,rank,ranks...>::node_pointer_type cTupla<T,rank,ranks...>::getFirstElem() const
 {
-    return detail::sendNodeToIterator<node_pointer_type>(const_cast<primitive_type*>(this->address(0)));
+    return detail::sendNodeToIterator<node_pointer_type>(const_cast<primitive_type*>(this->address()));
 }
 template<typename T, int rank, int ... ranks>
 typename cTupla<T,rank,ranks...>::node_pointer_type cTupla<T,rank,ranks...>::getLastElem() const
@@ -149,7 +153,7 @@ typename cTupla<T,rank,ranks...>::node_pointer_type cTupla<T,rank,ranks...>::shi
 template<typename T, int rank, int ... ranks>
 size_t cTupla<T,rank,ranks...>::getIndexOfNode(node_pointer_type node) const
 {
-    return detail::receiveNodeFromIterator<primitive_type*>(node) - this->address(0);
+    return detail::receiveNodeFromIterator<primitive_type*>(node) - this->address();
 }
 
 template<typename T, int rank>
@@ -278,7 +282,7 @@ typename cTupla<T,rank>::node_pointer_type cTupla<T,rank>::shiftNodeByIndex(node
 template<typename T, int rank>
 size_t cTupla<T,rank>::getIndexOfNode(node_pointer_type node) const
 {
-    return detail::receiveNodeFromIterator<primitive_type*>(node) - this->address(0);
+    return detail::receiveNodeFromIterator<primitive_type*>(node) - this->address();
 }
 
 template<typename T, int ... ranks, typename Arg, typename ... Args>
