@@ -91,9 +91,9 @@ typedef cMetricVectorSpace<ComplexVectorSpaceTraits<3>> C3;
 template<int N>
 using Cn = cMetricVectorSpace<ComplexVectorSpaceTraits<N>>;
 
-template<typename T, int N>
+template<ring_type T, int N>
 using vector = cMetricVectorSpace<cMetricVectorSpaceTraits<T,T,N>>;
-template<typename T, int N, int M>
+template<ring_type T, int N, int M>
 using matrix = cVectorSpace<cMatrixVectorSpaceTraits<T,T,N,M>>;
 
 template<int N>
@@ -112,10 +112,10 @@ using vector_base = container::cArray<Vector>;
 
 }
 
-template<typename T, int N>
+template<math::ring_type T, int N>
 inline container::string format(const math::vector<T,N>& i_value);
 
-template<typename T, int N, int M>
+template<math::ring_type T, int N, int M>
 inline container::string format(const math::matrix<T,N,M>& i_value);
 
 }

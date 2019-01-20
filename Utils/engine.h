@@ -39,10 +39,10 @@ namespace yame
     container::string format(const container::string& i_value);
     template<typename T, typename A>
     inline container::string format(const container::cArray<T,A>& i_value);
-    template<typename T, int ... ranks>
-    inline container::string format(const container::detail::cSubTuple<T,ranks...>& i_value);
-    template<typename T, int ... ranks>
-    inline container::string format(const container::cTupla<T,ranks...>& i_value);
+    template<typename T, int rank, int ... ranks>
+    inline container::string format(const container::detail::cSubTuple<T,rank,ranks...>& i_value);
+    template<typename T, int rank, int ... ranks>
+    inline container::string format(const container::cTupla<T,rank,ranks...>& i_value);
 }
 
 #include "Utils/detail/engine.tpp"

@@ -1,4 +1,5 @@
 #include "System/cException.h"
+#include "YTL/mpl/cIterableTemplateHelper.h"
 
 namespace yame
 {
@@ -12,9 +13,9 @@ template<typename ... Iterables>
 cConstIterableImpl<Traits,mpl::sequence<indexs...>>::cConstIterableImpl(const Iterables& ... i_iterables)
 : cIterableImplBackEnd<Traits::numIterables,Traits,Traits::numIterables-1>(ytl::static_lent_cast<iterable_private_interface>(ytl::lend<iterable_private_interface>(const_cast<Iterables&>(i_iterables))) ...)
 {
-    static_assert(iterable_category_compliant<void, Iterables::category ...>::value, "You have to follow category rules for iterables, look .h file for more details");
-    static_assert(iterable_constness_compliant<void, Iterables...>::value, "You cannot have non const iterables with const nested iterables");
-    const bool circularDepDetected = iterable_circular_dep_compliant<void,Iterables...>::checkCircularDep(*this, i_iterables...);
+    static_assert(mpl::iterable_category_compliant<Traits, Iterables::category ...>::value, "You have to follow category rules for iterables, look .h file for more details");
+    static_assert(mpl::iterable_constness_compliant<Traits, Iterables...>::value, "You cannot have non const iterables with const nested iterables");
+    const bool circularDepDetected = mpl::iterable_circular_dep_compliant<Traits,Iterables...>::checkCircularDep(*this, i_iterables...);
     ASSERT(circularDepDetected == false, "Circular dependency detected in nested iterables");
 }
 template<typename Traits, int ... indexs>

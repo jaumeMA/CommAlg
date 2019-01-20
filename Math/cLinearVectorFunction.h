@@ -43,7 +43,7 @@ public:
 	template<module_type IIm>
     requires (Dom::dimension() == 0)
 	operator IIm() const;
-    matrix<typename Im::ring,Im::dimension(),Dom::dimension() + 1> as_matrix() const;
+    matrix<typename Im::ring,Im::dimension(),Dom::dimension()> as_matrix() const;
 
 private:
     template<int ... Components, int ... Indexs>
@@ -53,7 +53,7 @@ private:
     inline Im _eval(const mpl::sequence<Components...>&) const;
     template<int ... Components>
     requires(mpl::get_num_ranks<Components...>::value == Im::dimension() )
-    inline matrix<typename Im::ring,Im::dimension(),Dom::dimension() + 1> _as_matrix(const mpl::sequence<Components...>&) const;
+    inline matrix<typename Im::ring,Im::dimension(),Dom::dimension()> _as_matrix(const mpl::sequence<Components...>&) const;
 };
 
 }

@@ -44,14 +44,10 @@ public:
     typedef typename mpl::add_reference<T>::type first_type_reference;
     typedef typename mpl::add_reference<R>::type second_type_reference;
 
-    cPair<T,R>();
-    template<typename TFirst>
-    cPair<T,R>(TFirst&& i_first, typename mpl::enable_if<isPair<typename mpl::drop_constness<typename mpl::drop_reference<typename mpl::drop_pointer<TFirst>::type>::type>::type>::value == false>::type* foo = NULL);
-    template<typename TFirst, typename TSecond, typename ... TSeconds>
-    cPair<T,R>(TFirst&& i_first, TSecond&& i_arg, TSeconds&& ... i_args);
+    template<typename TFirst, typename TSecond>
+    cPair<T,R>(TFirst&& i_first, TSecond&& i_arg);
     cPair<T,R>(const cPair<T,R>& other);
     cPair<T,R>(cPair<T,R>&& other);
-    virtual ~cPair<T,R>();
     cPair<T,R>& operator=(const cPair<T,R>& other);
     cPair<T,R>& operator=(cPair<T,R>&& other);
     bool operator==(const cPair<T,R>& other) const;

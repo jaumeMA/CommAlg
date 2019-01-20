@@ -15,14 +15,25 @@ struct VectorSpaceExtendedAccess : virtual public detail::ISet<Traits>
 {
     typedef typename Traits::underlying_type underlying_type;
     typedef typename Traits::particle particle;
+    typedef typename underlying_type::iterable_type iterable_type;
+    typedef typename underlying_type::iterator_type iterator_type;
+    typedef typename underlying_type::const_iterator_type const_iterator_type;
+    typedef typename underlying_type::const_reference const_reference;
+    typedef container::const_tupla_view<particle> view_type;
 
-    inline particle& operator[](size_t i_index);
-    inline const particle& operator[](size_t i_index) const;
+    inline auto operator[](size_t i_index);
+    inline auto operator[](size_t i_index) const;
     template<int ... Indexs>
     particle& get();
     template<int ... Indexs>
     const particle& get() const;
-    operator const underlying_type&() const;
+    view_type view() const;
+    iterator_type begin(const ytl::function<bool(const_reference)>& filter = null_ptr);
+    iterator_type end();
+    const_iterator_type cbegin(const ytl::function<bool(const_reference)>& filter = null_ptr) const;
+    const_iterator_type cend() const;
+    size_t getSize() const;
+    bool empty() const;
 };
 
 template<set_type V, int N>
@@ -101,11 +112,22 @@ struct MatrixVectorSpaceExtendedAccess : virtual public detail::ISet<Traits>
 {
     typedef typename Traits::underlying_type underlying_type;
     typedef typename Traits::particle particle;
+    typedef typename underlying_type::iterator_type iterator_type;
+    typedef typename underlying_type::const_iterator_type const_iterator_type;
+    typedef typename underlying_type::const_reference const_reference;
+    typedef container::const_tupla_view<particle> view_type;
 
-    inline particle operator[](size_t i_index) const;
+    inline auto operator[](size_t i_index);
+    inline auto operator[](size_t i_index) const;
     template<int Index>
     particle get() const;
-    operator const underlying_type&() const;
+    view_type view() const;
+    iterator_type begin(const ytl::function<bool(const_reference)>& filter = null_ptr);
+    iterator_type end();
+    const_iterator_type cbegin(const ytl::function<bool(const_reference)>& filter = null_ptr) const;
+    const_iterator_type cend() const;
+    size_t getSize() const;
+    bool empty() const;
 };
 
 template<set_type V, int N, int M>

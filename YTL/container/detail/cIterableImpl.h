@@ -37,77 +37,6 @@ class cConstIterableImpl<Traits,mpl::sequence<indexs...>> : public cIterableImpl
     template<typename,typename>
     friend class cConstIterableImpl;
 
-    template<typename,typename...>
-    struct iterable_circular_dep_compliant;
-
-    template<typename Foo>
-    struct iterable_circular_dep_compliant<Foo>
-    {
-        static bool checkCircularDep(const typename Traits::forwarded_iterable_private_interface& thisObject)
-        {
-            return false;
-        }
-    };
-
-    template<typename Foo, typename Iterable,typename ... Iterables>
-    struct iterable_circular_dep_compliant<Foo,Iterable,Iterables...>
-    {
-        static bool checkCircularDep(const typename Traits::forwarded_iterable_private_interface& thisObject, const Iterable& i_iterable, const Iterables& ... i_iterables)
-        {
-            return static_cast<const void *>(&thisObject) == static_cast<const void*>(&i_iterable) || iterable_circular_dep_compliant<Foo,Iterables...>::checkCircularDep(thisObject, i_iterables...);
-        }
-    };
-
-    template<typename,typename...>
-    struct iterable_iterator_compliant;
-
-    template<typename Foo>
-    struct iterable_iterator_compliant<Foo>
-    {
-        static const bool value = true;
-    };
-
-    template<typename Foo, typename Iterator,typename ... Iterators>
-    struct iterable_iterator_compliant<Foo,Iterator,Iterators...>
-    {
-        static const bool value = mpl::is_base_of<typename Traits::iterator_type, Iterator>::value
-                                    && iterable_iterator_compliant<Foo,Iterators...>::value;
-    };
-
-    template<typename Foo,ReferenceCategory...>
-    struct iterable_category_compliant;
-
-    template<typename Foo>
-    struct iterable_category_compliant<Foo>
-    {
-        static const bool value = true;
-    };
-
-    template<typename Foo,ReferenceCategory category,ReferenceCategory ... categories>
-    struct iterable_category_compliant<Foo,category,categories...>
-    {
-        static const bool value = (Traits::forwarded_category == ReferenceCategory::Value ||
-                                    (Traits::forwarded_category == ReferenceCategory::ConstReference && category != ReferenceCategory::Value) ||
-                                    (Traits::forwarded_category == ReferenceCategory::NonConstReference && category == ReferenceCategory::NonConstReference))
-                                    && iterable_category_compliant<Foo,categories...>::value;
-    };
-
-    template<typename Foo,typename ... Iterables>
-    struct iterable_constness_compliant;
-
-    template<typename Foo>
-    struct iterable_constness_compliant<Foo>
-    {
-        static const bool value = true;
-    };
-
-    template<typename Foo,typename Iterable,typename ... Iterables>
-    struct iterable_constness_compliant<Foo,Iterable,Iterables...>
-    {
-        static const bool value = (Traits::iterable_public_interface::is_const == true || Iterable::is_const == false)
-                                    && iterable_constness_compliant<Foo,Iterables...>::value;
-    };
-
 protected:
 	typedef typename Traits::iterable_private_interface iterable_private_interface;
 	typedef typename Traits::forwarded_iterable_private_interface forwarded_iterable_private_interface;
@@ -401,6 +330,7 @@ public:
     using cBidirectionalIterableImpl<Traits>::getSize;
     using cBidirectionalIterableImpl<Traits>::empty;
 
+private:
     size_t getIndexOfNode(node_pointer_type node) const override;
     node_pointer_type shiftNodeByIndex(node_pointer_type node, int val) const override;
 };

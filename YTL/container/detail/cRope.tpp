@@ -1099,7 +1099,7 @@ void cRope<Allocator,StringAllocator>::prune(RopeNode* currNode)
 template<template<typename> class Allocator, typename StringAllocator>
 typename cRope<Allocator,StringAllocator>::iterator_pair_pointer cRope<Allocator,StringAllocator>::create_iterator(RopeNode* i_currNode, typename RopeLeave::pointer_type i_currElem)
 {
-    return reinterpret_cast<iterator_pair_pointer>((char*)memcpy((char*)memcpy(detail::k_pairAllocator.allocate(1, sizeof(iterator_pair)),&i_currNode, sizeof(i_currNode)) + sizeof(i_currNode),&i_currElem, sizeof(i_currElem)) - sizeof(i_currNode));
+    return reinterpret_cast<iterator_pair_pointer>(new (detail::k_pairAllocator.allocate(1, sizeof(iterator_pair))) iterator_pair(i_currNode,i_currElem));
 }
 template<template<typename> class Allocator, typename StringAllocator>
 void cRope<Allocator,StringAllocator>::delete_iterator(iterator_pair_pointer i_pair)

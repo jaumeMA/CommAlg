@@ -42,14 +42,14 @@ template<group_type V, int N, int M>
 const typename cMatrixVectorSpaceGroupTraits<V,N,M>::underlying_type cMatrixVectorSpaceGroupTraits<V,N,M>::neutral_element = CreateVectorSpaceGroupNeutralElement<V,N>();
 
 template<typename Traits>
-typename VectorSpaceExtendedAccess<Traits>::particle& VectorSpaceExtendedAccess<Traits>::operator[](size_t i_index)
+auto VectorSpaceExtendedAccess<Traits>::operator[](size_t i_index)
 {
     underlying_type& thisValue = this->getValue();
 
     return thisValue[i_index];
 }
 template<typename Traits>
-const typename VectorSpaceExtendedAccess<Traits>::particle& VectorSpaceExtendedAccess<Traits>::operator[](size_t i_index) const
+auto VectorSpaceExtendedAccess<Traits>::operator[](size_t i_index) const
 {
     const underlying_type& thisValue = this->getValue();
 
@@ -72,9 +72,39 @@ const typename VectorSpaceExtendedAccess<Traits>::particle& VectorSpaceExtendedA
     return thisValue.get<Indexs...>();
 }
 template<typename Traits>
-VectorSpaceExtendedAccess<Traits>::operator const underlying_type&() const
+typename VectorSpaceExtendedAccess<Traits>::iterator_type VectorSpaceExtendedAccess<Traits>::begin(const ytl::function<bool(const_reference)>& filter)
 {
-    return this->getValue();
+    return this->getValue().begin(filter);
+}
+template<typename Traits>
+typename VectorSpaceExtendedAccess<Traits>::iterator_type VectorSpaceExtendedAccess<Traits>::end()
+{
+    return this->getValue().end();
+}
+template<typename Traits>
+typename VectorSpaceExtendedAccess<Traits>::const_iterator_type VectorSpaceExtendedAccess<Traits>::cbegin(const ytl::function<bool(const_reference)>& filter) const
+{
+    return this->getValue().cbegin(filter);
+}
+template<typename Traits>
+typename VectorSpaceExtendedAccess<Traits>::const_iterator_type VectorSpaceExtendedAccess<Traits>::cend() const
+{
+    return this->getValue().cend();
+}
+template<typename Traits>
+size_t VectorSpaceExtendedAccess<Traits>::getSize() const
+{
+    return this->getValue().getSize();
+}
+template<typename Traits>
+bool VectorSpaceExtendedAccess<Traits>::empty() const
+{
+    return this->getValue().empty();
+}
+template<typename Traits>
+typename VectorSpaceExtendedAccess<Traits>::view_type VectorSpaceExtendedAccess<Traits>::view() const
+{
+    return view_type(this->getValue());
 }
 
 template<set_type V, int N>
@@ -201,7 +231,14 @@ double cVectorSpaceMetricSpaceTraits<V,N>::distance(const typename cVectorSpaceS
 }
 
 template<typename Traits>
-typename MatrixVectorSpaceExtendedAccess<Traits>::particle MatrixVectorSpaceExtendedAccess<Traits>::operator[](size_t i_index) const
+auto MatrixVectorSpaceExtendedAccess<Traits>::operator[](size_t i_index)
+{
+    underlying_type& thisValue = this->getValue();
+
+    return thisValue[i_index];
+}
+template<typename Traits>
+auto MatrixVectorSpaceExtendedAccess<Traits>::operator[](size_t i_index) const
 {
     const underlying_type& thisValue = this->getValue();
 
@@ -213,12 +250,42 @@ typename MatrixVectorSpaceExtendedAccess<Traits>::particle MatrixVectorSpaceExte
 {
     const underlying_type& thisValue = this->getValue();
 
-    return thisValue[Index];
+    return particle(thisValue[Index]);
 }
 template<typename Traits>
-MatrixVectorSpaceExtendedAccess<Traits>::operator const typename MatrixVectorSpaceExtendedAccess<Traits>::underlying_type&() const
+typename MatrixVectorSpaceExtendedAccess<Traits>::iterator_type MatrixVectorSpaceExtendedAccess<Traits>::begin(const ytl::function<bool(const_reference)>& filter)
 {
-    return this->getValue();
+    return this->getValue().begin(filter);
+}
+template<typename Traits>
+typename MatrixVectorSpaceExtendedAccess<Traits>::iterator_type MatrixVectorSpaceExtendedAccess<Traits>::end()
+{
+    return this->getValue().end();
+}
+template<typename Traits>
+typename MatrixVectorSpaceExtendedAccess<Traits>::const_iterator_type MatrixVectorSpaceExtendedAccess<Traits>::cbegin(const ytl::function<bool(const_reference)>& filter) const
+{
+    return this->getValue().cbegin(filter);
+}
+template<typename Traits>
+typename MatrixVectorSpaceExtendedAccess<Traits>::const_iterator_type MatrixVectorSpaceExtendedAccess<Traits>::cend() const
+{
+    return this->getValue().cend();
+}
+template<typename Traits>
+size_t MatrixVectorSpaceExtendedAccess<Traits>::getSize() const
+{
+    return this->getValue().getSize();
+}
+template<typename Traits>
+bool MatrixVectorSpaceExtendedAccess<Traits>::empty() const
+{
+    return this->getValue().empty();
+}
+template<typename Traits>
+typename MatrixVectorSpaceExtendedAccess<Traits>::view_type MatrixVectorSpaceExtendedAccess<Traits>::view() const
+{
+    return view_type(this->getValue());
 }
 
 template<set_type V, int N, int M>
@@ -243,7 +310,7 @@ requires ( mpl::get_num_types<Args...>::value == N && mpl::are_type_of<is_vector
 void cMatrixVectorSpaceSetTraits<V,N,M>::init(underlying_type& o_value, Args&& ... i_args)
 {
     size_t indexI = 0;
-    const auto res = { o_value[indexI++] = i_args ...};
+    ( static_cast<bool>(o_value[indexI++] = i_args.getValue()) && ...);
 }
 template<set_type V, int N, int M>
 template<typename ... Args>

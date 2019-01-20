@@ -37,8 +37,11 @@ class parameter_pack<Type,Types...>
 {
     static const size_t s_num_types = mpl::get_num_types<Type,Types...>::value;
 
+    template<typename...>
+    friend class parameter_pack;
+
 public:
-    parameter_pack<Type,Types...>() = default;
+    parameter_pack<Type,Types...>() = delete;
     template<typename TType, typename ... TTypes>
     requires ( mpl::get_num_types<Types...>::value == mpl::get_num_types<TTypes...>::value )
     parameter_pack<Type,Types...>(TType&& i_val, TTypes&& ...vals);
@@ -107,6 +110,18 @@ parameter_pack<Types&&...> make_parameter_pack(Types&& ... vals)
 }
 
 }
+
+namespace mpl
+{
+
+template<typename ... Types>
+struct add_constness<container::parameter_pack<Types...>>
+{
+    typedef container::parameter_pack<typename mpl::add_constness<Types>::type ...> type;
+};
+
+}
+
 }
 
 #include "YTL/container/detail/cParameterPack.tpp"

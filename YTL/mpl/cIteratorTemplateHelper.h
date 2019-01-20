@@ -11,7 +11,8 @@ enum ReferenceCategory
 {
     NonConstReference = 0,
     ConstReference = 1,
-    Value = 2
+    Value = 2,
+    ConstValue=3
 };
 
 template<typename>
@@ -27,6 +28,12 @@ template<typename T>
 struct deduceCategoryFromType<T&>
 {
     static const ReferenceCategory category = ReferenceCategory::NonConstReference;
+};
+
+template<typename T>
+struct deduceCategoryFromType<const T>
+{
+    static const ReferenceCategory category = ReferenceCategory::ConstValue;
 };
 
 template<typename T>
@@ -53,8 +60,14 @@ struct getReference<TT,ReferenceCategory::ConstReference>
 template<typename TT>
 struct getReference<TT,ReferenceCategory::Value>
 {
-    typedef typename mpl::drop_reference<typename mpl::drop_constness<TT>::type>::type type;
+    typedef TT type;
     static const ReferenceCategory value = Value;
+};
+template<typename TT>
+struct getReference<TT,ReferenceCategory::ConstValue>
+{
+    typedef typename mpl::add_constness<TT>::type type;
+    static const ReferenceCategory value = ConstValue;
 };
 
 template<typename,ReferenceCategory>
@@ -76,6 +89,12 @@ template<typename TT>
 struct getPointer<TT,ReferenceCategory::Value>
 {
     typedef typename mpl::drop_pointer<typename mpl::drop_constness<TT>::type>::type type;
+    static const ReferenceCategory value = Value;
+};
+template<typename TT>
+struct getPointer<TT,ReferenceCategory::ConstValue>
+{
+    typedef typename mpl::drop_pointer<TT>::type type;
     static const ReferenceCategory value = Value;
 };
 

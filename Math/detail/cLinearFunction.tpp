@@ -52,26 +52,25 @@ Return linear_function<Im,Dom>::specialize(Args&& ... i_args) const
     return Return(base_function::operator()(mpl::forward<Args>(i_args) ...));
 }
 template<ring_type Im, vector_space_type Dom>
-vector<Im,Dom::dimension() + 1> linear_function<Im,Dom>::as_vector() const
+vector<Im,Dom::dimension()> linear_function<Im,Dom>::as_vector() const
 {
     return _as_vector(typename mpl::create_range_rank<0,Dom::dimension()>::type{});
 }
 template<ring_type Im, vector_space_type Dom>
 template<int ... Indexs>
-vector<Im,Dom::dimension() + 1> linear_function<Im,Dom>::_as_vector(const mpl::sequence<Indexs...>&) const
+vector<Im,Dom::dimension()> linear_function<Im,Dom>::_as_vector(const mpl::sequence<Indexs...>&) const
 {
+    static const Dom s_bases[Dom::dimension()] = { Dom::base(Indexs) ... };
+
     //recover components by applying basis over netsed function
-    return _as_vector(Dom::base(Indexs) ...);
+    return _as_vector(s_bases[Indexs] ...);
 }
 template<ring_type Im, vector_space_type Dom>
 template<typename ... Args>
 requires ( mpl::get_num_types<Args...>::value == Dom::dimension() && mpl::are_same_type<Dom,Args...>::value )
-vector<Im,Dom::dimension() + 1> linear_function<Im,Dom>::_as_vector(const Args& ... i_bases) const
+vector<Im,Dom::dimension()> linear_function<Im,Dom>::_as_vector(const Args& ... i_bases) const
 {
-    const Dom k_neutralElement = Dom::group::neutral_element();
-    const Im k_constant = func_base::eval(k_neutralElement);
-
-    return { func_base::eval(i_bases) - k_constant ..., k_constant};
+    return { func_base::eval(i_bases) ...};
 }
 
 }

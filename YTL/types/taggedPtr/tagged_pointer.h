@@ -14,7 +14,7 @@ class tagged_pointer
 {
 	static const short tag_mask = (1 << MASK_NUM_BITS) - 1;
 	typedef T* interface_ptr;
-	static const size_t bitMask = ((unsigned long long) (1) << ((unsigned long long) (sizeof(interface_ptr)) << 3)) - (tag_mask + 1); //in 64 bit systems we have to use extra large units so it does not overflow
+	static const size_t bitMask = ~tag_mask;
 
 	template<typename TT>
 	friend class tagged_pointer;

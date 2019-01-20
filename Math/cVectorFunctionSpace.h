@@ -76,7 +76,7 @@ public:
     using ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::eval;
     using ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::_x_;
 
-    matrix<typename Im::ring,Im::dimension(),Dom::dimension() + 1> as_matrix() const;
+    matrix<typename Im::ring,Im::dimension(),Dom::dimension()> as_matrix() const;
 };
 
 }

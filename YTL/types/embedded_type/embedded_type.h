@@ -39,9 +39,6 @@ public:
     typedef const T* cpointer_type;
 
 public:
-    internal_type&			m_data;
-
-public:
     embedded_type(internal_type& other);
     embedded_type(const embedded_type<T&>& other);
     //this is a ref, we do not allow assignments beyond construction
@@ -63,6 +60,9 @@ public:
     template<typename Type>
     static bool assign(void* address, Type&& val);
     static bool swap(void* addressA, internal_type& valA, void* addressB, internal_type& valB);
+
+private:
+    internal_type&			m_data;
 };
 
 template<typename T>
@@ -78,10 +78,6 @@ public:
     typedef T* pointer_type;
     typedef const T* cpointer_type;
 
-public:
-    internal_type&&			m_data;
-
-public:
     embedded_type(T&& other);
     embedded_type(const embedded_type<T&&>& other);
     //this is a ref, we do not allow assignments beyond construction
@@ -103,6 +99,9 @@ public:
     template<typename Type>
     static bool assign(void* address, Type&& val);
     static bool swap(void* addressA, internal_type&& valA, void* addressB, internal_type&& valB);
+
+private:
+    internal_type&&			m_data;
 };
 
 template<typename T>
@@ -138,10 +137,6 @@ public:
     typedef T* pointer_type;
     typedef const T* cpointer_type;
 
-public:
-    internal_type  m_data;
-
-public:
     embedded_type(const internal_type& other);
     embedded_type(internal_type& other);
     embedded_type(internal_type&& other);
@@ -163,6 +158,9 @@ public:
     template<typename Type>
     static bool assign(void* address, Type&& val);
     static bool swap(void* addressA, internal_type& valA, void* addressB, internal_type& valB);
+
+private:
+    internal_type  m_data;
 };
 
 }

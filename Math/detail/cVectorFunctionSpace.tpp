@@ -36,7 +36,7 @@ auto ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::eval(Args&& ... i_args) co
 }
 
 template<module_type Im, vector_space_type Dom, callable_type Function>
-matrix<typename Im::ring,Im::dimension(),Dom::dimension() + 1> ExtendedLinearVectorFunctionSpaceSet<Im,Dom,Function>::as_matrix() const
+matrix<typename Im::ring,Im::dimension(),Dom::dimension()> ExtendedLinearVectorFunctionSpaceSet<Im,Dom,Function>::as_matrix() const
 {
     return this->getValue().as_matrix();
 }

@@ -50,14 +50,14 @@ linear_vector_function<Im,Dom>::operator IIm() const
     return _eval(typename mpl::create_range_rank<0,Im::dimension()>::type{});
 }
 template<module_type Im , vector_space_type Dom>
-matrix<typename Im::ring,Im::dimension(),Dom::dimension() + 1> linear_vector_function<Im,Dom>::as_matrix() const
+matrix<typename Im::ring,Im::dimension(),Dom::dimension()> linear_vector_function<Im,Dom>::as_matrix() const
 {
     return _as_matrix(typename mpl::create_range_rank<0,Im::dimension()>::type{});
 }
 template<module_type Im , vector_space_type Dom>
 template<int ... Components>
 requires(mpl::get_num_ranks<Components...>::value == Im::dimension() )
-matrix<typename Im::ring,Im::dimension(),Dom::dimension() + 1> linear_vector_function<Im,Dom>::_as_matrix(const mpl::sequence<Components...>&) const
+matrix<typename Im::ring,Im::dimension(),Dom::dimension()> linear_vector_function<Im,Dom>::_as_matrix(const mpl::sequence<Components...>&) const
 {
     return { this->template get<Components>().as_vector() ... };
 }

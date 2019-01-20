@@ -65,7 +65,7 @@ struct IteratorTraits : AgnosticIteratorTraits<T,category>
 {
     typedef Tag tag;
     typedef Iterator<IteratorTraits<T,Iterator,Iterable,Tag,category>> iterator_type;
-    typedef typename IteratorTraits<T,Iterator,const Iterable,Tag,mpl::static_if<category==ReferenceCategory::Value,getReference<T,ReferenceCategory::Value>,getReference<T,ReferenceCategory::ConstReference>>::type::value>::iterator_type const_iterator_type;
+    typedef typename IteratorTraits<T,Iterator,const Iterable,Tag,mpl::static_if<category==ReferenceCategory::Value,getReference<T,ReferenceCategory::ConstValue>,getReference<T,ReferenceCategory::ConstReference>>::type::value>::iterator_type const_iterator_type;
     typedef typename AgnosticIteratorTraits<T,category>::raw_type raw_type;
     typedef typename AgnosticIteratorTraits<T,category>::pointer_type pointer_type;
     typedef typename AgnosticIteratorTraits<T,category>::const_pointer_type const_pointer_type;

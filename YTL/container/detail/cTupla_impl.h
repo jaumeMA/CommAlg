@@ -15,20 +15,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 #pragma once
 
 #include "YTL/mpl/cTemplateHelper.h"
-#include "YTL/container/cIterableBase.h"
-#include "YTL/container/cContainerView.h"
-#include "YTL/container/detail/cTuplaTemplateHelper.h"
-#include <initializer_list>
+#include "YTL/container/detail/cTupla_storage.h"
 
 #define SIGNATURE(T,dim) typename yame::mpl::create_function_signature<T,dim>::template is<>::type
 #define BASE_TYPE(T) T
 #define DEFINE_BASE_TYPE(T) typedef BASE_TYPE(T) base_type
-#define PRIMITIVE_TYPE(T) typename yame::mpl::get_primitive_type<T,yame::mpl::has_base_type<T>::value>::type
-#define DEFINE_PRIMITIVE_TYPE(T) typedef PRIMITIVE_TYPE(T) primitive_type
-#define DIM_TUPLE(rank,ranks) mpl::get_num_ranks<rank,ranks...>::value
-#define PROD_RANKS(rank,ranks) mpl::Prod<rank,ranks...>::value
 #define SQUARE_TUPLE(T,rank,m) mpl::append_dim<T,m,rank,yame::container::cTupla>::template is<>::type
-
+#define PROD_RANKS(rank,ranks) mpl::Prod<rank,ranks...>::value
+#define DIM_TUPLE(rank,ranks) mpl::get_num_ranks<rank,ranks...>::value
 #define PROD_TUPLE(T,rank,ranks,rankOther,ranksOther) cTupla<T,rank,ranks...,rankOther,ranksOther...>
 #define SUM_TUPLE(T,rank,ranks,rankOther,ranksOther) cTupla<T,rank+rankOther,ranks...>
 #define SUB_TUPLE(T,ranks) \
@@ -42,287 +36,76 @@ namespace container
 {
 namespace detail
 {
-template<typename T, int ... ranks>
-class cTupla_impl;
 
-template<typename T, int ... ranks>
+template<typename, int ...>
+class cTupla;
+
+template<typename, int ...>
 class cSubTuple;
+template<typename, int>
+class cTuplaStorage;
 
 template<typename T, int rank, int ... ranks>
 class cSubTuple<T,rank,ranks...>
 {
-    template<typename TT, int ... rranks>
-    friend class cTupla_impl;
-    template<typename TT, int ... rranks>
+    static const size_t m_rank=mpl::Prod<rank,ranks...>::value;
+
+    template<typename, int ...>
+    friend class cTupla;
+    template<typename, int ...>
     friend class cSubTuple;
+    template<typename, int>
+    friend class cTuplaStorage;
 
 public:
     cSubTuple<T,rank,ranks...>();
-    cSubTuple<T,rank,ranks...>(const cSubTuple<T,rank,ranks...>& other);
-    cSubTuple<T,rank,ranks...>(const cTupla_impl<T,rank,ranks...>& other);
-    cSubTuple<T,rank,ranks...>(void *ref);
-    void reference_tuple(const cSubTuple<T,rank,ranks...>& other);
-    void reference_tuple(void* ref);
-    SUB_TUPLE(T,ranks)& operator[](size_t index);
-    const SUB_TUPLE(T,ranks)& operator[](size_t index) const;
-    size_t getDim() const;
-    size_t getRank() const;
-    cSubTuple<T,rank,ranks...>& operator=(const cSubTuple<T,rank,ranks...>& other);
+    cSubTuple<T,rank,ranks...>(const cSubTuple<T,rank,ranks...>& other) = delete;
+    cSubTuple<T,rank,ranks...>(cSubTuple<T,rank,ranks...>&& other);
+    cSubTuple<T,rank,ranks...>(T* ref);
+    cSubTuple<T,ranks...> operator[](size_t index);
+    cSubTuple<const T,ranks...> operator[](size_t index) const;
     template<typename TT>
     requires ( mpl::is_constructible<T,TT>::value )
     cSubTuple<T,rank,ranks...>& operator=(const cSubTuple<TT,rank,ranks...>& other);
-    cSubTuple<T,rank,ranks...>& operator=(const cTupla_impl<T,rank,ranks...>& other);
+    template<typename Arg>
+    cSubTuple<T,rank,ranks...>& operator=(Arg&& i_arg);
+    explicit operator bool() const;
+    T* _get_reference();
+    const T* _get_reference() const;
 
 private:
-    cSubTuple<T,ranks...>   m_subTuple[rank];
-    static const size_t m_rank=mpl::Prod<rank,ranks...>::value;
-    DEFINE_PRIMITIVE_TYPE(T);
-    DEFINE_BASE_TYPE(T);
+    T* m_ref;
 };
 
-template<typename T>
-class cSubTuple<T>
+template<typename T, int rank>
+class cSubTuple<T,rank>
 {
-    template<typename TT, int ... rranks>
-    friend class cTupla_impl;
+    template<typename, int ...>
+    friend class cTupla;
+    template<typename, int>
+    friend class cTuplaStorage;
 
 public:
-    void reference_tuple(const cSubTuple<T>& other);
-    void reference_tuple(void* ref);
-    cSubTuple<T>();
-    cSubTuple<T>(const cSubTuple<T>& other);
-    explicit cSubTuple<T>(void *ref);
-    operator T&();
-    operator const T&() const;
-    cSubTuple<T>& operator=(const cSubTuple<T>& other);
-    cSubTuple<T>& operator=(const T& other);
+    cSubTuple<T,rank>();
+    cSubTuple<T,rank>(const cSubTuple<T,rank>& other) = delete;
+    cSubTuple<T,rank>(cSubTuple<T,rank>&& other);
+    explicit cSubTuple<T,rank>(T* ref);
     T& operator[](size_t index);
     const T& operator[](size_t index) const;
-    size_t getDim() const;
-    size_t getRank() const;
+    template<typename TT>
+    requires ( mpl::is_constructible<T,TT>::value )
+    cSubTuple<T,rank>& operator=(const cSubTuple<TT,rank>& other);
+    template<typename Arg>
+    cSubTuple<T,rank>& operator=(Arg&& i_arg);
+    explicit operator bool() const;
+    T* _get_reference();
+    const T* _get_reference() const;
 
 private:
-    T                       *m_ref;
-    DEFINE_PRIMITIVE_TYPE(T);
-    DEFINE_BASE_TYPE(T);
-};
-
-//specialization for nested tuples
-template<typename T, int rank, int ... ranks>
-class cSubTuple<cSubTuple<T,rank,ranks...> >
-{
-    template<typename TT, int ... rranks>
-    friend class cTupla_impl;
-
-public:
-    cSubTuple();
-    void reference_tuple(const cSubTuple<cSubTuple<T,rank,ranks...> >& other);
-    cSubTuple(const cSubTuple<cSubTuple<T,rank,ranks...> >& other) = delete;
-    explicit cSubTuple(void *ref);
-    operator cSubTuple<T,rank,ranks...>&();
-    operator const cSubTuple<T,rank,ranks...>&() const;
-    void reference_tuple(void* ref);
-    SUB_TUPLE(T,ranks)& operator[](size_t index);
-    const SUB_TUPLE(T,ranks)& operator[](size_t index) const;
-    size_t getDim() const;
-    size_t getRank() const;
-    cSubTuple<cSubTuple<T,rank,ranks...> >& operator=(const cSubTuple<cSubTuple<T,rank,ranks...> >& other);
-    cSubTuple<cSubTuple<T,rank,ranks...> >& operator=(const cSubTuple<T,rank,ranks...>& other);
-
-private:
-    cSubTuple<T,rank,ranks...>   m_subTuple;
-    DEFINE_PRIMITIVE_TYPE(T);
-    DEFINE_BASE_TYPE(T);
-};
-
-
-template<typename T, int totalRank>
-class cTuplaStorage
-{
-public:
-    DEFINE_PRIMITIVE_TYPE(T);
-
-    __attribute__((aligned(16*sizeof(char)))) primitive_type   m_tupla[totalRank*mpl::total_rank<T>::value];
-
-    inline primitive_type* getTupla()
-    {
-        return m_tupla;
-    }
-    inline const primitive_type* getTupla() const
-    {
-        return m_tupla;
-    }
-    inline bool isAddressInside(const void* i_address, size_t i_bottomOffset, size_t i_topOffset) const
-    {
-        const primitive_type* address = reinterpret_cast<const primitive_type*>(i_address);
-
-        return address >= (m_tupla + i_bottomOffset) && address < (m_tupla + totalRank - i_topOffset);
-    }
-};
-
-template<typename T, int rank, int ... ranks>
-class cTupla_impl<T,rank,ranks...> : public cTuplaStorage<T,PROD_RANKS(rank,ranks)>, public detail::cConstRandomAccessIterableBaseImpl<T&>
-{
-    typedef typename detail::cConstRandomAccessIterableBaseImpl<T&>::node_pointer_type node_pointer_type;
-
-    using cTuplaStorage<T,PROD_RANKS(rank,ranks)>::isAddressInside;
-
-    template<typename TT, int ... rranks>
-    friend class cTupla_impl;
-    template<typename TT, int ... rranks>
-    friend class cSubTuple;
-
-public:
-    typedef T value_type;
-    typedef detail::cConstRandomAccessIterableBaseImpl<T&> iterable_type;
-    typedef typename detail::cConstRandomAccessIterableBaseImpl<T&>::iterator_type iterator_type;
-    typedef typename detail::cConstRandomAccessIterableBaseImpl<T&>::const_iterator_type const_iterator_type;
-    typedef typename detail::cConstRandomAccessIterableBaseImpl<T&>::iterable_public_interface iterable_public_interface;
-    typedef typename detail::cConstRandomAccessIterableBaseImpl<T&>::reference reference;
-    typedef typename detail::cConstRandomAccessIterableBaseImpl<T&>::const_reference const_reference;
-    static const detail::ReferenceCategory category = iterator_type::category;
-    typedef typename cTuplaStorage<T,PROD_RANKS(rank,ranks)>::primitive_type primitive_type;
-
-    cTupla_impl();
-    cTupla_impl(T *values);
-    cTupla_impl(const cTupla_impl<T,rank,ranks...>& other);
-    cTupla_impl(const cSubTuple<T,rank,ranks...>& other);
-    template<typename TT>
-    requires (mpl::is_constructible<T,TT>::value )
-    cTupla_impl(const cTupla_impl<TT,rank,ranks...>& other);
-    template<typename TT>
-    cTupla_impl(const std::initializer_list<TT>& i_tupleList);
-    ~cTupla_impl();
-    SUB_TUPLE(T,ranks)& operator[](size_t index);
-    const SUB_TUPLE(T,ranks)& operator[](size_t index) const;
-    cTupla_impl<T,rank,ranks...>& operator=(const cTupla_impl<T,rank,ranks...>& other);
-    template<typename TT>
-    requires (mpl::is_constructible<T,TT>::value )
-    cTupla_impl<T,rank,ranks...>& operator=(const cTupla_impl<TT,rank,ranks...>& other);
-    bool operator==(const cTupla_impl<T,rank,ranks...>& other) const;
-    bool operator!=(const cTupla_impl<T,rank,ranks...>& other) const;
-    size_t getDim() const;
-    size_t getRank() const;
-    size_t getTotalRank() const;
-    const primitive_type* getAsPtr() const;
-    template<int Index, int ... Indexs>
-    SUB_TUPLE(T,ranks)& get();
-    template<int Index, int ... Indexs>
-    const SUB_TUPLE(T,ranks)& get() const;
-
-    //const iterable implementation
-    size_t getSize() const override;
-    node_pointer_type getFirstElem() const override;
-    node_pointer_type getLastElem() const override;
-    node_pointer_type getNextElem(node_pointer_type currNode) const override;
-    node_pointer_type getPrevElem(node_pointer_type currNode) const override;
-    const_reference getValue(node_pointer_type) const override;
-    reference getValue(node_pointer_type) override;
-    node_pointer_type shiftNodeByIndex(node_pointer_type currNode, int index) const override;
-    size_t getIndexOfNode(node_pointer_type node) const override;
-
-
-private:
-    //this var is useful when applying SFINAE to this class and for recursion over type T
-    DEFINE_BASE_TYPE(T);
-
-    void reference_tuple();
-
-protected:
-    static const size_t       m_rank=PROD_RANKS(rank,ranks);
-    static const size_t        m_dim=DIM_TUPLE(rank,ranks);
-    cSubTuple<T,ranks...>   m_subTuple[rank];
-};
-
-template<typename T>
-class cTupla_impl<T,1> : public cTuplaStorage<T,1>, public detail::cConstRandomAccessIterableBaseImpl<T&>
-{
-    typedef typename detail::cConstRandomAccessIterableBaseImpl<T&>::node_pointer_type node_pointer_type;
-
-    using cTuplaStorage<T,1>::isAddressInside;
-
-public:
-    static const size_t m_rank=1;
-    typedef T value_type;
-    typedef detail::cConstRandomAccessIterableBaseImpl<T&> iterable_type;
-    typedef typename detail::cConstRandomAccessIterableBaseImpl<T&>::iterator_type iterator_type;
-    typedef typename detail::cConstRandomAccessIterableBaseImpl<T&>::const_iterator_type const_iterator_type;
-    typedef typename detail::cConstRandomAccessIterableBaseImpl<T&>::iterable_public_interface iterable_public_interface;
-    typedef typename detail::cConstRandomAccessIterableBaseImpl<T&>::reference reference;
-    typedef typename detail::cConstRandomAccessIterableBaseImpl<T&>::const_reference const_reference;
-    static const detail::ReferenceCategory category = iterator_type::category;
-    typedef typename cTuplaStorage<T,1>::primitive_type primitive_type;
-
-public:
-    cTupla_impl();
-    cTupla_impl(T value);
-    cTupla_impl(const cTupla_impl<T,1>& other);
-    cTupla_impl(const cSubTuple<T,1>& other);
-    template<typename TT>
-    cTupla_impl(const std::initializer_list<TT>& i_tupleList);
-    T& operator[](size_t index);
-    const T& operator[](size_t index) const;
-    operator T&();
-    operator const T&() const;
-    cTupla_impl<T,1>& operator=(const cTupla_impl<T,1>& other);
-    bool operator==(const cTupla_impl<T,1>& other) const;
-    bool operator!=(const cTupla_impl<T,1>& other) const;
-    size_t getDim() const;
-    size_t getTotalRank() const;
-    size_t getRank() const;
-    const primitive_type* getAsPtr() const;
-    template<int Index>
-    T& get();
-    template<int Index>
-    const T& get() const;
-
-    //const iterable implementation
-    size_t getSize() const override;
-    node_pointer_type getFirstElem() const override;
-    node_pointer_type getLastElem() const override;
-    node_pointer_type getNextElem(node_pointer_type currNode) const override;
-    node_pointer_type getPrevElem(node_pointer_type currNode) const override;
-    const_reference getValue(node_pointer_type) const override;
-    reference getValue(node_pointer_type) override;
-    node_pointer_type shiftNodeByIndex(node_pointer_type currNode, int index) const override;
-    size_t getIndexOfNode(node_pointer_type node) const override;
-
-private:
-    DEFINE_BASE_TYPE(T);
-
-    void reference_tuple();
-
-    cSubTuple<T>          m_subTuple;
+    T *m_ref;
 };
 
 }
-
-template<typename T>
-using tupla_view = cRandomAccessView<T&>;
-template<typename T>
-using const_tupla_view = cConstRandomAccessView<T&>;
-
-}
-
-namespace mpl
-{
-template<typename T, int ... ranks>
-struct type_size<container::detail::cSubTuple<T,ranks...> >
-{
-    static const size_t value = Prod<ranks...>::value * type_size<T>::value;
-};
-
-template<typename T, int ... ranks>
-struct total_dim<container::detail::cSubTuple<T,ranks...> >
-{
-    static const size_t value = get_num_ranks<ranks...>::value + total_dim<T>::value;
-};
-
-template<typename T, int ... ranks>
-struct total_rank<container::detail::cSubTuple<T,ranks...> >
-{
-    static const size_t value = Prod<ranks...>::value * total_rank<T>::value;
-};
 }
 }
 

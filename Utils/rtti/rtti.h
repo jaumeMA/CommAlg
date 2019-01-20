@@ -101,7 +101,7 @@ inline TT* dynamicCast(T* i_ptr, ...)
     typedef typename mpl::drop_constness<T>::type non_const_T;
     typedef typename mpl::drop_constness<TT>::type non_const_TT;
 
-    static const double s_tolerance = 1e-9;
+    static const double s_tolerance = 1e-7;
     const detail::prod_uint512 Tprime_id = i_ptr->_rtti_prime_id();
 
     static const unsigned long long k_maxNumberValue = 1e13;
