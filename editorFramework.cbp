@@ -231,7 +231,6 @@
 		<Unit filename="YTL/container/cString.h" />
 		<Unit filename="YTL/container/cTreeBalancer.h" />
 		<Unit filename="YTL/container/cTrie.h" />
-		<Unit filename="YTL/container/cTriple.h" />
 		<Unit filename="YTL/container/cTupla.h" />
 		<Unit filename="YTL/container/cUnorderedMap.h" />
 		<Unit filename="YTL/container/detail/cAVLtree.tpp" />
@@ -270,7 +269,6 @@
 		<Unit filename="YTL/container/detail/cString.tpp" />
 		<Unit filename="YTL/container/detail/cTreeBalancer.tpp" />
 		<Unit filename="YTL/container/detail/cTrie.tpp" />
-		<Unit filename="YTL/container/detail/cTriple.tpp" />
 		<Unit filename="YTL/container/detail/cTupla.tpp" />
 		<Unit filename="YTL/container/detail/cTuplaTemplateHelper.h" />
 		<Unit filename="YTL/container/detail/cTupla_impl.h" />

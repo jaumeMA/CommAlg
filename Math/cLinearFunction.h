@@ -53,21 +53,20 @@ public:
     linear_function& operator=(const Dom& i_value);
     template<callable_type Return, typename ... Args>
     Return specialize(Args&& ... i_args) const;
-    vector<Im,Dom::dimension() + 1> as_vector() const;
+    vector<Im,Dom::dimension()> as_vector() const;
 
     DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION(sum,+)
     DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION(subs,-)
-    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION_CONSTANT(sum,+)
-    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION_CONSTANT(subs,-)
     DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION_CONSTANT(prod,*)
+    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION_CONSTANT(div,/)
 
 private:
     linear_function(const base_function& i_base);
     template<int ... Indexs>
-    inline vector<Im,Dom::dimension() + 1> _as_vector(const mpl::sequence<Indexs...>&) const;
+    inline vector<Im,Dom::dimension()> _as_vector(const mpl::sequence<Indexs...>&) const;
     template<typename ... Args>
     requires ( mpl::get_num_types<Args...>::value == Dom::dimension() && mpl::are_same_type<Dom,Args...>::value )
-    inline vector<Im,Dom::dimension() + 1> _as_vector(const Args& ... i_bases) const;
+    inline vector<Im,Dom::dimension()> _as_vector(const Args& ... i_bases) const;
 };
 
 }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Math/cVectorSpace.h"
-#include "YTL/container/cTriple.h"
 
 namespace yame
 {
