@@ -27,16 +27,34 @@ public:
     typedef typename Traits::homogeneous_space_traits homogeneous_space_traits;
 	using cSet<typename Traits::set_traits>::cSet;
 	using cSet<typename Traits::set_traits>::operator=;
-	using cSet<typename Traits::set_traits>::operator==;
 	using cSet<typename Traits::set_traits>::operator!=;
 
     static inline constexpr size_t dimension()
     {
         return vector_space::dimension();
     }
+    friend inline bool operator==(const cAffineSpace& i_lhs, const cAffineSpace& i_rhs)
+    {
+        typedef typename Traits::underlying_type underlying_type;
+
+        const underlying_type& lhsValue = i_lhs.getValue();
+        const underlying_type& rhsValue = i_rhs.getValue();
+        return homogeneous_space_traits::action(lhsValue.first,lhsValue.second) == homogeneous_space_traits::action(rhsValue.first,rhsValue.second);
+    }
+    friend inline bool operator!=(const cAffineSpace& i_lhs, const cAffineSpace& i_rhs)
+    {
+        typedef typename Traits::underlying_type underlying_type;
+
+        const underlying_type& lhsValue = i_lhs.getValue();
+        const underlying_type& rhsValue = i_rhs.getValue();
+        return homogeneous_space_traits::action(lhsValue.first,lhsValue.second) != homogeneous_space_traits::action(rhsValue.first,rhsValue.second);
+    }
     friend inline cAffineSpace operator+(const cAffineSpace& i_lhs, const vector_space& i_rhs)
     {
-        return homogeneous_space_traits::action(i_lhs.getValue(),i_rhs);
+        typedef typename Traits::underlying_type underlying_type;
+
+        const underlying_type& thisValue = i_lhs.getValue();
+        return cAffineSpace(homogeneous_space_traits::action(thisValue.first,i_rhs),i_rhs);
     }
 };
 

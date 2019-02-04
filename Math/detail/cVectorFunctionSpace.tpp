@@ -1,4 +1,6 @@
 
+#include "Math/cMathOps.h"
+
 namespace yame
 {
 namespace math
@@ -12,7 +14,7 @@ Im ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::_eval(const mpl::sequence<Co
 {
     const Function& nestedFunction = this->getValue();
 
-    return { nestedFunction.template get<Components>().eval(mpl::forward<Args>(i_args)...) ...};
+    return {nestedFunction.template get<Components>().eval(mpl::forward<Args>(i_args)...) ...};
 }
 template<module_type Im, vector_space_type Dom, callable_type Function>
 typename ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::underlying_type ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::get_nested_function() const

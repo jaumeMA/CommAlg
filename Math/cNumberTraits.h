@@ -105,6 +105,7 @@ struct RealSetTraits
     static void assign(underlying_type& o_value, const underlying_type& i_value);
     static void assign(underlying_type& o_value, const double& i_value);
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);
+    static bool cmp(const underlying_type& i_lhs, const double& i_rhs);
 };
 
 template<unsigned char Precision>

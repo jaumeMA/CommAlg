@@ -8,13 +8,22 @@ friend inline linear_function<Im,Dom> operator OP(const linear_function<Im,Dom>&
     return static_cast<const base_function&>(i_lhs) OP static_cast<const base_function&>(i_rhs); \
 }
 #define DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION_CONSTANT(NAME,OP) \
-friend inline linear_function<Im,Dom> operator OP(const linear_function<Im,Dom>& i_lhs, const typename Dom::ring& i_rhs) \
+friend inline linear_function<Im,Dom> operator OP(const linear_function<Im,Dom>& i_lhs, const Im& i_rhs) \
 { \
-    return static_cast<const base_function&>(i_lhs) OP constant_function<typename Dom::ring,Dom>(i_rhs); \
+    return static_cast<const base_function&>(i_lhs) OP constant_function<Im,Dom>(i_rhs); \
 } \
-friend inline linear_function<Im,Dom> operator OP(const typename Dom::ring& i_lhs, const linear_function<Im,Dom>& i_rhs) \
+friend inline linear_function<Im,Dom> operator OP(const Im& i_lhs, const linear_function<Im,Dom>& i_rhs) \
 { \
-    return constant_function<typename Dom::ring,Dom>(i_lhs) OP static_cast<const base_function&>(i_rhs); \
+    return constant_function<Im,Dom>(i_lhs) OP static_cast<const base_function&>(i_rhs); \
+}
+#define DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_SCALAR_FUNCTION_CONSTANT(NAME,OP) \
+friend inline scalar_function<Im,Dom> operator OP(const linear_function<Im,Dom>& i_lhs, const Im& i_rhs) \
+{ \
+    return static_cast<const base_function&>(i_lhs) OP constant_function<Im,Dom>(i_rhs); \
+} \
+friend inline scalar_function<Im,Dom> operator OP(const Im& i_lhs, const linear_function<Im,Dom>& i_rhs) \
+{ \
+    return constant_function<Im,Dom>(i_lhs) OP static_cast<const base_function&>(i_rhs); \
 }
 
 namespace yame
@@ -59,6 +68,8 @@ public:
     DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION(subs,-)
     DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION_CONSTANT(prod,*)
     DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION_CONSTANT(div,/)
+    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_SCALAR_FUNCTION_CONSTANT(sum,+)
+    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_SCALAR_FUNCTION_CONSTANT(sum,-)
 
 private:
     linear_function(const base_function& i_base);

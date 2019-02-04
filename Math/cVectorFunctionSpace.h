@@ -5,7 +5,6 @@
 #include "Math/cLinearVectorFunction.h"
 #include "Math/cFunctionSpace.h"
 #include "Math/detail/cVectorFunctionTemplateHelper.h"
-#include "Math/cMathOps.h"
 
 #define x_(_Index) _x_<_Index>()
 #define x_0 x_(0)
@@ -26,6 +25,8 @@ namespace math \
 { \
 static VFR1 FUNC_NAME##Real = VFR1(NESTED_FUNC_NAME##r); \
 static VFC1 FUNC_NAME##Complex = VFC1(NESTED_FUNC_NAME##c); \
+template<module_type Im, vector_space_type Dom> \
+static VF<Im,Dom> FUNC_NAME = VF<Im,Dom>(NESTED_FUNC_NAME##_function_t<typename Im::ring,Dom>());\
 } \
 }
 

@@ -5,7 +5,6 @@ namespace yame
 namespace math
 {
 
-
 template<set_type Im, set_type Dom, callable_type Function>
 template<set_type IIm>
 requires ( Dom::dimension() == 0 )

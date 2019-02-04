@@ -284,6 +284,20 @@ size_t cTupla<T,rank>::getIndexOfNode(node_pointer_type node) const
 {
     return detail::receiveNodeFromIterator<primitive_type*>(node) - this->address();
 }
+template<typename T, int rank>
+template<typename TT>
+requires ( rank==1 && mpl::is_same_type<T,TT>::value )
+cTupla<T,rank>::operator TT&()
+{
+    detail::cTuplaStorage<T,m_rank>::template get<0>();
+}
+template<typename T, int rank>
+template<typename TT>
+requires ( rank==1 && mpl::is_same_type<T,TT>::value )
+cTupla<T,rank>::operator const TT&() const
+{
+    detail::cTuplaStorage<T,m_rank>::template get<0>();
+}
 
 template<typename T, int ... ranks, typename Arg, typename ... Args>
 requires( mpl::are_same_type<Arg,Args...>::value )

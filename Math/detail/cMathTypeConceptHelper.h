@@ -8,7 +8,7 @@ namespace math
 {
 
 template<typename Type>
-concept bool set_type = is_set<Type>::value;
+concept bool set_type = is_set<Type>::value && requires(const Type& i_lhs, const Type& i_rhs) { { i_lhs == i_rhs } };
 
 template<typename Type>
 concept bool group_type = set_type<Type> && is_group<Type>::value;
@@ -30,6 +30,9 @@ concept bool algebra_type = module_type<Type> && is_algebra<Type>::value;
 
 template<typename Type>
 concept bool vector_space_type = module_type<Type> && is_vector_space<Type>::value;
+
+template<typename Type>
+concept bool affine_space_type = is_affine_space<Type>::value;
 
 template<typename Type>
 concept bool metric_space_type = is_metric_space<Type>::value;

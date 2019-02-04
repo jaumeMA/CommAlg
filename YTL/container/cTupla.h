@@ -124,6 +124,12 @@ public:
     cTupla<T,rank>& operator=(const cTupla<TT,rank>& other);
     operator detail::cSubTuple<T,rank>();
     operator detail::cSubTuple<const T,rank>() const;
+    template<typename TT>
+    requires ( rank==1 && mpl::is_same_type<T,TT>::value )
+    operator TT&();
+    template<typename TT>
+    requires ( rank==1 && mpl::is_same_type<T,TT>::value )
+    operator const TT&() const;
     size_t getSize() const override;
 
 private:

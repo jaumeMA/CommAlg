@@ -279,6 +279,11 @@ bool RealSetTraits<Precision>::cmp(const underlying_type& i_lhs, const underlyin
 {
     return mpf_cmp(i_lhs, i_rhs) == 0;
 }
+template<unsigned char Precision>
+bool RealSetTraits<Precision>::cmp(const underlying_type& i_lhs, const double& i_rhs)
+{
+    return mpf_cmp_d(i_lhs,i_rhs);
+}
 
 template<unsigned char Precision>
 void RealGroupTraits<Precision>::sum(underlying_type& res, const underlying_type& i_lhs,const underlying_type& i_rhs)

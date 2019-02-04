@@ -89,6 +89,7 @@ DEFINE_HIGHER_ORDER_BINARY_FUNCTION(sum,+)
 DEFINE_HIGHER_ORDER_BINARY_FUNCTION(subs,-)
 DEFINE_HIGHER_ORDER_BINARY_FUNCTION(prod,*)
 DEFINE_HIGHER_ORDER_BINARY_FUNCTION(div,/)
+DEFINE_HIGHER_ORDER_BINARY_FUNCTION(pow,^)
 
 namespace yame
 {
@@ -104,7 +105,35 @@ class constant_function<function<Return(Types...)>> : public function<Return(Typ
 public:
     constant_function(const Return& i_constantValue)
     : function<Return(Types...)>([i_constantValue](Types ... i_args) { return i_constantValue; })
+    , m_constantValue(i_constantValue)
     {}
+    Return getConstant() const
+    {
+        return m_constantValue;
+    }
+
+private:
+    Return m_constantValue;
+};
+
+template<typename>
+class integer_constant_function;
+
+template<typename Return, typename ... Types>
+class integer_constant_function<function<Return(Types...)>> : public function<Return(Types...)>
+{
+public:
+    integer_constant_function(int i_constantValue)
+    : function<Return(Types...)>([i_constantValue](Types ... i_args) { return i_constantValue; })
+    , m_constantValue(i_constantValue)
+    {}
+    int getConstant() const
+    {
+        return m_constantValue;
+    }
+
+private:
+    int m_constantValue;
 };
 
 template<typename>

@@ -19,6 +19,7 @@ public:
 	typedef typename Traits::underlying_type underlying_type;
     using extended_set::extended_set;
     using extended_set::operator=;
+    using extended_set::operator==;
 
 	cSet(const underlying_type& i_value);
 	cSet(const cSet<Traits>& other);

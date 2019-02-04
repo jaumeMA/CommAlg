@@ -288,13 +288,13 @@ inline Iterator assign(container::detail::cIterableBase<Iterator>& iterableOut, 
 }
 
 template<typename IteratorIn, typename IteratorOutput>
-inline IteratorOutput transform(IteratorIn& itInitInput, IteratorIn& itEndInput, cIterableBase<IteratorOutput>& iterableOutput, const ytl::function<typename IteratorIn::value_type(typename IteratorIn::const_reference)>& i_transformOp)
+inline IteratorOutput transform(IteratorIn& itInitInput, IteratorIn& itEndInput, cIterableBase<IteratorOutput>& iterableOutput, const ytl::function<typename IteratorOutput::value_type(typename IteratorIn::const_reference)>& i_transformOp)
 {
     IteratorOutput itOut = iterableOutput.begin();
 
     for(;itInitInput!=itEndInput;++itInitInput)
     {
-        itOut = iterableOutput.add(i_transformOp(*itInitInput));
+        itOut = iterableOutput.add(i_transformOp.eval(*itInitInput));
     }
 
     return itOut;
@@ -582,12 +582,12 @@ inline typename Iterator::iterator_type assign(container::detail::cIterableBase<
     return container::detail::assign(iterableOut, i_initializerList);
 }
 template<typename T, typename TT>
-inline typename TT::iterator_type transform(T itInitInput, T itEndInput, TT itInitOutput, const ytl::function<typename T::value_type(typename T::const_reference)>& i_transformOp)
+inline typename TT::iterator_type transform(T itInitInput, T itEndInput, TT itInitOutput, const ytl::function<typename TT::value_type(typename T::const_reference)>& i_transformOp)
 {
     return container::detail::transform(itInitInput, itEndInput, itInitOutput, i_transformOp);
 }
 template<typename Iterator, typename IIterator>
-inline IIterator transform(const container::detail::cConstIterableBase<Iterator>& iterableInput, container::detail::cIterableBase<IIterator>& iterableOutput, const ytl::function<typename Iterator::value_type(typename Iterator::const_reference)>& i_transformOp)
+inline IIterator transform(const container::detail::cConstIterableBase<Iterator>& iterableInput, container::detail::cIterableBase<IIterator>& iterableOutput, const ytl::function<typename IIterator::value_type(typename Iterator::const_reference)>& i_transformOp)
 {
     typename Iterator::const_iterator_type itInitInput = iterableInput.cbegin();
     typename Iterator::const_iterator_type itEndInput = iterableInput.cend();

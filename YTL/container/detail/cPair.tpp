@@ -4,6 +4,14 @@ namespace yame
 namespace container
 {
 template<typename T, typename R>
+cPair<T,R>::cPair()
+: m_first(T{})
+, m_second(R{})
+, first(m_first)
+, second(m_second)
+{
+}
+template<typename T, typename R>
 template<typename TFirst, typename TSecond>
 cPair<T,R>::cPair(TFirst&& i_first, TSecond&& i_arg)
 : m_first(mpl::forward<TFirst>(i_first))

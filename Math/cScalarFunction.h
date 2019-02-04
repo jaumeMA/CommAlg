@@ -6,6 +6,7 @@
 #include "Math/detail/cStdMathOps.h"
 #include <utility>
 #include "YTL/functional/detail/cFunctionConceptHelper.h"
+#include "YTL/functional/cFunctionOps.h"
 
 #define DECLARE_MATH_FUNCTION(FUNC_NAME, NESTED_FUNC_NAME) \
 namespace yame \
@@ -25,44 +26,25 @@ static FUNC_NAME##_function_t<Complex,C1> FUNC_NAME##c = FUNC_NAME##_function_t<
 } \
 } \
 
-#define DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION(NAME,OP) \
-namespace yame \
+#define DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION(NAME,OP) \
+friend inline scalar_function<Im,Dom> operator OP(const scalar_function<Im,Dom>& i_lhs, const scalar_function<Im,Dom>& i_rhs) \
 { \
-namespace math \
-{ \
-namespace detail \
-{ \
-template<ring_type Im, vector_space_type Dom> \
-detail::scalar_function<Im,Dom> operator OP(const detail::scalar_function<Im,Dom>& i_lhs, const detail::scalar_function<Im,Dom>& i_rhs) \
-{ \
-    typedef typename detail::scalar_function<Im,Dom>::base_function base_function; \
+    typedef typename scalar_function<Im,Dom>::base_function base_function; \
     return static_cast<const base_function&>(i_lhs) OP static_cast<const base_function&>(i_rhs); \
-} \
-} \
-} \
 }
 
-#define DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION_CONSTANT(NAME,OP) \
-namespace yame \
+#define DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION_CONSTANT(NAME,OP) \
+friend inline scalar_function<Im,Dom> operator OP(const scalar_function<Im,Dom>& i_lhs, const Im& i_rhs) \
 { \
-namespace math \
-{ \
-namespace detail \
-{ \
-template<ring_type Im, vector_space_type Dom> \
-detail::scalar_function<Im,Dom> operator OP(const detail::scalar_function<Im,Dom>& i_lhs, const typename Dom::ring& i_rhs) \
-{ \
-    typedef typename detail::scalar_function<Im,Dom>::base_function base_function; \
-    return static_cast<const base_function&>(i_lhs) OP constant_function<typename Dom::ring,Dom>(i_rhs); \
+    typedef typename scalar_function<Im,Dom>::base_function base_function; \
+    typedef ytl::constant_function<typename scalar_function<Im,Dom>::base_function> constant_function_t; \
+    return static_cast<const base_function&>(i_lhs) OP constant_function_t(i_rhs); \
 } \
-template<ring_type Im, vector_space_type Dom> \
-detail::scalar_function<Im,Dom> operator OP(const typename Dom::ring& i_lhs, const detail::scalar_function<Im,Dom>& i_rhs) \
+friend inline scalar_function<Im,Dom> operator OP(const Im& i_lhs, const scalar_function<Im,Dom>& i_rhs) \
 { \
-    typedef typename detail::scalar_function<Im,Dom>::base_function base_function; \
-    return constant_function<typename Dom::ring,Dom>(i_lhs) OP static_cast<const base_function&>(i_rhs); \
-} \
-} \
-} \
+    typedef typename scalar_function<Im,Dom>::base_function base_function; \
+    typedef ytl::constant_function<typename scalar_function<Im,Dom>::base_function> constant_function_t; \
+    return constant_function_t(i_lhs) OP static_cast<const base_function&>(i_rhs); \
 }
 
 namespace yame
@@ -89,6 +71,22 @@ public:
     using base_function::operator();
     using base_function::eval;
     using base_function::clone;
+
+    inline friend scalar_function<Im,Dom> operator^(const scalar_function<Im,Dom>& i_lhs, int i_rhs)
+    {
+        return static_cast<const base_function&>(i_lhs) ^ ytl::integer_constant_function<base_function>(i_rhs);
+    }
+    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION(sum,+)
+    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION(subs,-)
+    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION(prod,*)
+    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION(div,/)
+    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION(pow,^)
+
+    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION_CONSTANT(sum,+)
+    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION_CONSTANT(subs,-)
+    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION_CONSTANT(prod,*)
+    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION_CONSTANT(div,/)
+    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION_CONSTANT(pow,^)
 
     scalar_function() = default;
     scalar_function(const Dom& i_constValue);
@@ -123,6 +121,9 @@ template<ring_type Im, vector_space_type Dom>
 using constant_function = ytl::constant_function<typename detail::scalar_function<Im,Dom>::base_function>;
 
 template<ring_type Im, vector_space_type Dom>
+using integer_constant_function = ytl::integer_constant_function<typename detail::scalar_function<Im,Dom>::base_function>;
+
+template<ring_type Im, vector_space_type Dom>
 using projection_function = ytl::projection_function<typename detail::scalar_function<Im,Dom>::base_function>;
 
 template<ring_type Im, vector_space_type Dom>
@@ -150,16 +151,6 @@ detail::scalar_function<Im,Dom> underlying_function_type(const Im&, const Dom&);
 
 }
 }
-
-DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION(sum,+)
-DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION(subs,-)
-DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION(prod,*)
-DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION(div,/)
-
-DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION_CONSTANT(sum,+)
-DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION_CONSTANT(subs,-)
-DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION_CONSTANT(prod,*)
-DEFINE_MATH_HIGHER_ORDER_BINARY_FUNCTION_CONSTANT(div,/)
 
 DECLARE_MATH_FUNCTION(sin, yame::math::sin);
 DECLARE_MATH_FUNCTION(cos, yame::math::cos);

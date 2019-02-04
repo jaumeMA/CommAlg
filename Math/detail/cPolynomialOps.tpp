@@ -176,7 +176,7 @@ polynomial<Im,A> _taylorSeries(const scalar_function<Im,Dom>& i_function, const 
                 firstMonomial = false;
             }
 
-            yame::transform(i_indexes,factorials,ytl::function<size_t(const size_t&)>(&math::factorial));
+            yame::transform(i_indexes,factorials,[](typename container::cTupla<size_t,s_dimension>::const_reference i_pair){ return math::factorial(i_pair.second); });
 
             res += currPoly * derivativeValue * (Im::ring::neutral_element() / Im(yame::prod(factorials)));
         }

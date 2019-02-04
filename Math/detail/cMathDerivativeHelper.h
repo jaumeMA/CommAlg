@@ -147,6 +147,14 @@ inline static scalar_function<Im,Dom> get_custom_derivative(const scalar_functio
 
 };
 
+struct pow_derivative_helper
+{
+
+template<int Component, ring_type Im, vector_space_type Dom>
+inline static scalar_function<Im,Dom> get_custom_derivative(const scalar_function<Im,Dom>& i_function);
+
+};
+
 struct sin_derivative_helper
 {
 
@@ -208,6 +216,7 @@ REGISTER_DERIVATIVE(yame::math::detail::sum_derivative_helper)
 REGISTER_DERIVATIVE(yame::math::detail::subs_derivative_helper)
 REGISTER_DERIVATIVE(yame::math::detail::prod_derivative_helper)
 REGISTER_DERIVATIVE(yame::math::detail::div_derivative_helper)
+REGISTER_DERIVATIVE(yame::math::detail::pow_derivative_helper)
 REGISTER_DERIVATIVE(yame::math::detail::sin_derivative_helper)
 REGISTER_DERIVATIVE(yame::math::detail::cos_derivative_helper)
 REGISTER_DERIVATIVE(yame::math::detail::tan_derivative_helper)

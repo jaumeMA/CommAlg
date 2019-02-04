@@ -59,6 +59,7 @@ IS_STRUCTURE(division_ring)
 IS_STRUCTURE(field)
 IS_STRUCTURE(algebra)
 IS_STRUCTURE(vector_space)
+IS_STRUCTURE(affine_space)
 IS_STRUCTURE(metric_space)
 
 }

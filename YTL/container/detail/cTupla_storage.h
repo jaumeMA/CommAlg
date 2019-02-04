@@ -33,9 +33,9 @@ public:
     bool operator==(const cTuplaStorage<T,totalRank>& other) const;
     bool operator!=(const cTuplaStorage<T,totalRank>& other) const;
     template<int Index>
-    T& get();
+    inline T& get();
     template<int Index>
-    const T& get() const;
+    inline const T& get() const;
     T& operator[](size_t i_index);
     const T& operator[](size_t i_index) const;
     primitive_type* address(size_t i_index = 0);

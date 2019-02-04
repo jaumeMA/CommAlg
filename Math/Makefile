@@ -8,9 +8,9 @@ OBJ_DIR = ../bin/${Mode}
 INCLUDE_DIR = -I./ -I../ -I../Utils -I../YTL -I../IO
 BIN_DIR=./
 
-SRC_FILES = ${SRC_DIR}/cNumberSpaces.cpp ${SRC_DIR}/cNumberTraits.cpp ${SRC_DIR}/cPolynomial.cpp
+SRC_FILES = ${SRC_DIR}/cNumberSpaces.cpp ${SRC_DIR}/cNumberTraits.cpp ${SRC_DIR}/cPolynomial.cpp ${SRC_DIR}/cNumberOps.cpp
 
-OBJ_FILES = ${OBJ_DIR}/cNumberSpaces.o ${OBJ_DIR}/cNumberTraits.o ${OBJ_DIR}/cPolynomial.o
+OBJ_FILES = ${OBJ_DIR}/cNumberSpaces.o ${OBJ_DIR}/cNumberTraits.o ${OBJ_DIR}/cPolynomial.o ${OBJ_DIR}/cNumberOps.o
 
 BIN = libMath${LIBRARY_SUFFIX}.so
 

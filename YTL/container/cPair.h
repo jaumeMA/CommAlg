@@ -23,7 +23,6 @@ namespace container
 template<typename T, typename R>
 class cPair
 {
-private:
     template<typename>
     struct isPair;
 
@@ -38,25 +37,24 @@ private:
         static const bool value = false;
     };
 
+    T m_first;
+    R m_second;
+
 public:
     typedef T first_type;
     typedef R second_type;
     typedef typename mpl::add_reference<T>::type first_type_reference;
     typedef typename mpl::add_reference<R>::type second_type_reference;
 
+    cPair();
     template<typename TFirst, typename TSecond>
-    cPair<T,R>(TFirst&& i_first, TSecond&& i_arg);
-    cPair<T,R>(const cPair<T,R>& other);
-    cPair<T,R>(cPair<T,R>&& other);
+    cPair(TFirst&& i_first, TSecond&& i_arg);
+    cPair(const cPair<T,R>& other);
+    cPair(cPair<T,R>&& other);
     cPair<T,R>& operator=(const cPair<T,R>& other);
     cPair<T,R>& operator=(cPair<T,R>&& other);
     bool operator==(const cPair<T,R>& other) const;
 
-private:
-    first_type m_first;
-    second_type m_second;
-
-public:
     first_type_reference first;
     second_type_reference second;
 };
@@ -72,7 +70,7 @@ namespace mpl
 template<typename T, typename R>
 struct is_copy_constructible<container::cPair<T,R>>
 {
-    static const bool value = is_pointer<T>::value == false && is_copy_constructible<T>::value && is_pointer<R>::value == false && is_copy_constructible<R>::value;
+    static const bool value = is_copy_constructible<T>::value && is_copy_constructible<R>::value;
 };
 
 template<typename>

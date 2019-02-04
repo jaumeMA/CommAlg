@@ -1,4 +1,6 @@
 
+#include "Math/cNumberOps.h"
+
 namespace yame
 {
 

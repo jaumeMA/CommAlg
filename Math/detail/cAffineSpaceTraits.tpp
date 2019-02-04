@@ -15,16 +15,19 @@ void cAffineSpaceSetTraits<X,V>::init(underlying_type& o_value, const underlying
     o_value = i_value;
 }
 template<set_type X, vector_space_type V>
-template<typename ... Args>
-requires ( mpl::are_constructible<X,Args...>::value )
-void cAffineSpaceSetTraits<X,V>::init(underlying_type& o_value, Args&& ... i_args)
+void cAffineSpaceSetTraits<X,V>::init(underlying_type& o_value, const V& i_point)
 {
-    o_value = underlying_type{mpl::forward<Args>(i_args) ...};
+    o_value = underlying_type(X{},i_point);
 }
 template<set_type X, vector_space_type V>
-template<vector_space_type VV>
-requires ( mpl::is_same_type<V,VV>::value && (mpl::is_same_type<X,V>::value == false) )
-void cAffineSpaceSetTraits<X,V>::init(underlying_type& o_value, const VV& i_value)
+void cAffineSpaceSetTraits<X,V>::init(underlying_type& o_value, const X& i_origin, const V& i_point)
+{
+    o_value = underlying_type(i_origin,i_point);
+}
+template<set_type X, vector_space_type V>
+template<vector_space_type W>
+requires ( mpl::is_same_type<V,W>::value && (mpl::is_same_type<X,V>::value == false) )
+void cAffineSpaceSetTraits<X,V>::init(underlying_type& o_value, const W& i_value)
 {
     o_value = i_value.getValue();
 }

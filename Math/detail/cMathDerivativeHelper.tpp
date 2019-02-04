@@ -280,6 +280,45 @@ scalar_function<Im,Dom> div_derivative_helper::get_custom_derivative(const scala
 	}
 }
 
+template<int Component, ring_type Im, vector_space_type Dom>
+scalar_function<Im,Dom> pow_derivative_helper::get_custom_derivative(const scalar_function<Im,Dom>& i_function)
+{
+    static const int Dimension = Dom::dimension();
+    typedef typename Dom::particle underlying_type;
+    typedef typename mpl::homogeneous_callable<ytl::pow_callable_t,Im,underlying_type,Dimension>::type pow_homogeneous_callable;
+
+    if(const detail::functor_impl<pow_homogeneous_callable,Im,Dom>* functor = rtti::dynamicCast<const detail::functor_impl<pow_homogeneous_callable,Im,Dom>>(i_function.template getFuncPtr()))
+    {
+        const pow_homogeneous_callable& powCallable = functor->getCallable();
+
+        //first special cases
+
+        //f(x)^n = n * f(x)^(n-1)*f'(x)
+        if(const detail::functor_impl<integer_constant_function<Im,Dom>,Im,Dom>* constant_functor = rtti::dynamicCast<const detail::functor_impl<integer_constant_function<Im,Dom>,Im,Dom>>(powCallable.template getNestedCallable<1>()))
+        {
+            const integer_constant_function<Im,Dom>& exponentCallable = constant_functor->getCallable();
+
+            return scalar_function<Im,Dom>::clone(exponentCallable.getFuncPtr()) * (scalar_function<Im,Dom>::clone(powCallable.template getNestedCallable<0>()) ^ (exponentCallable.getConstant() - 1)) * derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(exponentCallable.getFuncPtr()));
+        }
+        //k^f(x) = k^f(x) * ln(k) * f'(x) (PENDING TO FIX LOG FUNCTION)
+//        else if(const detail::functor_impl<constant_function<Im,Dom>,Im,Dom>* constant_functor = rtti::dynamicCast<const detail::functor_impl<constant_function<Im,Dom>,Im,Dom>>(powCallable.template getNestedCallable<0>()))
+//        {
+//            const constant_function<Im,Dom>& baseCallable = constant_functor->getCallable();
+//
+//            return baseCallable ^ scalar_function<Im,Dom>::clone(powCallable.template getNestedCallable<1>()) * Log<Im,Dom>(baseCallable) * derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(powCallable.template getNestedCallable<1>()));
+//        }
+        else
+        {
+            //the remainder case is so complex that its not worth to return the algebraic expression ( d/d(x){f(x)^g()} = f(x)^(g(x)-1)*f'(x) f(x)ln(f(x))*g'(x) )
+            return null_ptr;
+        }
+    }
+    else
+	{
+		return null_ptr;
+	}
+}
+
 template<int Component>
 scalar_function<Real,R1> sin_derivative_helper::get_custom_derivative(const scalar_function<Real,R1>& i_function)
 {
