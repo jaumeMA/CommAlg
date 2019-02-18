@@ -1,17 +1,19 @@
 #pragma once
 
+#include "Math/detail/cMathTraitsConceptHelper.h"
+
 namespace yame
 {
 namespace math
 {
 
-template<typename Traits>
+template<set_traits_type Traits>
 class cSet;
 
 namespace detail
 {
 
-template<typename Traits>
+template<set_traits_type Traits>
 class ISet
 {
     friend cSet<Traits>;
@@ -23,8 +25,6 @@ public:
     virtual cSet<Traits>& operator=(cSet<Traits>&& other) = 0;
     virtual cSet<Traits>& operator=(const underlying_type& i_value) = 0;
     virtual cSet<Traits>& operator=(underlying_type&& i_value) = 0;
-	virtual bool operator==(const cSet<Traits>& other) const = 0;
-	virtual bool operator!=(const cSet<Traits>& other) const = 0;
     virtual const underlying_type& getValue() const = 0;
 
 protected:

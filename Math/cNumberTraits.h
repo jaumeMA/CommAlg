@@ -30,6 +30,7 @@ struct RationalSetTraits
 	static void init(underlying_type& o_value);
 	static void init(underlying_type& o_value, const underlying_type& i_value);
 	static void init(underlying_type& o_value, int i_numerator, unsigned int i_denominator);
+	static void init(underlying_type& o_value, const rationalPair& i_pair);
 	static void deinit(underlying_type& o_value);
     static void assign(underlying_type& o_value, const underlying_type& i_value);
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);
@@ -89,7 +90,7 @@ struct ExtendedRealSet : virtual public detail::ISet<Traits>
 {
     typedef double raw_type;
     double get_raw() const;
-    detail::ISet<Traits>& operator=(const double&);
+    detail::ISet<Traits>& operator=(double);
 };
 
 template<unsigned char Precision>
@@ -103,7 +104,7 @@ struct RealSetTraits
 	static void init(underlying_type& o_value, double i_value);
 	static void deinit(underlying_type& o_value);
     static void assign(underlying_type& o_value, const underlying_type& i_value);
-    static void assign(underlying_type& o_value, const double& i_value);
+    static void assign(underlying_type& o_value, double i_value);
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);
     static bool cmp(const underlying_type& i_lhs, const double& i_rhs);
 };
@@ -393,7 +394,7 @@ struct ZpSetTraits
 	static void init(underlying_type& o_value, int i_value);
 	static void deinit(underlying_type& o_value);
     static void assign(underlying_type& o_value, const underlying_type& i_value);
-    static void assign(underlying_type& o_value, const int& i_value);
+    static void assign(underlying_type& o_value, int i_value);
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);
 };
 

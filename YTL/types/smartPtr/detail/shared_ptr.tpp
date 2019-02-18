@@ -85,21 +85,17 @@ shared_ptr<T>::shared_ptr(shared_ptr<TT>&& other)
 template<typename T>
 shared_ptr<T>::~shared_ptr()
 {
-    if(m_refCounter)
+    if(m_refCounter && m_refCounter->decrementReference() == 0)
     {
-        m_refCounter->decrementReference();
-
-        clearIfCounterVoid();
+        clearCounter();
     }
 }
 template<typename T>
 shared_ptr<T>& shared_ptr<T>::operator=(const std::nullptr_t&)
 {
-    if (m_refCounter)
+    if (m_refCounter && m_refCounter->decrementReference() == 0)
     {
-        m_refCounter->decrementReference();
-
-        clearIfCounterVoid();
+        clearCounter();
     }
 
     return *this;
@@ -107,11 +103,9 @@ shared_ptr<T>& shared_ptr<T>::operator=(const std::nullptr_t&)
 template<typename T>
 shared_ptr<T>& shared_ptr<T>::operator=(const shared_ptr& other)
 {
-    if(m_refCounter)
+    if(m_refCounter && m_refCounter->decrementReference() == 0)
     {
-        m_refCounter->decrementReference();
-
-        clearIfCounterVoid();
+        clearCounter();
     }
 
     m_deleter = other.m_deleter;
@@ -127,11 +121,9 @@ shared_ptr<T>& shared_ptr<T>::operator=(const shared_ptr& other)
 template<typename T>
 shared_ptr<T>& shared_ptr<T>::operator=(shared_ptr&& other)
 {
-    if(m_refCounter)
+    if(m_refCounter && m_refCounter->decrementReference() == 0)
     {
-        m_refCounter->decrementReference();
-
-        clearIfCounterVoid();
+        clearCounter();
     }
 
     m_deleter = other.m_deleter;
@@ -146,11 +138,9 @@ template<typename T>
 template<typename TT>
 shared_ptr<T>& shared_ptr<T>::operator=(const shared_ptr<TT>& other)
 {
-    if(m_refCounter)
+    if(m_refCounter && m_refCounter->decrementReference() == 0)
     {
-        m_refCounter->decrementReference();
-
-        clearIfCounterVoid();
+        clearCounter();
     }
 
     if(m_data = dynamic_cast<T*>(other.m_data))
@@ -170,11 +160,9 @@ template<typename T>
 template<typename TT>
 shared_ptr<T>& shared_ptr<T>::operator=(shared_ptr<TT>&& other)
 {
-    if(m_refCounter)
+    if(m_refCounter && m_refCounter->decrementReference() == 0)
     {
-        m_refCounter->decrementReference();
-
-        clearIfCounterVoid();
+        clearCounter();
     }
 
     if(m_data = dynamic_cast<T*>(other.m_data))
@@ -260,11 +248,9 @@ shared_ptr<T>::operator bool() const
 template<typename T>
 void shared_ptr<T>::clear()
 {
-    if (m_refCounter)
+    if (m_refCounter && m_refCounter->decrementReference() == 0)
     {
-        m_refCounter->decrementReference();
-
-        clearIfCounterVoid();
+        clearCounter();
     }
 }
 template<typename T>
@@ -290,33 +276,30 @@ shared_ptr<T>::shared_ptr(T* i_data, shared_reference_counter* i_refCounter)
     }
 }
 template<typename T>
-void shared_ptr<T>::clearIfCounterVoid()
+void shared_ptr<T>::clearCounter()
 {
-    if(m_refCounter->hasReferences() == false)
+    const bool isTagged = m_refCounter.is_tagged();
+    shared_reference_counter* refCounter = m_refCounter.extract_pointer();
+
+    if (isTagged == false)
     {
-        const bool isTagged = m_refCounter.is_tagged();
-        shared_reference_counter* refCounter = m_refCounter.extract_pointer();
-
-        if (isTagged == false)
-        {
-            delete refCounter;
-        }
-        else
-        {
-            refCounter->~shared_reference_counter();
-        }
-
-        if(m_deleter)
-        {
-            m_deleter->Deallocate(const_cast<typename std::remove_const<T>::type*>(m_data));
-        }
-        else
-        {
-            ::delete(m_data);
-        }
-
-        m_data = NULL;
+        delete refCounter;
     }
+    else
+    {
+        refCounter->~shared_reference_counter();
+    }
+
+    if(m_deleter)
+    {
+        m_deleter->Deallocate(const_cast<typename std::remove_const<T>::type*>(m_data));
+    }
+    else
+    {
+        ::delete(m_data);
+    }
+
+    m_data = NULL;
 }
 
 template<typename T, typename ... Args>

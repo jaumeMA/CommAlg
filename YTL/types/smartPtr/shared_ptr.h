@@ -52,7 +52,7 @@ public:
 private:
 	shared_ptr(T* i_data, tagged_reference_counter i_refCounter);
 	shared_ptr(T* i_data, shared_reference_counter* i_refCounter);
-	void clearIfCounterVoid();
+	void clearCounter();
 
 	tagged_reference_counter m_refCounter;
 	T* m_data;

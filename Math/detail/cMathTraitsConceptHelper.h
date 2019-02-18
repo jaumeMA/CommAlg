@@ -10,6 +10,9 @@ namespace math
 //concepts over traits
 
 template<typename Traits>
+concept bool comparable_traits_type = requires (const typename Traits::underlying_type& i_lhs, const typename Traits::underlying_type& i_rhs) { { Traits::cmp(i_lhs,i_rhs) } -> bool };
+
+template<typename Traits>
 concept bool commutative_traits_type = Traits::is_commutative;
 
 template<typename Traits>
@@ -26,6 +29,9 @@ concept bool semi_group_traits_type = commutative_traits_type<Traits> && additiv
 
 template<typename Traits>
 concept bool semi_ring_traits_type = with_unity_traits_type<Traits> && commutative_traits_type<Traits> && additive_traits_type<Traits>;
+
+template<typename Traits>
+concept bool set_traits_type = comparable_traits_type<Traits>;
 
 template<typename Traits>
 concept bool group_traits_type = with_unity_traits_type<Traits> && commutative_traits_type<Traits> && with_inverse_type<Traits> && additive_traits_type<Traits>;
@@ -52,7 +58,7 @@ template<typename Traits>
 concept bool vector_space_traits_type = finitely_generated_module_type<typename Traits::module_traits> && is_field<typename Traits::field>::value;
 
 template<typename Traits>
-concept bool affine_space_traits_type = is_vector_space<typename Traits::vector_space>::value && is_set<typename Traits::set>::value && requires (const typename Traits::set& i_lhs, const typename Traits::vector_space& i_rhs){{ Traits::homogeneous_space_traits::action(i_lhs,i_rhs)}-> typename Traits::set };
+concept bool affine_space_traits_type = is_vector_space<typename Traits::vector_space>::value && is_set<typename Traits::set>::value && requires (const typename Traits::set& i_lhs, const typename Traits::vector_space& i_rhs){{ Traits::set_traits::action(i_lhs,i_rhs)}-> typename Traits::set };
 
 //we consider here general case of algebras, i.e. modules over a ring with inner product compatible with its module structure
 template<typename Traits>

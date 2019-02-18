@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Utils/cMacroHelper.h"
-#include <mutex>
+#include <atomic>
 
 #ifdef _DEBUG
     #define LENT_WITH_LOGIC
@@ -31,7 +31,7 @@ public:
 	{
 	}
 	reference_counter(const reference_counter& other)
-	: m_numReferences(other.m_numReferences)
+	: m_numReferences(other.m_numReferences.load())
 	{
 	}
 	~reference_counter()
@@ -39,53 +39,39 @@ public:
 	}
 	size_t incrementReference()
 	{
-	    m_refMutex.lock();
+        size_t currNumReferences = 0;
 
-		size_t res = ++m_numReferences;
+        do
+        {
+            currNumReferences = m_numReferences.load();
+        }
+        while(m_numReferences.compare_exchange_weak(currNumReferences,currNumReferences+1) == false);
 
-        m_refMutex.unlock();
-
-		return res;
+		return currNumReferences+1;
 	}
 	size_t decrementReference()
 	{
-		size_t res = 0;
+        size_t currNumReferences = 0;
 
-	    m_refMutex.lock();
+        do
+        {
+            currNumReferences = m_numReferences.load();
+        }
+        while(m_numReferences.compare_exchange_weak(currNumReferences,currNumReferences-1) == false);
 
-		if(m_numReferences > 0)
-		{
-			res = --m_numReferences;
-		}
-
-	    m_refMutex.unlock();
-
-		return res;
+		return currNumReferences-1;
 	}
 	size_t getNumReferences() const
 	{
-	    m_refMutex.lock();
-
-		size_t res = m_numReferences;
-
-	    m_refMutex.unlock();
-
-		return res;
+		return m_numReferences.load();
 	}
 	bool hasReferences() const
 	{
-	    m_refMutex.lock();
-
-		bool res =  m_numReferences > 0;
-
-	    m_refMutex.unlock();
-
-		return res;
+		return m_numReferences.load() > 0;
 	}
 
 private:
-	size_t m_numReferences;
-	mutable std::mutex m_refMutex;
+    std::atomic<size_t> m_numReferences;
 };
 
 //reference counting for unique references
@@ -102,8 +88,8 @@ public:
 	{
 	}
 	reference_counter(const reference_counter& other)
-	: m_numStrongReferences(other.m_numStrongReferences)
-	, m_numWeakReferences(other.m_numWeakReferences)
+	: m_numStrongReferences(other.m_numStrongReferences.load())
+	, m_numWeakReferences(other.m_numWeakReferences.load())
 	{
 	}
 	~reference_counter()
@@ -111,104 +97,72 @@ public:
 	}
 	size_t incrementStrongReference()
 	{
-	    m_refMutex.lock();
+        size_t currNumReferences = 0;
 
-		size_t res = ++m_numStrongReferences;
+        do
+        {
+            currNumReferences = m_numStrongReferences.load();
+        }
+        while(m_numStrongReferences.compare_exchange_weak(currNumReferences,currNumReferences+1) == false);
 
-	    m_refMutex.unlock();
-
-		if (res > 1)
-		{
-			MAKE_IT_CRASH
-		}
-
-		return res;
+		return currNumReferences+1;
 	}
 	size_t incrementWeakReference()
 	{
-	    m_refMutex.lock();
+        size_t currNumReferences = 0;
 
-		size_t res = ++m_numWeakReferences;
+        do
+        {
+            currNumReferences = m_numWeakReferences.load();
+        }
+        while(m_numWeakReferences.compare_exchange_weak(currNumReferences,currNumReferences+1) == false);
 
-	    m_refMutex.unlock();
-
-		return res;
+		return currNumReferences+1;
 	}
 	size_t decrementStrongReference()
 	{
-		size_t res = 0;
+        size_t currNumReferences = 0;
 
-	    m_refMutex.lock();
+        do
+        {
+            currNumReferences = m_numStrongReferences.load();
+        }
+        while(m_numStrongReferences.compare_exchange_weak(currNumReferences,currNumReferences-1) == false);
 
-		if(m_numStrongReferences > 0)
-		{
-			res = --m_numStrongReferences;
-		}
-
-	    m_refMutex.unlock();
-
-		return res;
+		return currNumReferences-1;
 	}
 	size_t decrementWeakReference()
 	{
-		size_t res = 0;
+        size_t currNumReferences = 0;
 
-	    m_refMutex.lock();
+        do
+        {
+            currNumReferences = m_numWeakReferences.load();
+        }
+        while(m_numWeakReferences.compare_exchange_weak(currNumReferences,currNumReferences-1) == false);
 
-		if(m_numWeakReferences > 0)
-		{
-			res = --m_numWeakReferences;
-		}
-
-	    m_refMutex.unlock();
-
-		return res;
+		return currNumReferences-1;
 	}
 	size_t getNumStrongReferences() const
 	{
-	    m_refMutex.lock();
-
-		size_t res = m_numStrongReferences;
-
-	    m_refMutex.unlock();
-
-		return res;
+        return m_numStrongReferences.load();
 	}
 	bool hasStrongReferences() const
 	{
-	    m_refMutex.lock();
-
-		bool res =  m_numStrongReferences > 0;
-
-	    m_refMutex.unlock();
-
-		return res;
+        return m_numStrongReferences.load() > 0;
 	}
 	size_t getNumWeakReferences() const
 	{
-	    m_refMutex.lock();
-
-		size_t res = m_numWeakReferences;
-
-	    m_refMutex.unlock();
-
-		return res;
+        return m_numWeakReferences.load();
 	}
 	bool hasWeakReferences() const
 	{
-	    m_refMutex.lock();
-
-		bool res =  m_numWeakReferences > 0;
-
-	    m_refMutex.unlock();
-
-		return res;
+        return m_numWeakReferences.load() > 0;
 	}
 
 private:
-	size_t m_numStrongReferences;
-	size_t m_numWeakReferences;
-	mutable std::mutex m_refMutex;
+    std::atomic<size_t> m_numStrongReferences;
+    std::atomic<size_t> m_numWeakReferences;
 };
 
 #else
@@ -222,7 +176,7 @@ public:
 	{
 	}
 	reference_counter(const reference_counter& other)
-	: m_numStrongReferences(other.m_numStrongReferences)
+	: m_numStrongReferences(other.m_numStrongReferences.load())
 	{
 	}
 	~reference_counter()
@@ -230,58 +184,39 @@ public:
 	}
 	size_t incrementStrongReference()
 	{
-	    m_refMutex.lock();
+        size_t currNumReferences = 0;
 
-		size_t res = ++m_numStrongReferences;
+        do
+        {
+            currNumReferences = m_numStrongReferences.load();
+        }
+        while(m_numStrongReferences.compare_exchange_weak(currNumReferences,currNumReferences+1) == false);
 
-	    m_refMutex.unlock();
-
-		if (res > 1)
-		{
-			MAKE_IT_CRASH
-		}
-
-		return res;
+        return currNumReferences+1;
 	}
 	size_t decrementStrongReference()
 	{
-		size_t res = 0;
+        size_t currNumReferences = 0;
 
-	    m_refMutex.lock();
+        do
+        {
+            currNumReferences = m_numStrongReferences.load();
+        }
+        while(m_numStrongReferences.compare_exchange_weak(currNumReferences,currNumReferences-1) == false);
 
-		if(m_numStrongReferences > 0)
-		{
-			res = --m_numStrongReferences;
-		}
-
-	    m_refMutex.unlock();
-
-		return res;
+        return currNumReferences-1;
 	}
 	size_t getNumStrongReferences() const
 	{
-	    m_refMutex.lock();
-
-		size_t res = m_numStrongReferences;
-
-	    m_refMutex.unlock();
-
-		return res;
+        return m_numStrongReferences.load();
 	}
 	bool hasStrongReferences() const
 	{
-	    m_refMutex.lock();
-
-		bool res =  m_numStrongReferences > 0;
-
-	    m_refMutex.unlock();
-
-		return res;
+        return m_numStrongReferences.load() > 0;
 	}
 
 private:
-	size_t m_numStrongReferences;
-	mutable std::mutex m_refMutex;
+    std::atomic<size_t> m_numStrongReferences;
 };
 
 #endif

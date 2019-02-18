@@ -12,15 +12,32 @@ namespace math
 namespace detail
 {
 
-template<group_traits_type Traits, typename FinalObject>
-class cGroupImpl : virtual public ISet<typename Traits::set_traits>, public inherit_extended_structure<Traits>::type, public group_tag
+template<set_traits_type Traits, typename FinalObject>
+class cSetImpl : virtual public ISet<Traits>, public set_tag
 {
-protected:
-    typedef typename Traits::set_traits set_traits;
 public:
     typedef Traits traits;
 
-	friend inline FinalObject operator+(const FinalObject& i_lhs, const FinalObject& i_rhs)
+	friend inline bool operator==(const FinalObject& i_lhs, const FinalObject& i_rhs)
+	{
+        return Traits::cmp(i_lhs.getValue(), i_rhs.getValue());
+	}
+	friend inline bool operator!=(const FinalObject& i_lhs, const FinalObject& i_rhs)
+	{
+        return Traits::cmp(i_lhs.getValue(), i_rhs.getValue()) == false;
+	}
+};
+
+template<group_traits_type Traits, typename FinalObject>
+class cGroupImpl : public cSetImpl<typename Traits::set_traits,FinalObject>, public inherit_extended_structure<Traits>::type, public group_tag
+{
+protected:
+    typedef typename Traits::set_traits set_traits;
+    typedef cSetImpl<typename Traits::set_traits,FinalObject> set_object;
+public:
+    typedef Traits traits;
+
+	friend inline FinalObject operator+(const set_object& i_lhs, const set_object& i_rhs)
 	{
         FinalObject res;
 
@@ -29,7 +46,7 @@ public:
         return res;
 	}
 	inline FinalObject& operator+=(const cGroupImpl<Traits,FinalObject>& other);
-	friend inline FinalObject operator-(const FinalObject& i_lhs, const FinalObject& i_rhs)
+	friend inline FinalObject operator-(const set_object& i_lhs, const set_object& i_rhs)
 	{
         FinalObject res;
         FinalObject subs;
@@ -39,7 +56,7 @@ public:
 
         return res;
 	}
-	friend inline FinalObject operator-(const FinalObject& i_lhs)
+	friend inline FinalObject operator-(const set_object& i_lhs)
 	{
         FinalObject res;
 
@@ -60,18 +77,17 @@ class cRingImpl : public cGroupImpl<typename Traits::group_traits,FinalObject>, 
 {
 protected:
     typedef typename cGroupImpl<typename Traits::group_traits,FinalObject>::set_traits set_traits;
+    typedef typename cGroupImpl<typename Traits::group_traits,FinalObject>::set_object set_object;
 public:
     typedef Traits traits;
     typedef cGroupImpl<typename Traits::group_traits,FinalObject> group;
 	using cGroupImpl<typename Traits::group_traits,FinalObject>::cGroupImpl;
 	using cGroupImpl<typename Traits::group_traits,FinalObject>::operator=;
-	using cGroupImpl<typename Traits::group_traits,FinalObject>::operator==;
-	using cGroupImpl<typename Traits::group_traits,FinalObject>::operator!=;
 	using cGroupImpl<typename Traits::group_traits,FinalObject>::operator+=;
 	using cGroupImpl<typename Traits::group_traits,FinalObject>::operator-=;
 	using cGroupImpl<typename Traits::group_traits,FinalObject>::isCommutative;
 
-    friend inline FinalObject operator*(const FinalObject& i_lhs, const FinalObject& i_rhs)
+    friend inline FinalObject operator*(const set_object& i_lhs, const set_object& i_rhs)
     {
         FinalObject res;
 
@@ -92,6 +108,7 @@ class cDivisionRingImpl : public cRingImpl<typename Traits::ring_traits,FinalObj
 {
 protected:
     typedef typename cRingImpl<typename Traits::ring_traits,FinalObject>::set_traits set_traits;
+    typedef typename cRingImpl<typename Traits::ring_traits,FinalObject>::set_object set_object;
 
 public:
     typedef Traits traits;
@@ -99,14 +116,12 @@ public:
 
 	using cRingImpl<typename Traits::ring_traits,FinalObject>::cRingImpl;
 	using cRingImpl<typename Traits::ring_traits,FinalObject>::operator=;
-	using cRingImpl<typename Traits::ring_traits,FinalObject>::operator==;
-	using cRingImpl<typename Traits::ring_traits,FinalObject>::operator!=;
 	using cRingImpl<typename Traits::ring_traits,FinalObject>::operator+=;
 	using cRingImpl<typename Traits::ring_traits,FinalObject>::operator-=;
 	using cRingImpl<typename Traits::ring_traits,FinalObject>::isCommutative;
 	using cRingImpl<typename Traits::ring_traits,FinalObject>::operator*=;
 
-	friend inline FinalObject operator/(const FinalObject& i_lhs, const FinalObject& i_rhs)
+	friend inline FinalObject operator/(const set_object& i_lhs, const set_object& i_rhs)
 	{
         FinalObject res;
         FinalObject inv;
@@ -125,14 +140,13 @@ class cFieldImpl : public cDivisionRingImpl<Traits,FinalObject>, public field_ta
 {
 protected:
     typedef typename cDivisionRingImpl<Traits,FinalObject>::set_traits set_traits;
+    typedef typename cDivisionRingImpl<Traits,FinalObject>::set_object set_object;
 
 public:
     typedef Traits traits;
     typedef cDivisionRingImpl<Traits,FinalObject> ring;
 	using cDivisionRingImpl<Traits,FinalObject>::cDivisionRingImpl;
 	using cDivisionRingImpl<Traits,FinalObject>::operator=;
-	using cDivisionRingImpl<Traits,FinalObject>::operator==;
-	using cDivisionRingImpl<Traits,FinalObject>::operator!=;
 	using cDivisionRingImpl<Traits,FinalObject>::operator+=;
 	using cDivisionRingImpl<Traits,FinalObject>::operator-=;
 	using cDivisionRingImpl<Traits,FinalObject>::isCommutative;
@@ -144,14 +158,13 @@ class cModuleImpl : public cGroupImpl<typename Traits::group_traits,FinalObject>
 {
 protected:
     typedef typename cGroupImpl<typename Traits::group_traits,FinalObject>::set_traits set_traits;
+    typedef typename cGroupImpl<typename Traits::group_traits,FinalObject>::set_object set_object;
 public:
     typedef Traits traits;
 	typedef typename traits::ring ring;
     typedef cGroupImpl<typename Traits::group_traits,FinalObject> group;
     using cGroupImpl<typename Traits::group_traits,FinalObject>::cGroupImpl;
 	using cGroupImpl<typename Traits::group_traits,FinalObject>::operator=;
-	using cGroupImpl<typename Traits::group_traits,FinalObject>::operator==;
-	using cGroupImpl<typename Traits::group_traits,FinalObject>::operator!=;
 	using cGroupImpl<typename Traits::group_traits,FinalObject>::operator+=;
 	using cGroupImpl<typename Traits::group_traits,FinalObject>::operator-=;
 	using cGroupImpl<typename Traits::group_traits,FinalObject>::isCommutative;
@@ -176,18 +189,17 @@ class cAlgebraImpl : public cModuleImpl<typename Traits::module_traits,FinalObje
 {
 protected:
     typedef typename cModuleImpl<typename Traits::module_traits,FinalObject>::set_traits set_traits;
+    typedef typename cModuleImpl<typename Traits::module_traits,FinalObject>::set_object set_object;
 public:
     typedef Traits traits;
     typedef cModuleImpl<typename Traits::module_traits,FinalObject> module;
     using cModuleImpl<typename Traits::module_traits,FinalObject>::cModuleImpl;
 	using cModuleImpl<typename Traits::module_traits,FinalObject>::operator=;
-	using cModuleImpl<typename Traits::module_traits,FinalObject>::operator==;
-	using cModuleImpl<typename Traits::module_traits,FinalObject>::operator!=;
 	using cModuleImpl<typename Traits::module_traits,FinalObject>::operator+=;
 	using cModuleImpl<typename Traits::module_traits,FinalObject>::operator-=;
 	using cModuleImpl<typename Traits::module_traits,FinalObject>::isCommutative;
 
-	friend inline FinalObject operator*(const FinalObject& i_lhs, const FinalObject& i_rhs)
+	friend inline FinalObject operator*(const set_object& i_lhs, const set_object& i_rhs)
 	{
         FinalObject res;
 

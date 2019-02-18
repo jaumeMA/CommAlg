@@ -48,5 +48,8 @@ public:
     typedef decltype(_resolve_underlying_vector_space(std::declval<VectorSpace>())) type;
 };
 
+template<set_type Im, vector_space_type Dom>
+static typename mpl::homogeneous_callable<ytl::function,Im,typename Dom::particle,Dom::dimension()>::type resolve_underlying_function_type(const Im&, const Dom&);
+
 }
 }

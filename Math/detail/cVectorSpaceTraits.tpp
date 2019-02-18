@@ -42,14 +42,14 @@ template<group_type V, int N, int M>
 const typename cMatrixVectorSpaceGroupTraits<V,N,M>::underlying_type cMatrixVectorSpaceGroupTraits<V,N,M>::neutral_element = CreateVectorSpaceGroupNeutralElement<V,N>();
 
 template<typename Traits>
-auto VectorSpaceExtendedAccess<Traits>::operator[](size_t i_index)
+typename VectorSpaceExtendedAccess<Traits>::particle& VectorSpaceExtendedAccess<Traits>::operator[](size_t i_index)
 {
     underlying_type& thisValue = this->getValue();
 
     return thisValue[i_index];
 }
 template<typename Traits>
-auto VectorSpaceExtendedAccess<Traits>::operator[](size_t i_index) const
+const typename VectorSpaceExtendedAccess<Traits>::particle& VectorSpaceExtendedAccess<Traits>::operator[](size_t i_index) const
 {
     const underlying_type& thisValue = this->getValue();
 

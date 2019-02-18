@@ -35,6 +35,11 @@ void RationalSetTraits::init(underlying_type& o_value, int i_numerator, unsigned
     mpq_init(o_value);
     mpq_set_si(o_value, i_numerator, i_denominator);
 }
+void RationalSetTraits::init(underlying_type& o_value, const rationalPair& i_pair)
+{
+    mpq_init(o_value);
+    mpq_set_si(o_value, i_pair[0], i_pair[1]);
+}
 void RationalSetTraits::deinit(underlying_type& o_value)
 {
     mpq_clear(o_value);

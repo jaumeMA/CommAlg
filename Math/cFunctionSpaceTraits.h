@@ -8,7 +8,7 @@ namespace yame
 namespace math
 {
 
-template<vector_space_type Im, vector_space_type Dom, callable_type Function>
+template<set_type Im, set_type Dom, callable_type Function>
 struct FunctionSpaceSetTraits
 {
     typedef Function underlying_type;
@@ -25,7 +25,7 @@ struct FunctionSpaceSetTraits
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);
 };
 
-template<vector_space_type Im, vector_space_type Dom, callable_type Function>
+template<group_type Im, set_type Dom, callable_type Function>
 struct FunctionSpaceGroupTraits
 {
     typedef FunctionSpaceSetTraits<Im,Dom,Function> set_traits;
@@ -37,7 +37,7 @@ struct FunctionSpaceGroupTraits
 	static void inv(underlying_type& res, const underlying_type& value);
 };
 
-template<vector_space_type Im, vector_space_type Dom, callable_type Function>
+template<module_type Im, set_type Dom, callable_type Function>
 struct FunctionSpaceModuleTraits
 {
     typedef FunctionSpaceGroupTraits<Im,Dom,Function> group_traits;

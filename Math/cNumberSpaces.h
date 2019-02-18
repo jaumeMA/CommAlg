@@ -25,8 +25,8 @@ public:
     typedef RationalTraits traits;
 	using cSet<RationalSetTraits>::cSet;
 	using cSet<RationalSetTraits>::operator=;
-	using cSet<RationalSetTraits>::operator==;
-	using cSet<RationalSetTraits>::operator!=;
+//	using cSet<RationalSetTraits>::operator==;
+//	using cSet<RationalSetTraits>::operator!=;
     using cFieldImpl<RationalTraits,Rational>::cFieldImpl;
     using cFieldImpl<RationalTraits,Rational>::operator=;
 
@@ -48,8 +48,8 @@ public:
     typedef RealSetTraits<k_defaultPrecision> traits;
 	using cSet<RealSetTraits<k_defaultPrecision>>::cSet;
 	using cSet<RealSetTraits<k_defaultPrecision>>::operator=;
-	using cSet<RealSetTraits<k_defaultPrecision>>::operator==;
-	using cSet<RealSetTraits<k_defaultPrecision>>::operator!=;
+//	using cSet<RealSetTraits<k_defaultPrecision>>::operator==;
+//	using cSet<RealSetTraits<k_defaultPrecision>>::operator!=;
 
     Real(const Real&) = default;
     Real& operator=(const Real&) = default;
@@ -62,8 +62,8 @@ public:
     typedef RealSetTraits<Precision> traits;
 	using cSet<RealSetTraits<Precision>>::cSet;
 	using cSet<RealSetTraits<Precision>>::operator=;
-	using cSet<RealSetTraits<Precision>>::operator==;
-	using cSet<RealSetTraits<Precision>>::operator!=;
+//	using cSet<RealSetTraits<Precision>>::operator==;
+//	using cSet<RealSetTraits<Precision>>::operator!=;
 
     RealP(const RealP&) = default;
     RealP& operator=(const RealP&) = default;
@@ -83,8 +83,8 @@ public:
     typedef ComplexSetTraits<k_defaultPrecision> traits;
 	using cSet<ComplexSetTraits<k_defaultPrecision>>::cSet;
 	using cSet<ComplexSetTraits<k_defaultPrecision>>::operator=;
-	using cSet<ComplexSetTraits<k_defaultPrecision>>::operator==;
-	using cSet<ComplexSetTraits<k_defaultPrecision>>::operator!=;
+//	using cSet<ComplexSetTraits<k_defaultPrecision>>::operator==;
+//	using cSet<ComplexSetTraits<k_defaultPrecision>>::operator!=;
 
     Complex(const Complex&) = default;
     Complex& operator=(const Complex&) = default;
@@ -104,8 +104,8 @@ public:
     typedef QuaternionSetTraits<k_defaultPrecision> traits;
 	using cSet<QuaternionSetTraits<k_defaultPrecision>>::cSet;
 	using cSet<QuaternionSetTraits<k_defaultPrecision>>::operator=;
-	using cSet<QuaternionSetTraits<k_defaultPrecision>>::operator==;
-	using cSet<QuaternionSetTraits<k_defaultPrecision>>::operator!=;
+//	using cSet<QuaternionSetTraits<k_defaultPrecision>>::operator==;
+//	using cSet<QuaternionSetTraits<k_defaultPrecision>>::operator!=;
 
     Quaternion(const Quaternion&) = default;
     Quaternion& operator=(const Quaternion&) = default;
@@ -127,8 +127,8 @@ public:
     typedef ZpSetTraits<p> traits;
 	using cSet<ZpSetTraits<p>>::cSet;
 	using cSet<ZpSetTraits<p>>::operator=;
-	using cSet<ZpSetTraits<p>>::operator==;
-	using cSet<ZpSetTraits<p>>::operator!=;
+//	using cSet<ZpSetTraits<p>>::operator==;
+//	using cSet<ZpSetTraits<p>>::operator!=;
 
     Zp(const Zp&) = default;
     Zp& operator=(const Zp&) = default;

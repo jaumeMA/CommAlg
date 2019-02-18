@@ -18,11 +18,12 @@ struct VectorSpaceExtendedAccess : virtual public detail::ISet<Traits>
     typedef typename underlying_type::iterable_type iterable_type;
     typedef typename underlying_type::iterator_type iterator_type;
     typedef typename underlying_type::const_iterator_type const_iterator_type;
+    typedef typename underlying_type::reference reference;
     typedef typename underlying_type::const_reference const_reference;
     typedef container::const_tupla_view<particle> view_type;
 
-    inline auto operator[](size_t i_index);
-    inline auto operator[](size_t i_index) const;
+    inline particle& operator[](size_t i_index);
+    inline const particle& operator[](size_t i_index) const;
     template<int ... Indexs>
     particle& get();
     template<int ... Indexs>
@@ -114,6 +115,7 @@ struct MatrixVectorSpaceExtendedAccess : virtual public detail::ISet<Traits>
     typedef typename Traits::particle particle;
     typedef typename underlying_type::iterator_type iterator_type;
     typedef typename underlying_type::const_iterator_type const_iterator_type;
+    typedef typename underlying_type::reference reference;
     typedef typename underlying_type::const_reference const_reference;
     typedef container::const_tupla_view<particle> view_type;
 

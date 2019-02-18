@@ -23,8 +23,6 @@ public:
 	typedef cSet<typename Traits::set_traits> set;
 	using cSet<typename Traits::set_traits>::cSet;
 	using cSet<typename Traits::set_traits>::operator=;
-	using cSet<typename Traits::set_traits>::operator==;
-	using cSet<typename Traits::set_traits>::operator!=;
     using vector_space::base;
 
 	cVectorSpace(const cVectorSpace&) = default;
@@ -66,8 +64,6 @@ public:
 	typedef cSet<typename Traits::set_traits> set_traits;
 	using cSet<typename Traits::set_traits>::cSet;
 	using cSet<typename Traits::set_traits>::operator=;
-	using cSet<typename Traits::set_traits>::operator==;
-	using cSet<typename Traits::set_traits>::operator!=;
     using vector_space::base;
 
 	cMetricVectorSpace(const cMetricVectorSpace&) = default;

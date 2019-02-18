@@ -9,6 +9,9 @@ namespace yame
 namespace math
 {
 
+template<template <set_type,set_type,callable_type> typename F, callable_type Function, set_type Im, set_type Dom>
+detail::cSetImpl<FunctionSpaceSetTraits<Im,Dom,Function>,F<Im,Dom,Function>> resolve_function_space_structure(const Im&,const Dom&);
+
 template<template <set_type,set_type,callable_type> typename F, callable_type Function, group_type Im, set_type Dom>
 detail::cGroupImpl<FunctionSpaceGroupTraits<Im,Dom,Function>,F<Im,Dom,Function>> resolve_function_space_structure(const Im&,const Dom&);
 

@@ -40,8 +40,6 @@ public:
 
 	using cSet<FunctionSpaceSetTraits<Im,Dom,Function>>::cSet;
 	using cSet<FunctionSpaceSetTraits<Im,Dom,Function>>::operator=;
-	using cSet<FunctionSpaceSetTraits<Im,Dom,Function>>::operator==;
-	using cSet<FunctionSpaceSetTraits<Im,Dom,Function>>::operator!=;
 
     cFunctionSpace(const cFunctionSpace&) = default;
     cFunctionSpace& operator=(const cFunctionSpace&) = default;
@@ -50,8 +48,11 @@ public:
     operator IIm() const;
 };
 
-template<callable_type Function, ring_type Im, set_type Dom>
+template<callable_type Function, set_type Im, set_type Dom>
 detail::ExtendedFunctionSpaceSet<Im,Dom,Function> underlying_function_extension_type(const Function&, const Im&,const Dom&);
+
+template<set_type Im, set_type Dom, callable_type Function = decltype(underlying_function_type(std::declval<Im>(),std::declval<Dom>()))>
+using F = cFunctionSpace<Im,Dom,Function>;
 
 }
 }

@@ -88,9 +88,6 @@ detail::ExtendedVectorFunctionSpaceSet<Im,Dom,detail::vector_function<Im,Dom>> u
 template<module_type Im, vector_space_type Dom>
 detail::ExtendedLinearVectorFunctionSpaceSet<Im,Dom,detail::linear_vector_function<Im,Dom>> underlying_function_extension_type(const detail::linear_vector_function<Im,Dom>&, const Im&,const Dom&);
 
-template<module_type Im, vector_space_type Dom, callable_type Function = decltype(underlying_function_type(std::declval<Im>(),std::declval<Dom>()))>
-using F = cFunctionSpace<Im,Dom,Function>;
-
 //linear and non linear vector functions
 
 template<module_type Im, vector_space_type Dom>

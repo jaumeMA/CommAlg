@@ -38,8 +38,6 @@ public:
 
 	using cSet<PolySetTraits>::cSet;
 	using cSet<PolySetTraits>::operator=;
-	using cSet<PolySetTraits>::operator==;
-	using cSet<PolySetTraits>::operator!=;
 
     polynomial();
 	polynomial(const cMonomial<T>&);

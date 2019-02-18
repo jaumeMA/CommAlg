@@ -66,7 +66,7 @@ double ExtendedRealSet<Traits>::get_raw() const
     return mpf_get_d(this->getValue());
 }
 template<typename Traits>
-detail::ISet<Traits>& ExtendedRealSet<Traits>::operator=(const double& i_value)
+detail::ISet<Traits>& ExtendedRealSet<Traits>::operator=(double i_value)
 {
     Traits::assign(this->getValue(), i_value);
 }
@@ -270,7 +270,7 @@ void RealSetTraits<Precision>::assign(underlying_type& o_value, const underlying
     mpf_set(o_value, i_value);
 }
 template<unsigned char Precision>
-void RealSetTraits<Precision>::assign(underlying_type& o_value, const double& i_value)
+void RealSetTraits<Precision>::assign(underlying_type& o_value, double i_value)
 {
     mpf_set_d(o_value, i_value);
 }
@@ -914,7 +914,7 @@ void ZpSetTraits<p>::assign(underlying_type& o_value, const underlying_type& i_v
     mpz_set(o_value, i_value);
 }
 template<int p>
-void ZpSetTraits<p>::assign(underlying_type& o_value, const int& i_value)
+void ZpSetTraits<p>::assign(underlying_type& o_value, int i_value)
 {
     mpz_set_si(o_value, i_value);
 }
