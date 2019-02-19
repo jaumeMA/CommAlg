@@ -61,6 +61,8 @@ private:
     inline void construct_tupla(const mpl::sequence<Indexs...>&, const cTuplaStorage<TT,totalRank>& other);
     template<typename TT, int ... Indexs>
     inline void construct_tupla(const mpl::sequence<Indexs...>&, cTuplaStorage<TT,totalRank>&& other);
+    template<int ... Indexs>
+    inline void destruct_tupla(const mpl::sequence<Indexs...>&);
     template<typename TT, int ... Indexs>
     inline void assign_tupla(const mpl::sequence<Indexs...>&, const cTuplaStorage<TT,totalRank>& other);
     template<typename TT, int ... Indexs>

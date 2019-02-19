@@ -2,6 +2,7 @@
 
 #include "Utils/cMacroHelper.h"
 #include <atomic>
+#include <cstddef>
 
 #ifdef _DEBUG
     #define LENT_WITH_LOGIC

@@ -48,7 +48,9 @@ cTuplaStorage<T,totalRank>::cTuplaStorage(const std::initializer_list<TT>& other
 template<typename T, int totalRank>
 cTuplaStorage<T,totalRank>::~cTuplaStorage()
 {
-    destruct(&(this->m_storage));
+    typedef typename mpl::create_range_rank<0,totalRank>::type range_rank_t;
+
+    destruct_tupla(range_rank_t{});
 }
 template<typename T, int totalRank>
 cTuplaStorage<T,totalRank>& cTuplaStorage<T,totalRank>::operator=(const cTuplaStorage<T,totalRank>& other)
@@ -127,6 +129,12 @@ template<typename TT, int ... Indexs>
 void cTuplaStorage<T,totalRank>::construct_tupla(const mpl::sequence<Indexs...>&, T* i_dest, const TT* i_source)
 {
     (construct(i_dest + Indexs,*(i_source + Indexs)) && ...);
+}
+template<typename T, int totalRank>
+template<int ... Indexs>
+void cTuplaStorage<T,totalRank>::destruct_tupla(const mpl::sequence<Indexs...>&)
+{
+    (destruct(STORAGE_ADDRESS(m_storage) + Indexs) && ...);
 }
 template<typename T, int totalRank>
 template<typename TT, int ... Indexs>
