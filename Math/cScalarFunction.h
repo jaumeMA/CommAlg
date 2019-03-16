@@ -33,23 +33,18 @@ public:
     typedef typename base_function::func_ptr_base func_ptr_base;
     using base_function::base_function;
     using base_function::operator();
-    using base_function::eval;
     using base_function::clone;
 
     scalar_function() = default;
     scalar_function(const Dom& i_constValue);
     scalar_function(const base_function& i_base);
-	Im eval(const Dom& i_point) const;
     static scalar_function<Im,Dom> clone(const func_ptr_base* i_funcPtr);
 
+    //Im operator()(const Dom& i_point) const;
     scalar_function& operator=(const Dom& i_constValue);
 
     template<callable_type Return, typename ... Args>
     Return specialize(Args&& ... i_args) const;
-
-private:
-    template<int ... Indexs>
-    inline Im _eval(const mpl::sequence<Indexs...>&, const Dom& i_point) const;
 };
 
 template<typename Return,typename ... Types>
@@ -64,13 +59,17 @@ ytl::detail::functor_impl<Functor,Return,Types...> functor_type(const ytl::funct
 template<typename Functor,typename Im, set_type Dom>
 using functor_impl = decltype(functor_type<Functor>(std::declval<scalar_function<Im,Dom>>()));
 
+template<set_type Im, set_type Dom, int ... Indexs>
+inline Im eval(const mpl::sequence<Indexs...>&, const scalar_function<Im,Dom>& i_function, const Dom& i_point);
+template<set_type Im, set_type Dom>
+inline Im eval(const scalar_function<Im,Dom>& i_function, const Dom& i_point);
+template<set_type Im, set_type Dom, typename ... Args>
+inline Im eval(const scalar_function<Im,Dom>& i_function, Args&& ... i_args);
+
 }
 
 template<set_type Im, set_type Dom>
 using constant_function = ytl::constant_function<typename detail::scalar_function<Im,Dom>::base_function>;
-
-template<set_type Im, set_type Dom>
-using integer_constant_function = ytl::integer_constant_function<typename detail::scalar_function<Im,Dom>::base_function>;
 
 template<set_type Im, set_type Dom>
 using projection_function = ytl::projection_function<typename detail::scalar_function<Im,Dom>::base_function>;
@@ -102,7 +101,13 @@ template<ring_type Im, vector_space_type Dom>
 inline detail::scalar_function<Im,Dom> operator^(const detail::scalar_function<Im,Dom>& i_lhs, int i_rhs)
 {
     typedef typename detail::scalar_function<Im,Dom>::base_function base_function;
-    return static_cast<const base_function&>(i_lhs) ^ ytl::integer_constant_function<base_function>(i_rhs);
+    return static_cast<const base_function&>(i_lhs) ^ ytl::constant_function<base_function>(i_rhs);
+}
+template<ring_type Im, vector_space_type Dom>
+inline detail::scalar_function<Im,Dom> operator^(int i_lhs, const detail::scalar_function<Im,Dom>& i_rhs)
+{
+    typedef typename detail::scalar_function<Im,Dom>::base_function base_function;
+    return ytl::constant_function<base_function>(i_lhs) ^ static_cast<const base_function&>(i_rhs);
 }
 
 }

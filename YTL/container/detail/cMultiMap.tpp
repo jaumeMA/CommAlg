@@ -217,7 +217,7 @@ size_t cMultiMapImpl<V,R,Map,A,B>::getTotalSize(const ytl::function<bool(const_r
 
     for(;itPoliThis!=this->cend();itPoliThis++)
     {
-        if(filter == null_ptr || filter.eval(*itPoliThis))
+        if(filter == null_ptr || ytl::eval(filter,*itPoliThis))
         {
             res++;
         }
@@ -272,7 +272,7 @@ void traverse(const detail::cMultiMapValue<T,R,Map,A,B,V>& i_node, const ytl::fu
     {
         if(const MapNode* currMapNode = currNode->getNodeLocation())
         {
-            i_sink.eval(currMapNode->m_value.first,currMapNode->m_value.second.getValue());
+            ytl::eval(i_sink,currMapNode->m_value.first,currMapNode->m_value.second.getValue());
 
             currNode = currMapNode->m_value.second.getHolder();
         }

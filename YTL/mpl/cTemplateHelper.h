@@ -53,6 +53,14 @@ struct null_ptr_type
 {
 };
 
+struct true_type
+{
+};
+
+struct false_type
+{
+};
+
 //stupid helper for gcc
 template<typename T>
 struct friend_maker

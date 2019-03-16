@@ -1,7 +1,7 @@
 
 #include "YTL/container/detail/cContainerOps.h"
 
-#define LESS_THAN(_A,_B) m_compare.eval(_A,_B)
+#define LESS_THAN(_A,_B) ytl::eval(m_compare,_A,_B)
 
 namespace yame
 {

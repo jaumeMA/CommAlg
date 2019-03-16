@@ -12,7 +12,7 @@ affine_function<Im,Dom>::affine_function(const set_function_t& i_originFunction,
 {
 }
 template<affine_space_type Im, affine_space_type Dom>
-Im affine_function<Im,Dom>::eval(const Dom& i_point) const
+Im affine_function<Im,Dom>::operator()(const Dom& i_point) const
 {
     return Im(m_function.first.eval(i_point.get_set_component()),m_function.second.eval(i_point.get_vector_space_component()));
 }
@@ -43,6 +43,12 @@ template<int ... Components>
 matrix<typename Im::vector_space::ring,Im::dimension(),Dom::dimension()+1> affine_function<Im,Dom>::_as_matrix(const mpl::sequence<Components...>&, const dom_set& i_origin) const
 {
     return { m_function.second.template get<Components>().as_vector() ..., m_function.first(i_origin) };
+}
+
+template<affine_space_type Im, affine_space_type Dom>
+Im eval(const affine_function<Im,Dom>& i_function, const Dom& i_point)
+{
+    return Im(eval(i_function.m_function.first,i_point.get_set_component()),eval(i_function.m_function.second,i_point.get_vector_space_component()));
 }
 
 }

@@ -49,7 +49,6 @@ public:
     function& operator=(function&& other);
     function& operator=(detail::function_impl_base<Return,container::parameter_pack<>>* funcBase);
     function& operator=(mpl::null_ptr_type);
-    inline Return eval() const;
     operator Return() const;
     Return operator()() const;
     bool operator==(mpl::null_ptr_type) const;
@@ -83,8 +82,6 @@ public:
     function& operator=(function&& other);
     function& operator=(mpl::null_ptr_type);
     function& operator=(detail::function_impl_base<Return,container::parameter_pack<Types...>>* other);
-    template<typename ... Args>
-    inline Return eval(Args&& ... args) const;
     template<typename ... Args>
     typename mpl::create_callable<function,Return, typename mpl::get_sub_parameter_pack<Types...>::template at_seq<typename mpl::get_pos_of_type<mpl::place_holder, mpl::is_type_constructible>::template at<Args...>::type>::type>::type operator()(Args&& ... args) const;
     bool operator==(mpl::null_ptr_type) const;

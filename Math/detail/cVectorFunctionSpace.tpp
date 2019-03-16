@@ -14,7 +14,7 @@ Im ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::_eval(const mpl::sequence<Co
 {
     const Function& nestedFunction = this->getValue();
 
-    return {nestedFunction.template get<Components>().eval(mpl::forward<Args>(i_args)...) ...};
+    return { eval(nestedFunction.template get<Components>(),mpl::forward<Args>(i_args)...) ...};
 }
 template<module_type Im, vector_space_type Dom, callable_type Function>
 typename ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::underlying_type ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::get_nested_function() const
@@ -29,12 +29,6 @@ auto ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::operator()(Args&& ... i_ar
     static const caller thisCaller;
 
 	return thisCaller(static_cast<const cFunctionSpace<Im,Dom,Function>&>(*this),mpl::forward<Args>(i_args) ...);
-}
-template<module_type Im, vector_space_type Dom, callable_type Function>
-template<typename ... Args>
-auto ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::eval(Args&& ... i_args) const
-{
-    return _eval(typename mpl::create_range_rank<0,Im::dimension()>::type{},mpl::forward<Args>(i_args) ...);
 }
 
 template<module_type Im, vector_space_type Dom, callable_type Function>

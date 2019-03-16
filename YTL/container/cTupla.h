@@ -125,10 +125,10 @@ public:
     operator detail::cSubTuple<T,rank>();
     operator detail::cSubTuple<const T,rank>() const;
     template<typename TT>
-    requires ( rank==1 && mpl::is_same_type<T,TT>::value )
+    requires ( rank==1 && mpl::is_base_of<TT,T>::value )
     operator TT&();
     template<typename TT>
-    requires ( rank==1 && mpl::is_same_type<T,TT>::value )
+    requires ( rank==1 && mpl::is_base_of<TT,T>::value )
     operator const TT&() const;
     size_t getSize() const override;
 

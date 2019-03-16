@@ -25,7 +25,7 @@ linear_vector_function<Im,Dom>& linear_vector_function<Im,Dom>::operator=(const 
     return *this;
 }
 template<module_type Im , vector_space_type Dom>
-Im linear_vector_function<Im,Dom>::eval(const Dom& i_point) const
+Im linear_vector_function<Im,Dom>::operator()(const Dom& i_point) const
 {
     return _eval(typename mpl::create_range_rank<0,Im::dimension()>::type{},typename mpl::create_range_rank<0,Dom::dimension()>::type{},i_point);
 }
@@ -40,7 +40,7 @@ template<module_type Im , vector_space_type Dom>
 template<int ... Components>
 Im linear_vector_function<Im,Dom>::_eval(const mpl::sequence<Components...>&) const
 {
-    return { this->template get<Components>().eval() ...};
+    return { ytl::eval(this->template get<Components>()) ...};
 }
 template<module_type Im , vector_space_type Dom>
 template<module_type IIm>
@@ -60,6 +60,12 @@ requires(mpl::get_num_ranks<Components...>::value == Im::dimension() )
 matrix<typename Im::ring,Im::dimension(),Dom::dimension()> linear_vector_function<Im,Dom>::_as_matrix(const mpl::sequence<Components...>&) const
 {
     return { this->template get<Components>().as_vector() ... };
+}
+
+template<module_type Im , vector_space_type Dom>
+Im eval(const linear_vector_function<Im,Dom>& i_function, const Dom& i_point)
+{
+    return i_function._eval(typename mpl::create_range_rank<0,Im::dimension()>::type{},typename mpl::create_range_rank<0,Dom::dimension()>::type{},i_point);
 }
 
 }

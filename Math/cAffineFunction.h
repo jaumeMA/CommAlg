@@ -20,6 +20,8 @@ namespace detail
 template<affine_space_type Im, affine_space_type Dom>
 class affine_function
 {
+    friend Im eval(const affine_function<Im,Dom>& i_function, const Dom& i_point);
+
 public:
     typedef typename Dom::vector_space dom_vector_space;
     typedef typename Dom::set dom_set;
@@ -41,7 +43,7 @@ public:
     affine_function(const set_function_t& i_originFunction, const vector_function_t& i_vectorFunction);
     inline const set_function_t& get_set_function() const;
     inline const vector_function_t& get_vector_function() const;
-	inline Im eval(const Dom& i_point) const;
+	inline Im operator()(const Dom& i_point) const;
 	template<module_type IIm>
     requires (Dom::dimension() == 0)
 	inline operator IIm() const;

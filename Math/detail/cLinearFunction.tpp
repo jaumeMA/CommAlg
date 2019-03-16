@@ -18,12 +18,12 @@ linear_function<Im,Dom>::linear_function(const Dom& i_value)
 }
 template<ring_type Im, vector_space_type Dom>
 linear_function<Im,Dom>::linear_function(const projection_function<Im,Dom>& i_component)
-: func_base(i_component)
+: func_base(static_cast<const base_function&>(i_component))
 {
 }
 template<ring_type Im, vector_space_type Dom>
 linear_function<Im,Dom>::linear_function(const constant_function<Im,Dom>& i_constValue)
-: func_base(i_constValue)
+: func_base(static_cast<const base_function&>(i_constValue))
 {
 }
 template<ring_type Im, vector_space_type Dom>
@@ -70,7 +70,14 @@ template<typename ... Args>
 requires ( mpl::get_num_types<Args...>::value == Dom::dimension() && mpl::are_same_type<Dom,Args...>::value )
 vector<Im,Dom::dimension()> linear_function<Im,Dom>::_as_vector(const Args& ... i_bases) const
 {
-    return { func_base::eval(i_bases) ...};
+    return { eval(*this,i_bases) ...};
+}
+
+template<ring_type Im, vector_space_type Dom>
+Im eval(const linear_function<Im,Dom>& i_function, const Dom& i_point)
+{
+    typedef typename linear_function<Im,Dom>::func_base func_base;
+    return eval(static_cast<const func_base&>(i_function),i_point);
 }
 
 }

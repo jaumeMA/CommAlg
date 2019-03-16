@@ -67,7 +67,7 @@ typename cPolynomialIterable<T,A>::node_pointer_type cPolynomialIterable<T,A>::g
         {
             nextValue = this->getValue(currNode);
 
-            if(m_compare.eval(currValue,nextValue) && (prevNode == inner_iterator_type::m_pHead || m_compare.eval(nextValue,prevValue)))
+            if(ytl::eval(m_compare,currValue,nextValue) && (prevNode == inner_iterator_type::m_pHead || ytl::eval(m_compare,nextValue,prevValue)))
             {
                 prevValue = this->getValue(currNode);
                 prevNode = currPair->innerNode;
@@ -108,7 +108,7 @@ typename cPolynomialIterable<T,A>::node_pointer_type cPolynomialIterable<T,A>::g
         {
             nextValue = this->getValue(currNode);
 
-            if(m_compare.eval(nextValue,currValue) && (prevNode == inner_iterator_type::m_pHead || m_compare.eval(prevValue,nextValue)))
+            if(ytl::eval(m_compare,nextValue,currValue) && (prevNode == inner_iterator_type::m_pHead || ytl::eval(m_compare,prevValue,nextValue)))
             {
                 prevValue = this->getValue(currNode);
                 prevNode = currPair->innerNode;
@@ -151,7 +151,7 @@ typename cPolynomialIterable<T,A>::node_pointer_type cPolynomialIterable<T,A>::g
 
             while(currPair->innerNode != inner_iterator_type::m_pHead)
             {
-                if(m_compare.eval(this->getValue(currElem),prevValue))
+                if(ytl::eval(m_compare,this->getValue(currElem),prevValue))
                 {
                     prevValue = this->getValue(currElem);
                     prevNode = currPair->innerNode;
@@ -191,7 +191,7 @@ typename cPolynomialIterable<T,A>::node_pointer_type cPolynomialIterable<T,A>::g
 
             while(currPair->innerNode != inner_iterator_type::m_pHead)
             {
-                if(m_compare.eval(prevValue,this->getValue(currElem)))
+                if(ytl::eval(m_compare,prevValue,this->getValue(currElem)))
                 {
                     prevValue = this->getValue(currElem);
                     prevNode = currPair->innerNode;

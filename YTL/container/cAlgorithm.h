@@ -32,7 +32,7 @@ inline bool equal(IteratorIn& itInitA, IteratorIn& itEndA, IteratorIn& itInitB, 
 
     for(;itInitA!=itEndA && itInitB!=itEndB;++itInitA,++itInitB)
     {
-        if(i_eqOp.eval(*itInitA,*itInitB) == false)
+        if(ytl::eval(i_eqOp,*itInitA,*itInitB) == false)
         {
             res = false;
             break;
@@ -48,7 +48,7 @@ inline bool equal(impl::cRandomAccessIteratorImpl<Traits>& itInitA, impl::cRando
 
     for(;itInitA!=itEndA && itInitB!=itEndB;++itInitA,++itInitB)
     {
-        if(i_eqOp.eval(*itInitA,*itInitB) == false)
+        if(ytl::eval(i_eqOp,*itInitA,*itInitB) == false)
         {
             res = false;
             break;
@@ -64,7 +64,7 @@ inline bool equal(impl::cRandomAccessIteratorImpl<Traits>& itInitA, impl::cRando
 
     for(;itInitA!=itEndA && itInitB!=itEndB;++itInitA,++itInitB)
     {
-        if(i_eqOp.eval(*itInitA,*itInitB) == false)
+        if(ytl::eval(i_eqOp,*itInitA,*itInitB) == false)
         {
             res = false;
             break;
@@ -80,7 +80,7 @@ inline bool equal(const TT* itInitA, const TT* itEndA, cRandomAccessIterator<T>&
 
     for(;itInitA!=itEndA && itInitB!=itEndB;++itInitA,++itInitB)
     {
-        if(i_eqOp.eval(*itInitA,*itInitB) == false)
+        if(ytl::eval(i_eqOp,*itInitA,*itInitB) == false)
         {
             res = false;
             break;
@@ -99,7 +99,7 @@ inline Iterator cmp(Iterator& itInit, Iterator& itEnd, const ytl::function<bool(
 
     for(;itInit!=itEnd;++itInit)
     {
-        if(i_compOp.eval(*itInit, *itFound))
+        if(ytl::eval(i_compOp,*itInit, *itFound))
         {
             itFound = itInit;
         }
@@ -117,7 +117,7 @@ inline typename Iterator::value_type apply(Iterator& itInit, Iterator& itEnd, co
 
     for(;itInit!=itEnd;++itInit)
     {
-        cmpValue = i_op.eval(cmpValue,*itInit);
+        cmpValue = ytl::eval(i_op,cmpValue,*itInit);
     }
 
     return cmpValue;
@@ -141,8 +141,8 @@ inline void sort(impl::cRandomAccessIteratorImpl<Traits>& itInit, impl::cRandomA
 
         while(!done)
         {
-            while(i_cmp.eval(*(itInit+upperIndex), pivot)) upperIndex++;
-            while(i_cmp.eval(pivot,*(itInit+lowerIndex))) lowerIndex--;
+            while(ytl::eval(i_cmp,*(itInit+upperIndex), pivot)) upperIndex++;
+            while(ytl::eval(i_cmp,pivot,*(itInit+lowerIndex))) lowerIndex--;
 
             if(upperIndex >= lowerIndex)
             {
@@ -185,20 +185,20 @@ inline IteratorOut merge(IteratorIn& itInitA, IteratorIn& itEndA, IteratorIn& it
     {
         if(itInitA != itEndA && itInitB != itEndB)
         {
-            itOut = iterableOut.add(i_merge.eval(*(itInitA),*(itInitB)));
+            itOut = iterableOut.add(ytl::eval(i_merge,*(itInitA),*(itInitB)));
 
             ++itInitA;
             ++itInitB;
         }
         else if(itInitA != itEndA)
         {
-            itOut = iterableOut.add(i_merge.eval(*(itInitA),none));
+            itOut = iterableOut.add(ytl::eval(i_merge,*(itInitA),none));
 
             ++itInitA;
         }
         else if(itInitB != itEndB)
         {
-            itOut = iterableOut.add(i_merge.eval(none,*(itInitB)));
+            itOut = iterableOut.add(ytl::eval(i_merge,none,*(itInitB)));
 
             ++itInitB;
         }
@@ -218,7 +218,7 @@ inline Iterator find_if(Iterator& itInit, Iterator& itEnd, ytl::function<bool(ty
 
     for(;currIt!=itEnd;++currIt)
     {
-        if(i_findOp.eval(*currIt))
+        if(ytl::eval(i_findOp,*currIt))
         {
             return static_cast<Iterator&>(currIt);
         }
@@ -294,7 +294,7 @@ inline IteratorOutput transform(IteratorIn& itInitInput, IteratorIn& itEndInput,
 
     for(;itInitInput!=itEndInput;++itInitInput)
     {
-        itOut = iterableOutput.add(i_transformOp.eval(*itInitInput));
+        itOut = iterableOutput.add(ytl::eval(i_transformOp,*itInitInput));
     }
 
     return itOut;

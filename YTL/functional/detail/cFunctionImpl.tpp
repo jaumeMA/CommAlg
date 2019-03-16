@@ -1,5 +1,6 @@
 
 #include "System/cException.h"
+#include "YTL/functional/detail/cFunctionTemplateHelper.h"
 
 namespace yame
 {
@@ -232,7 +233,10 @@ functor_impl<T,Return,Types...>::functor_impl(const T& i_functor)
 template<typename T, typename Return, typename ... Types>
 Return functor_impl<T,Return,Types...>::operator()(Types ... args) const
 {
-    return (m_functor)(mpl::forward<Types>(args)...);
+    typedef typename mpl::static_if<mpl::is_function<T>::value,mpl::lambda_evaluator<T,Return,Types...>,mpl::lambda_caller<T,Return,Types...>>::type caller_t;
+
+    const caller_t k_caller(m_functor);
+    return k_caller(mpl::forward<Types>(args)...);
 }
 template<typename T, typename Return, typename ... Types>
 tagged_pointer<function_impl_base<Return, container::parameter_pack<Types...>>> functor_impl<T,Return,Types...>::clone(void* i_arena, size_t i_arenaSize) const

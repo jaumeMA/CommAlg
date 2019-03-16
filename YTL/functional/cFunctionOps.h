@@ -10,7 +10,7 @@ namespace ytl \
 template<typename Return> \
 struct NAME##_unary_op\
 { \
-    typedef decltype((OP *reinterpret_cast<const Return*>(NULL))) inner_return; \
+    typedef decltype((OP std::declval<const Return>())) inner_return; \
     NAME##_unary_op() = default; \
     inner_return operator()(Return i_value) const \
     { \
@@ -103,58 +103,80 @@ template<typename Return, typename ... Types>
 class constant_function<function<Return(Types...)>> : public function<Return(Types...)>
 {
 public:
+    template<typename Constant>
+    struct constant_functor_t
+    {
+        constant_functor_t(const Constant& i_constantValue)
+        : m_constantValue(i_constantValue)
+        {}
+        Constant operator()(Types ... i_args) const
+        {
+            return m_constantValue;
+        }
+        Constant getConstant() const
+        {
+            return m_constantValue;
+        }
+    private:
+        const Constant m_constantValue;
+    };
+    typedef constant_functor_t<Return> return_constant_functor_t;
+    typedef constant_functor_t<int> integer_constant_functor_t;
+
     constant_function(const Return& i_constantValue)
-    : function<Return(Types...)>([i_constantValue](Types ... i_args) { return i_constantValue; })
-    , m_constantValue(i_constantValue)
+    : function<Return(Types...)>(return_constant_functor_t(i_constantValue))
     {}
-    Return getConstant() const
-    {
-        return m_constantValue;
-    }
-
-private:
-    Return m_constantValue;
-};
-
-template<typename>
-class integer_constant_function;
-
-template<typename Return, typename ... Types>
-class integer_constant_function<function<Return(Types...)>> : public function<Return(Types...)>
-{
-public:
-    integer_constant_function(int i_constantValue)
-    : function<Return(Types...)>([i_constantValue](Types ... i_args) { return i_constantValue; })
-    , m_constantValue(i_constantValue)
+    constant_function(int i_constantValue)
+    : function<Return(Types...)>(integer_constant_functor_t(i_constantValue))
     {}
-    int getConstant() const
-    {
-        return m_constantValue;
-    }
-
-private:
-    int m_constantValue;
 };
 
 template<typename>
 class projection_function;
 
 template<typename Return, typename ... Types>
+requires (mpl::get_num_types<Types...>::value > 0)
 class projection_function<function<Return(Types...)>> : public function<Return(Types...)>
 {
 public:
-    template<size_t Component>
-    projection_function(const mpl::numeric_type<Component>&)
-    : function<Return(Types...)>([](Types ... i_args){ return Return(mpl::nth_val_of<Component>(mpl::forward<Types>(i_args)...));})
-    , m_component(Component)
-    {}
-    size_t getComponent() const
+    struct projection_functor_t
     {
-        return m_component;
-    }
+        typedef Return(* acquirer_arg_t)(Types...);
+        static const size_t s_numTypes = mpl::get_num_types<Types...>::value;
 
-private:
-    size_t m_component;
+        projection_functor_t(size_t i_component)
+        : m_component(i_component)
+        {
+        }
+        inline Return operator()(Types ... i_args) const
+        {
+            typedef typename mpl::create_range_rank<0,s_numTypes>::type range_seq;
+            return (*(acquire_arg_acquirer(range_seq{},m_component)))(mpl::forward<Types>(i_args) ...);
+        }
+        size_t getComponent() const
+        {
+            return m_component;
+        }
+    private:
+        template<int ... Indexs>
+        static inline acquirer_arg_t acquire_arg_acquirer(const mpl::sequence<Indexs...>&, size_t i_component)
+        {
+            static const acquirer_arg_t s_acquire_arg[s_numTypes] = { &_forward_arg<Indexs> ...};
+
+            return s_acquire_arg[i_component];
+        }
+        template<size_t Component>
+        static inline Return _forward_arg(Types ... i_args)
+        {
+            return Return(mpl::nth_val_of<Component>(mpl::forward<Types>(i_args)...));
+        }
+
+        const size_t m_component;
+    };
+    template<size_t Component>
+    projection_function(const mpl::numeric_type<Component>& i_numType)
+    : function<Return(Types...)>(projection_functor_t(Component))
+    {}
 };
 
 //shift free operator for currying the function

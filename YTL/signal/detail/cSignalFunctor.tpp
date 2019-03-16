@@ -47,7 +47,7 @@ void cSignalFunctor<AccessType,Types...>::operator()(typename mpl::add_reference
 {
     ASSERT(this->isConnected(), "Calling disconnected slot");
 
-    m_call.eval(args...);
+    eval(m_call,args...);
 }
 template<int AccessType, typename ... Types>
 bool cSignalFunctor<AccessType,Types...>::operator==(const cSignalFunctor<AccessType,Types...>& other) const

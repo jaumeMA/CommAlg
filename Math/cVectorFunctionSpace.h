@@ -43,7 +43,6 @@ struct ExtendedVectorFunctionSpaceSet : virtual public detail::ISet<FunctionSpac
     typedef Function underlying_type;
     typedef cFunctionSpace<Im,Dom,Function> FinalObject;
     typedef typename Im::traits::module_traits::ring nested_im_t;
-
 private:
     template<int ... Components, typename ... Args>
     Im _eval(const mpl::sequence<Components...>&, Args&& ... i_args) const;
@@ -55,8 +54,6 @@ public:
     static void init(underlying_type& o_value, const cFunctionSpace<IIm,DDom,Function>& i_value);
     template<typename ... Args>
     auto operator()(Args&& ... i_args) const;
-    template<typename ... Args>
-    auto eval(Args&& ...) const;
 
     template<size_t Index>
     requires (Index < Dom::dimension())
@@ -74,7 +71,6 @@ struct ExtendedLinearVectorFunctionSpaceSet : public ExtendedVectorFunctionSpace
 public:
     using ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::get_nested_function;
     using ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::operator();
-    using ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::eval;
     using ExtendedVectorFunctionSpaceSet<Im,Dom,Function>::_x_;
 
     matrix<typename Im::ring,Im::dimension(),Dom::dimension()> as_matrix() const;

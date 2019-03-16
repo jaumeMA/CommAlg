@@ -51,7 +51,6 @@ public:
     typedef typename func_base::base_function base_function;
     typedef typename base_function::func_ptr_base func_ptr_base;
     using func_base::operator();
-    using func_base::eval;
     using func_base::clone;
 
     linear_function() = default;
@@ -79,6 +78,9 @@ private:
     requires ( mpl::get_num_types<Args...>::value == Dom::dimension() && mpl::are_same_type<Dom,Args...>::value )
     inline vector<Im,Dom::dimension()> _as_vector(const Args& ... i_bases) const;
 };
+
+template<ring_type Im, vector_space_type Dom>
+inline Im eval(const linear_function<Im,Dom>& i_function, const Dom& i_point);
 
 }
 

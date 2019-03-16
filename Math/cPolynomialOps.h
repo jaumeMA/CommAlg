@@ -44,12 +44,12 @@ static void is(const scalar_function<Im,Dom>& i_function, const ytl::function<vo
 static const size_t k_maxDerivativeOrder = 5;
 };
 
-template<typename Im, typename Dom, template<typename> class A = memory::cTypedSystemAllocator>
-requires ( math::is_ring<Im>::value && math::is_vector_space<Dom>::value && math::is_metric_space<Dom>::value )
+template<ring_type Im, vector_space_type Dom, template<typename> class A = memory::cTypedSystemAllocator>
+requires ( math::is_metric_space<Dom>::value )
 polynomial<Im,A> _taylorSeries(const scalar_function<Im,Dom>& i_function, const Dom& i_point);
 
-template<int ... Components, typename Im, typename Dom, template<typename> class A = memory::cTypedSystemAllocator>
-requires ( math::is_module<Im>::value && math::is_vector_space<Dom>::value && math::is_metric_space<Dom>::value )
+template<int ... Components, module_type Im, vector_space_type Dom, template<typename> class A = memory::cTypedSystemAllocator>
+requires ( requires { Im::dimension(); }  && math::is_metric_space<Dom>::value )
 container::cTupla<polynomial<typename Im::traits::module_traits::ring,A>,Im::dimension()> _taylorSeries(const mpl::sequence<Components...>&, const vector_function<Im,Dom>& i_function, const Dom& i_point);
 
 }
@@ -60,9 +60,9 @@ inline yame::container::cArray<yame::math::polynomial<T,A>> grobnerBase(const ya
 template<size_t ... Components, typename T, template<typename> class A>
 inline container::cTupla<polynomial<T,A>, mpl::get_num_ranks<Components...>::value> derivative(const polynomial<T,A>& i_poly);
 
-template<typename Im, typename Dom, typename Function, template<typename> class A = memory::cTypedSystemAllocator>
-requires ( math::is_module<Im>::value && requires { Im::dimension(); } && math::is_vector_space<Dom>::value && math::is_metric_space<Dom>::value )
-inline auto taylorSeries(const cFunctionSpace<Im,Dom,Function>& i_function, const Dom& i_point);
+template<module_type Im, vector_space_type Dom, callable_type Function, template<typename> class A = memory::cTypedSystemAllocator>
+requires ( requires { Im::dimension(); }  && math::is_metric_space<Dom>::value )
+inline container::cTupla<polynomial<typename Im::traits::module_traits::ring,A>,Im::dimension()> taylorSeries(const cFunctionSpace<Im,Dom,Function>& i_function, const Dom& i_point);
 
 template<typename T>
 inline yame::math::polynomial<T> operator+(const yame::math::cMonomial<T>& i_lhs, const yame::math::cMonomial<T>& i_rhs);

@@ -80,14 +80,14 @@ function<Return(Types...)>& function<Return(Types...)>::operator=(mpl::null_ptr_
 
     return *this;
 }
-template<typename Return, typename ... Types>
-template<typename ... Args>
-Return function<Return(Types...)>::eval(Args&& ... args) const
-{
-    typename detail::function_storage<k_embeddedStorageSize, Return(Types...)>::ConstFuncPtr _funcPtr = detail::function_storage<k_embeddedStorageSize, Return(Types...)>::getFuncPtr();
-
-    return _funcPtr->operator()(mpl::forward<Args>(args)...);
-}
+//template<typename Return, typename ... Types>
+//template<typename ... Args>
+//Return function<Return(Types...)>::eval(Args&& ... args) const
+//{
+//    typename detail::function_storage<k_embeddedStorageSize, Return(Types...)>::ConstFuncPtr _funcPtr = detail::function_storage<k_embeddedStorageSize, Return(Types...)>::getFuncPtr();
+//
+//    return _funcPtr->operator()(mpl::forward<Args>(args)...);
+//}
 template<typename Return, typename ... Types>
 template<typename ... Args>
 typename mpl::create_callable<function,Return, typename mpl::get_sub_parameter_pack<Types...>::template at_seq<typename mpl::get_pos_of_type<mpl::place_holder, mpl::is_type_constructible>::template at<Args...>::type>::type>::type function<Return(Types...)>::operator()(Args&& ... i_args) const
@@ -221,13 +221,13 @@ function<Return()>& function<Return()>::operator=(mpl::null_ptr_type)
 
     return *this;
 }
-template<typename Return>
-Return function<Return()>::eval() const
-{
-    typename detail::function_storage<k_embeddedStorageSize, Return()>::ConstFuncPtr _funcPtr = detail::function_storage<k_embeddedStorageSize, Return()>::getFuncPtr();
-
-    return _funcPtr->operator()();
-}
+//template<typename Return>
+//Return function<Return()>::eval() const
+//{
+//    typename detail::function_storage<k_embeddedStorageSize, Return()>::ConstFuncPtr _funcPtr = detail::function_storage<k_embeddedStorageSize, Return()>::getFuncPtr();
+//
+//    return _funcPtr->operator()();
+//}
 template<typename Return>
 function<Return()>::operator Return() const
 {
@@ -298,6 +298,12 @@ function<Return()> function<Return()>::clone(const detail::function_impl_base<Re
     }
 
     return res;
+}
+
+template<typename Return, typename ... Types, typename ... Args>
+Return eval(const function<Return(Types...)>& i_function, Args&& ... i_args)
+{
+    return i_function.getFuncPtr()->operator()(mpl::forward<Args>(i_args)...);
 }
 
 }

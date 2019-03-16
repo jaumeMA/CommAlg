@@ -1,6 +1,7 @@
 
 #include "YTL/functional/cPassByValueFunctor.h"
 #include "YTL/functional/cFunctionOps.h"
+#include <iostream>
 
 namespace yame
 {
@@ -27,7 +28,7 @@ scalar_function<Im,Dom> derivative_helper_caller<0>::derivative(const mpl::seque
         typename underlying_type::vicinity pathToTargetDownwards = Im::group::neutral_element().get_vicinity();
         typename underlying_type::vicinity pathToTargetUpwards = Im::group::neutral_element().get_vicinity();
 
-        Im prevValue = i_function.eval(mpl::forward<typename mpl::transform_index_type<Indexs>::template to<underlying_type>::type>(i_args) ...);
+        Im prevValue = eval(i_function,mpl::forward<typename mpl::transform_index_type<Indexs>::template to<underlying_type>::type>(i_args) ...);
 
         pathToTargetDownwards.begin(k_radius * stabTrigger);
         pathToTargetUpwards.begin(-k_radius * stabTrigger);
@@ -36,7 +37,7 @@ scalar_function<Im,Dom> derivative_helper_caller<0>::derivative(const mpl::seque
             const underlying_type currLeftPoint = *pathToTargetUpwards;
             const underlying_type currRightPoint = *pathToTargetDownwards;
 
-            Im currValue = (i_function.eval(add_delta_at<Component,Indexs>(i_args, currRightPoint) ...) - i_function.eval(add_delta_at<Component,Indexs>(i_args, currLeftPoint) ...)) / (currRightPoint - currLeftPoint);
+            Im currValue = (eval(i_function,add_delta_at<Component,Indexs>(i_args, currRightPoint) ...) - eval(i_function,add_delta_at<Component,Indexs>(i_args, currLeftPoint) ...)) / (currRightPoint - currLeftPoint);
 
             if(prevValue.distance(currValue) < stabTrigger)
             {
@@ -156,10 +157,11 @@ scalar_function<Im,Dom> identity_derivative_helper::get_custom_derivative(const 
 {
     static const int Dimension = Dom::dimension();
     typedef typename Dom::particle underlying_type;
+    typedef typename projection_function<Im,Dom>::projection_functor_t proj_functor_t;
 
-    if(const detail::functor_impl<projection_function<Im,Dom>,Im,Dom>* functor = rtti::dynamicCast<const detail::functor_impl<projection_function<Im,Dom>,Im,Dom>>(i_function.template getFuncPtr()))
+    if(const detail::functor_impl<proj_functor_t,Im,Dom>* functor = rtti::dynamicCast<const detail::functor_impl<proj_functor_t,Im,Dom>>(i_function.template getFuncPtr()))
     {
-        const projection_function<Im,Dom>& identityCallable = functor->getCallable();
+        const proj_functor_t& identityCallable = functor->getCallable();
 
         return (identityCallable.getComponent() == Component) ? constant_function<Im,Dom>(Im::neutral_element()) : constant_function<Im,Dom>(Im::group::neutral_element());
     }
@@ -174,8 +176,9 @@ scalar_function<Im,Dom> constant_derivative_helper::get_custom_derivative(const 
 {
     static const int Dimension = Dom::dimension();
     typedef typename Dom::particle underlying_type;
+    typedef typename constant_function<Im,Dom>::return_constant_functor_t const_functor_t;
 
-    if(const detail::functor_impl<constant_function<Im,Dom>,Im,Dom>* functor = rtti::dynamicCast<const detail::functor_impl<constant_function<Im,Dom>,Im,Dom>>(i_function.template getFuncPtr()))
+    if(const detail::functor_impl<const_functor_t,Im,Dom>* functor = rtti::dynamicCast<const detail::functor_impl<const_functor_t,Im,Dom>>(i_function.template getFuncPtr()))
     {
         return constant_function<Im,Dom>(Im::group::neutral_element());
     }
@@ -272,7 +275,7 @@ scalar_function<Im,Dom> div_derivative_helper::get_custom_derivative(const scala
     {
         const div_homogeneous_callable& divCallable = functor->getCallable();
 
-        return (derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<0>())) * scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<1>()) - scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<0>()) * derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<1>()))) / (scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<1>()) * scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<1>()));
+        return (derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<0>())) * scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<1>()) - scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<0>()) * derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<1>()))) / (scalar_function<Im,Dom>::clone(divCallable.template getNestedCallable<1>()) ^ 2);
     }
     else
 	{
@@ -289,24 +292,36 @@ scalar_function<Im,Dom> pow_derivative_helper::get_custom_derivative(const scala
 
     if(const detail::functor_impl<pow_homogeneous_callable,Im,Dom>* functor = rtti::dynamicCast<const detail::functor_impl<pow_homogeneous_callable,Im,Dom>>(i_function.template getFuncPtr()))
     {
+        typedef detail::functor_impl<typename constant_function<Im,Dom>::integer_constant_functor_t,Im,Dom> integer_const_functor;
         const pow_homogeneous_callable& powCallable = functor->getCallable();
 
         //first special cases
 
         //f(x)^n = n * f(x)^(n-1)*f'(x)
-        if(const detail::functor_impl<integer_constant_function<Im,Dom>,Im,Dom>* constant_functor = rtti::dynamicCast<const detail::functor_impl<integer_constant_function<Im,Dom>,Im,Dom>>(powCallable.template getNestedCallable<1>()))
+        if(const integer_const_functor* constant_functor = rtti::dynamicCast<const integer_const_functor>(powCallable.template getNestedCallable<1>()))
         {
-            const integer_constant_function<Im,Dom>& exponentCallable = constant_functor->getCallable();
+            const typename constant_function<Im,Dom>::integer_constant_functor_t& exponentCallable = constant_functor->getCallable();
+            const int integer_constant = exponentCallable.getConstant();
+            const scalar_function<Im,Dom> baseFunction = scalar_function<Im,Dom>::clone(powCallable.template getNestedCallable<0>());
 
-            return scalar_function<Im,Dom>::clone(exponentCallable.getFuncPtr()) * (scalar_function<Im,Dom>::clone(powCallable.template getNestedCallable<0>()) ^ (exponentCallable.getConstant() - 1)) * derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(exponentCallable.getFuncPtr()));
+            if(integer_constant > 1)
+            {
+                return integer_constant * (baseFunction ^ (integer_constant - 1)) * derivative_helper::derivative<Component>(baseFunction);
+            }
+            else
+            {
+                return derivative_helper::derivative<Component>(baseFunction);
+            }
         }
-        //k^f(x) = k^f(x) * ln(k) * f'(x) (PENDING TO FIX LOG FUNCTION)
-//        else if(const detail::functor_impl<constant_function<Im,Dom>,Im,Dom>* constant_functor = rtti::dynamicCast<const detail::functor_impl<constant_function<Im,Dom>,Im,Dom>>(powCallable.template getNestedCallable<0>()))
-//        {
-//            const constant_function<Im,Dom>& baseCallable = constant_functor->getCallable();
-//
-//            return baseCallable ^ scalar_function<Im,Dom>::clone(powCallable.template getNestedCallable<1>()) * Log<Im,Dom>(baseCallable) * derivative_helper::derivative<Component>(scalar_function<Im,Dom>::clone(powCallable.template getNestedCallable<1>()));
-//        }
+        //k^f(x) = k^f(x) * ln(k) * f'(x)
+        else if(const integer_const_functor* constant_functor = rtti::dynamicCast<const integer_const_functor>(powCallable.template getNestedCallable<0>()))
+        {
+            const typename constant_function<Im,Dom>::integer_constant_functor_t& baseCallable = constant_functor->getCallable();
+            const int integer_constant = baseCallable.getConstant();
+            const scalar_function<Im,Dom> exponentFunction = scalar_function<Im,Dom>::clone(powCallable.template getNestedCallable<1>());
+
+            return (integer_constant ^ exponentFunction) * log(Im(integer_constant)) * derivative_helper::derivative<Component>(exponentFunction);
+        }
         else
         {
             //the remainder case is so complex that its not worth to return the algebraic expression ( d/d(x){f(x)^g()} = f(x)^(g(x)-1)*f'(x) f(x)ln(f(x))*g'(x) )

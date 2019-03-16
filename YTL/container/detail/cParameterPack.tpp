@@ -1,7 +1,7 @@
 
 #include "System/cException.h"
 
-#define STORAGE_ADDRESS(_STORAGE) reinterpret_cast<char*>(const_cast<decltype(_STORAGE)*>(&_STORAGE))
+#define PACK_STORAGE_ADDRESS(_STORAGE) reinterpret_cast<char*>(const_cast<decltype(_STORAGE)*>(&_STORAGE))
 
 namespace yame
 {
@@ -15,7 +15,7 @@ parameter_pack<Type,Types...>::parameter_pack(TType&& i_val, TTypes&& ... i_vals
 {
     size_t thisTypeIndex = 1;
 
-    construct<Type>(STORAGE_ADDRESS(m_storage), mpl::forward<TType>(i_val)) && ( construct<Types>(STORAGE_ADDRESS(m_storage) + data_offset::at(thisTypeIndex++), mpl::forward<TTypes>(i_vals)) && ... );
+    construct<Type>(PACK_STORAGE_ADDRESS(m_storage), mpl::forward<TType>(i_val)) && ( construct<Types>(PACK_STORAGE_ADDRESS(m_storage) + data_offset::at(thisTypeIndex++), mpl::forward<TTypes>(i_vals)) && ... );
 }
 template<typename Type, typename ... Types>
 parameter_pack<Type,Types...>::parameter_pack(const parameter_pack<Type,Types...>& other)
@@ -23,7 +23,7 @@ parameter_pack<Type,Types...>::parameter_pack(const parameter_pack<Type,Types...
     size_t thisTypeIndex = 1;
     size_t otherTypeIndex = 1;
 
-    construct<Type>(STORAGE_ADDRESS(m_storage), mpl::forward<Type>(get<Type>(STORAGE_ADDRESS(other.m_storage) ))) && ( construct<Types>(STORAGE_ADDRESS(m_storage) + data_offset::at(thisTypeIndex++), mpl::forward<Types>(get<Types>(STORAGE_ADDRESS(other.m_storage) + data_offset::at(otherTypeIndex++)))) && ... );
+    construct<Type>(PACK_STORAGE_ADDRESS(m_storage), mpl::forward<Type>(get<Type>(PACK_STORAGE_ADDRESS(other.m_storage) ))) && ( construct<Types>(PACK_STORAGE_ADDRESS(m_storage) + data_offset::at(thisTypeIndex++), mpl::forward<Types>(get<Types>(PACK_STORAGE_ADDRESS(other.m_storage) + data_offset::at(otherTypeIndex++)))) && ... );
 }
 template<typename Type, typename ... Types>
 parameter_pack<Type,Types...>::parameter_pack(parameter_pack<Type,Types...>&& other)
@@ -31,7 +31,7 @@ parameter_pack<Type,Types...>::parameter_pack(parameter_pack<Type,Types...>&& ot
     size_t thisTypeIndex = 1;
     size_t otherTypeIndex = 1;
 
-    construct<Type>(STORAGE_ADDRESS(m_storage), mpl::move(extract<Type>(STORAGE_ADDRESS(other.m_storage) ))) && ( construct<Types>(STORAGE_ADDRESS(m_storage) + data_offset::at(thisTypeIndex++), mpl::move(extract<Types>(STORAGE_ADDRESS(other.m_storage) + data_offset::at(otherTypeIndex++)))) && ... );
+    construct<Type>(PACK_STORAGE_ADDRESS(m_storage), mpl::move(extract<Type>(PACK_STORAGE_ADDRESS(other.m_storage) ))) && ( construct<Types>(PACK_STORAGE_ADDRESS(m_storage) + data_offset::at(thisTypeIndex++), mpl::move(extract<Types>(PACK_STORAGE_ADDRESS(other.m_storage) + data_offset::at(otherTypeIndex++)))) && ... );
 }
 template<typename Type, typename ... Types>
 template<typename TType, typename ... TTypes>
@@ -41,7 +41,7 @@ parameter_pack<Type,Types...>::parameter_pack(const parameter_pack<TType,TTypes.
     size_t thisTypeIndex = 1;
     size_t otherTypeIndex = 1;
 
-    construct<Type>(STORAGE_ADDRESS(m_storage),mpl::forward<TType>(get<TType>(STORAGE_ADDRESS(other.m_storage)))) && ( construct<Types>(STORAGE_ADDRESS(m_storage) + data_offset::at(thisTypeIndex++), mpl::forward<TTypes>(get<TTypes>(STORAGE_ADDRESS(other.m_storage) + data_offset::at(otherTypeIndex++)))) && ... );
+    construct<Type>(PACK_STORAGE_ADDRESS(m_storage),mpl::forward<TType>(get<TType>(PACK_STORAGE_ADDRESS(other.m_storage)))) && ( construct<Types>(PACK_STORAGE_ADDRESS(m_storage) + data_offset::at(thisTypeIndex++), mpl::forward<TTypes>(get<TTypes>(PACK_STORAGE_ADDRESS(other.m_storage) + data_offset::at(otherTypeIndex++)))) && ... );
 }
 template<typename Type, typename ... Types>
 template<typename TType, typename ... TTypes>
@@ -51,14 +51,14 @@ parameter_pack<Type,Types...>::parameter_pack(parameter_pack<TType,TTypes...>&& 
     size_t thisTypeIndex = 1;
     size_t otherTypeIndex = 1;
 
-    construct<Type>(STORAGE_ADDRESS(m_storage),mpl::move(extract<TType>(STORAGE_ADDRESS(other.m_storage)))) && ( construct<Types>(STORAGE_ADDRESS(m_storage) + data_offset::at(thisTypeIndex++), mpl::move(extract<TTypes>(STORAGE_ADDRESS(other.m_storage) + data_offset::at(otherTypeIndex++)))) && ... );
+    construct<Type>(PACK_STORAGE_ADDRESS(m_storage),mpl::move(extract<TType>(PACK_STORAGE_ADDRESS(other.m_storage)))) && ( construct<Types>(PACK_STORAGE_ADDRESS(m_storage) + data_offset::at(thisTypeIndex++), mpl::move(extract<TTypes>(PACK_STORAGE_ADDRESS(other.m_storage) + data_offset::at(otherTypeIndex++)))) && ... );
 }
 template<typename Type, typename ... Types>
 parameter_pack<Type,Types...>::~parameter_pack()
 {
     size_t thisTypeIndex = 1;
 
-    destruct<Type>(STORAGE_ADDRESS(m_storage)) && ( destruct<Types>(STORAGE_ADDRESS(m_storage) + data_offset::at(thisTypeIndex++)) && ... );
+    destruct<Type>(PACK_STORAGE_ADDRESS(m_storage)) && ( destruct<Types>(PACK_STORAGE_ADDRESS(m_storage) + data_offset::at(thisTypeIndex++)) && ... );
 }
 template<typename Type, typename ... Types>
 parameter_pack<Type,Types...>& parameter_pack<Type,Types...>::operator=(const parameter_pack<Type,Types...>& other)
@@ -66,7 +66,7 @@ parameter_pack<Type,Types...>& parameter_pack<Type,Types...>::operator=(const pa
     size_t thisTypeIndex = 1;
     size_t otherTypeIndex = 1;
 
-    assign<Type>(STORAGE_ADDRESS(m_storage),mpl::forward<Type>(get<Type>(STORAGE_ADDRESS(other.m_storage)))) && ( assign<Types>(STORAGE_ADDRESS(m_storage) + data_offset::at(thisTypeIndex++), mpl::forward<Types>(get<Types>(STORAGE_ADDRESS(other.m_storage) + data_offset::at(otherTypeIndex++)))) && ... );
+    assign<Type>(PACK_STORAGE_ADDRESS(m_storage),mpl::forward<Type>(get<Type>(PACK_STORAGE_ADDRESS(other.m_storage)))) && ( assign<Types>(PACK_STORAGE_ADDRESS(m_storage) + data_offset::at(thisTypeIndex++), mpl::forward<Types>(get<Types>(PACK_STORAGE_ADDRESS(other.m_storage) + data_offset::at(otherTypeIndex++)))) && ... );
 
     return *this;
 }
@@ -76,7 +76,7 @@ parameter_pack<Type,Types...>& parameter_pack<Type,Types...>::operator=(paramete
     size_t thisTypeIndex = 1;
     size_t otherTypeIndex = 1;
 
-    assign<Type>(STORAGE_ADDRESS(m_storage),mpl::move(extract<Type>(STORAGE_ADDRESS(other.m_storage)))) && ( assign<Types>(STORAGE_ADDRESS(m_storage) + data_offset::at(thisTypeIndex++), mpl::move(extract<Types>(STORAGE_ADDRESS(other.m_storage) + data_offset::at(otherTypeIndex++)))) && ... );
+    assign<Type>(PACK_STORAGE_ADDRESS(m_storage),mpl::move(extract<Type>(PACK_STORAGE_ADDRESS(other.m_storage)))) && ( assign<Types>(PACK_STORAGE_ADDRESS(m_storage) + data_offset::at(thisTypeIndex++), mpl::move(extract<Types>(PACK_STORAGE_ADDRESS(other.m_storage) + data_offset::at(otherTypeIndex++)))) && ... );
 
     return *this;
 }
@@ -86,7 +86,7 @@ typename ytl::embedded_type<typename mpl::nth_type_of<_pos,Type,Types...>::type>
 {
     typedef typename mpl::nth_type_of<_pos,Type,Types...>::type nth_type;
 
-    return get<nth_type>(STORAGE_ADDRESS(m_storage) + data_offset::at(_pos));
+    return get<nth_type>(PACK_STORAGE_ADDRESS(m_storage) + data_offset::at(_pos));
 }
 template<typename Type, typename ... Types>
 template<int _pos>
@@ -94,13 +94,13 @@ typename ytl::embedded_type<typename mpl::nth_type_of<_pos,Type,Types...>::type>
 {
     typedef typename mpl::nth_type_of<_pos,Type,Types...>::type nth_type;
 
-    return get<nth_type>(STORAGE_ADDRESS(m_storage) + data_offset::at(_pos));
+    return get<nth_type>(PACK_STORAGE_ADDRESS(m_storage) + data_offset::at(_pos));
 }
 template<typename Type, typename ... Types>
 template<int ... _pos>
 void parameter_pack<Type,Types...>::setValues(typename mpl::nth_type_of<_pos,Type,Types...>::type ... args)
 {
-    ( assign<typename mpl::nth_type_of<_pos,Type,Types...>::type>(STORAGE_ADDRESS(m_storage) + data_offset::at(_pos), mpl::forward<typename mpl::nth_type_of<_pos,Type,Types...>::type>(args)) && ... );
+    ( assign<typename mpl::nth_type_of<_pos,Type,Types...>::type>(PACK_STORAGE_ADDRESS(m_storage) + data_offset::at(_pos), mpl::forward<typename mpl::nth_type_of<_pos,Type,Types...>::type>(args)) && ... );
 }
 template<typename Type, typename ... Types>
 template<int _pos>
@@ -108,7 +108,7 @@ bool parameter_pack<Type,Types...>::setValue(typename mpl::nth_type_of<_pos,Type
 {
     typedef typename mpl::nth_type_of<_pos,Type,Types...>::type nth_type;
 
-    return assign<nth_type>(STORAGE_ADDRESS(m_storage) + data_offset::at(_pos), mpl::forward<nth_type>(val));
+    return assign<nth_type>(PACK_STORAGE_ADDRESS(m_storage) + data_offset::at(_pos), mpl::forward<nth_type>(val));
 }
 
 }

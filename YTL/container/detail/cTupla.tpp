@@ -225,7 +225,7 @@ size_t cTupla<T,rank>::getSize() const
 template<typename T, int rank>
 typename cTupla<T,rank>::node_pointer_type cTupla<T,rank>::getFirstElem() const
 {
-    return detail::sendNodeToIterator<node_pointer_type>(const_cast<primitive_type*>(this->address(0)));
+    return detail::sendNodeToIterator<node_pointer_type>(const_cast<primitive_type*>(this->address()));
 }
 template<typename T, int rank>
 typename cTupla<T,rank>::node_pointer_type cTupla<T,rank>::getLastElem() const
@@ -286,17 +286,17 @@ size_t cTupla<T,rank>::getIndexOfNode(node_pointer_type node) const
 }
 template<typename T, int rank>
 template<typename TT>
-requires ( rank==1 && mpl::is_same_type<T,TT>::value )
+requires ( rank==1 && mpl::is_base_of<TT,T>::value )
 cTupla<T,rank>::operator TT&()
 {
-    detail::cTuplaStorage<T,m_rank>::template get<0>();
+    return detail::cTuplaStorage<T,m_rank>::template get<0>();
 }
 template<typename T, int rank>
 template<typename TT>
-requires ( rank==1 && mpl::is_same_type<T,TT>::value )
+requires ( rank==1 && mpl::is_base_of<TT,T>::value )
 cTupla<T,rank>::operator const TT&() const
 {
-    detail::cTuplaStorage<T,m_rank>::template get<0>();
+    return detail::cTuplaStorage<T,m_rank>::template get<0>();
 }
 
 template<typename T, int ... ranks, typename Arg, typename ... Args>

@@ -14,7 +14,6 @@ template<module_type Im , vector_space_type Dom>
 class vector_function : protected container::cTupla<scalar_function<typename Im::ring,Dom>,Im::dimension()>
 {
     typedef container::cTupla<scalar_function<typename Im::ring,Dom>,Im::dimension()> base;
-
     template<int ... Indexs>
     vector_function(const mpl::sequence<Indexs...>&, const matrix<typename Dom::field,Im::dimension(),Dom::dimension()>& i_linearValue);
 
@@ -39,17 +38,25 @@ public:
     vector_function() = default;
     vector_function(const matrix<typename Dom::field,Im::dimension(),Dom::dimension()>& i_linearValue);
     vector_function& operator=(const matrix<typename Dom::field,Im::dimension(),Dom::dimension()>& i_linearValue);
-	inline Im eval(const Dom& i_point) const;
+	inline Im operator()(const Dom& i_point) const;
 	template<module_type IIm>
     requires (Dom::dimension() == 0)
 	operator IIm() const;
 
 private:
     template<int ... Components, int ... Indexs>
-    inline Im _eval(const mpl::sequence<Components...>&, const mpl::sequence<Indexs...>&, const Dom& i_point) const;
+    Im _eval(const mpl::sequence<Components...>&, const mpl::sequence<Indexs...>&, const Dom& i_point) const;
     template<int ... Components>
-    inline Im _eval(const mpl::sequence<Components...>&) const;
+    Im _eval(const mpl::sequence<Components...>&) const;
 };
+
+template<int ... Components, module_type Im , vector_space_type Dom>
+inline Im eval(const mpl::sequence<Components...>&);
+template<module_type Im , vector_space_type Dom, typename ... Args>
+inline Im eval(const vector_function<Im,Dom>& i_function, Args&& ... i_args);
+//{
+//    return i_function._eval(typename mpl::create_range_rank<0,Im::dimension()>::type{},typename mpl::create_range_rank<0,Dom::dimension()>::type{},i_point);
+//}
 
 }
 

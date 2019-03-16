@@ -60,12 +60,12 @@ void cAffineSpaceSetTraits<X,V,Tag>::assign(underlying_type& o_value, const unde
 template<set_type X, vector_space_type V, typename Tag>
 bool cAffineSpaceSetTraits<X,V,Tag>::cmp(const underlying_type& i_lhs, const underlying_type& i_rhs)
 {
-    return s_action.eval(i_lhs.first,i_lhs.second) == s_action.eval(i_rhs.first,i_rhs.second);
+    return eval(s_action,i_lhs.first,i_lhs.second) == eval(s_action,i_rhs.first,i_rhs.second);
 }
 template<set_type X, vector_space_type V, typename Tag>
 X cAffineSpaceSetTraits<X,V,Tag>::action(const X& i_lhs, const V& i_rhs)
 {
-    return s_action.eval(i_lhs,i_rhs);
+    return eval(s_action,i_lhs,i_rhs);
 }
 
 }

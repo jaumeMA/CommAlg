@@ -28,6 +28,13 @@ scalar_function<Im,Dom> scalar_function<Im,Dom>::clone(const func_ptr_base* i_fu
 
     return res;
 }
+//template<set_type Im, set_type Dom>
+//Im scalar_function<Im,Dom>::operator()(const Dom& i_point) const
+//{
+//    typedef typename mpl::create_range_rank<0,Dom::dimension()>::type typeSeq;
+//
+//    return _eval(typeSeq(),i_point);
+//}
 template<set_type Im, set_type Dom>
 scalar_function<Im,Dom>& scalar_function<Im,Dom>::operator=(const Dom& i_constValue)
 {
@@ -36,24 +43,29 @@ scalar_function<Im,Dom>& scalar_function<Im,Dom>::operator=(const Dom& i_constVa
     return *this;
 }
 template<set_type Im, set_type Dom>
-template<int ... Indexs>
-Im scalar_function<Im,Dom>::_eval(const mpl::sequence<Indexs...>&, const Dom& i_point) const
-{
-    return eval(i_point.template get<Indexs>() ...);
-}
-template<set_type Im, set_type Dom>
-Im scalar_function<Im,Dom>::eval(const Dom& i_point) const
-{
-    typedef typename mpl::create_range_rank<0,Dom::dimension()>::type typeSeq;
-
-    return _eval(typeSeq(),i_point);
-}
-template<set_type Im, set_type Dom>
 template<callable_type Return, typename ... Args>
 Return scalar_function<Im,Dom>::specialize(Args&& ... i_args) const
 {
     return base_function::operator()(mpl::forward<Args>(i_args) ...);
 }
+
+template<set_type Im, set_type Dom, int ... Indexs>
+Im eval(const mpl::sequence<Indexs...>&, const scalar_function<Im,Dom>& i_function, const Dom& i_point)
+{
+    return eval(static_cast<typename scalar_function<Im,Dom>::base_function>(i_function),i_point.template get<Indexs>() ...);
+}
+template<set_type Im, set_type Dom>
+Im eval(const scalar_function<Im,Dom>& i_function, const Dom& i_point)
+{
+    typedef typename mpl::create_range_rank<0,Dom::dimension()>::type typeSeq;
+    return eval(typeSeq{},i_function,i_point);
+}
+template<set_type Im, set_type Dom, typename ... Args>
+Im eval(const scalar_function<Im,Dom>& i_function, Args&& ... i_args)
+{
+    return i_function.getFuncPtr()->operator()(mpl::forward<Args>(i_args)...);
+}
+
 }
 }
 }

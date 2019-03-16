@@ -8,9 +8,13 @@ template<ring_type Im, vector_space_type Dom> \
 class FUNC_NAME##_function_t : public detail::scalar_function<Im,Dom> \
 { \
 public: \
-FUNC_NAME##_function_t() \
-: detail::scalar_function<Im,Dom>(&NESTED_FUNC_NAME) \
-{} \
+    Im operator()(const Dom& i_point) const \
+    { \
+        return detail::scalar_function<Im,Dom>::operator()(i_point); \
+    } \
+    FUNC_NAME##_function_t() \
+    : detail::scalar_function<Im,Dom>(&NESTED_FUNC_NAME) \
+    {} \
 }; \
 static FUNC_NAME##_function_t<Real,R1> FUNC_NAME##r = FUNC_NAME##_function_t<Real,R1>(); \
 static FUNC_NAME##_function_t<Complex,C1> FUNC_NAME##c = FUNC_NAME##_function_t<Complex,C1>(); \

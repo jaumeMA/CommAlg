@@ -9,7 +9,7 @@ if(IN != this->m_pHead) \
      \
     while(OUT != this->m_pHead) \
     { \
-        if(this->m_filter == null_ptr || this->m_filter.eval(this->m_iterable->getValue(OUT))) \
+        if(this->m_filter == null_ptr || ytl::eval(this->m_filter,this->m_iterable->getValue(OUT))) \
         { \
             break; \
         } \
@@ -31,7 +31,7 @@ if(IN != this->m_pHead) \
      \
     while(OUT != this->m_pHead) \
     { \
-        if(this->m_filter == null_ptr || this->m_filter.eval(this->m_iterable->getValue(OUT))) \
+        if(this->m_filter == null_ptr || ytl::eval(this->m_filter,this->m_iterable->getValue(OUT))) \
         { \
             break; \
         } \
@@ -144,7 +144,7 @@ void cIteratorImpl<IteratorTraits<T,Iterator,Iterable,AgnosticTag<DirectionTag>,
 {
     ASSERT(m_iterable, "Unconsisent situation");
 
-    m_pCurrentNode = (currNode == m_pHead || m_filter == null_ptr || m_filter.eval(m_iterable->getValue(currNode))) ? currNode : m_pHead;
+    m_pCurrentNode = (currNode == m_pHead || m_filter == null_ptr || ytl::eval(m_filter,m_iterable->getValue(currNode))) ? currNode : m_pHead;
 }
 template<typename T, template<class> class Iterator, typename Iterable, template<typename> class AgnosticTag, typename DirectionTag, ReferenceCategory _category>
 typename cIteratorImpl<IteratorTraits<T,Iterator,Iterable,AgnosticTag<DirectionTag>,_category>>::node_pointer_type cIteratorImpl<IteratorTraits<T,Iterator,Iterable,AgnosticTag<DirectionTag>,_category>>::getCurrentNode() const

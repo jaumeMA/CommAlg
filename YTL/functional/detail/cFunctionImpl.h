@@ -144,6 +144,8 @@ public:
     const T& getCallable() const;
 
 protected:
+    Return _eval(Types ... i_args);
+
     T m_functor;
 };
 

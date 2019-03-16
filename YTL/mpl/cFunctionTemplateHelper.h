@@ -70,24 +70,19 @@ struct _is_function<ytl::function<Return(Types...)>>
 template<typename Function>
 struct is_function
 {
-    static const bool value = _is_function<typename mpl::drop_constness<typename mpl::drop_reference<Function>::type>::type>::value;
+    typedef typename mpl::drop_constness<typename mpl::drop_reference<Function>::type>::type raw_type;
+    static const bool value = _is_function<raw_type>::value;
 };
 
 template<typename Return, typename ... Types>
-inline constexpr bool _is_base_of_function(const ytl::function<Return,Types...>*)
-{
-    return true;
-}
+true_type _is_base_of_function(const ytl::function<Return(Types...)>&);
 
-inline constexpr bool _is_base_of_function(...)
-{
-    return false;
-}
+false_type _is_base_of_function(...);
 
 template<typename Function>
 struct is_base_of_function
 {
-    static const bool value = _is_base_of_function(mpl::instantiatePointer<const Function>::value);
+    static const bool value = mpl::is_same_type<true_type,decltype(_is_base_of_function(std::declval<Function>()))>::value;
 };
 
 template<template <typename...> class M, typename Return, typename Type, int Dimension>
@@ -118,8 +113,7 @@ struct homogeneous_callable
 template<typename T>
 struct is_valid_functor
 {
-    static const bool value = mpl::is_pointer<typename mpl::drop_constness<typename mpl::drop_reference<T>::type>::type>::value==false &&
-                                mpl::is_function<typename mpl::drop_constness<typename mpl::drop_reference<T>::type>::type>::value==false;
+    static const bool value = mpl::is_pointer<T>::value==false && mpl::is_base_of_function<T>::value==false;
 };
 
 template<typename T>
@@ -181,6 +175,14 @@ struct function_signature<CallableReturn (CallableClass::*)(CallableTypes...) co
     typedef CallableClass callable_class;
     typedef container::parameter_pack<CallableTypes...> callable_args_pack;
 };
+
+}
+
+namespace ytl
+{
+
+template<typename Return, typename ... Types, typename ... Args>
+inline Return eval(const function<Return(Types...)>& i_function, Args&& ... i_args);
 
 }
 }

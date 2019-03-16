@@ -131,7 +131,7 @@ typename cConstIterableImpl<Traits,mpl::sequence<indexs...>>::forwarded_iterator
 
     if(filter != null_ptr)
     {
-        while(newNode != forwarded_iterator_type::m_pHead && filter.eval(this->getValue(newNode)) == false)
+        while(newNode != forwarded_iterator_type::m_pHead && ytl::eval(filter,this->getValue(newNode)) == false)
         {
             newNode = this->getNextElem(newNode);
         }
@@ -161,7 +161,7 @@ typename cConstIterableImpl<Traits,mpl::sequence<indexs...>>::const_forwarded_it
 
     if(filter != null_ptr)
     {
-        while(newNode != forwarded_iterator_type::m_pHead && filter.eval(this->getValue(newNode)) == false)
+        while(newNode != forwarded_iterator_type::m_pHead && ytl::eval(filter,this->getValue(newNode)) == false)
         {
             newNode = this->getNextElem(newNode);
         }
@@ -231,7 +231,7 @@ typename cBidirectionalIterableImpl<Traits>::reverse_iterator_type cBidirectiona
 
     if(filter != null_ptr)
     {
-        while(newNode != iterator_type::m_pHead && filter.eval(this->getValue(newNode)) == false)
+        while(newNode != iterator_type::m_pHead && ytl::eval(filter,this->getValue(newNode)) == false)
         {
             newNode = this->getPrevElem(newNode);
         }
@@ -257,7 +257,7 @@ typename cBidirectionalIterableImpl<Traits>::const_reverse_iterator_type cBidire
 
     if(filter != null_ptr)
     {
-        while(newNode != iterator_type::m_pHead && filter.eval(this->getValue(newNode)) == false)
+        while(newNode != iterator_type::m_pHead && ytl::eval(filter,this->getValue(newNode)) == false)
         {
             newNode = this->getPrevElem(newNode);
         }
@@ -411,7 +411,7 @@ typename cConstIterableWithTransformImpl<Traits,mpl::sequence<indexs...>>::const
 
     nested_iterable_interface* nextIterableBackEnd = currPair->backendInterface;
 
-    return m_transform.eval(nextIterableBackEnd->getPrivateIterable().getValue(currPair->innerNode));
+    return ytl::eval(m_transform,nextIterableBackEnd->getPrivateIterable().getValue(currPair->innerNode));
 }
 template<typename Traits, int ... indexs>
 typename cConstIterableWithTransformImpl<Traits,mpl::sequence<indexs...>>::forwarded_reference cConstIterableWithTransformImpl<Traits,mpl::sequence<indexs...>>::getValue(forwarded_node_pointer_type currNode)
@@ -420,7 +420,7 @@ typename cConstIterableWithTransformImpl<Traits,mpl::sequence<indexs...>>::forwa
 
     nested_iterable_interface* nextIterableBackEnd = currPair->backendInterface;
 
-    return m_transform.eval(nextIterableBackEnd->getPrivateIterable().getValue(currPair->innerNode));
+    return ytl::eval(m_transform,nextIterableBackEnd->getPrivateIterable().getValue(currPair->innerNode));
 }
 
 }

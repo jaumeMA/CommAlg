@@ -65,7 +65,7 @@ typename cConstIterableBaseImpl<PrivateInterface,PublicInterface,Iterator>::iter
 
     if(filter != null_ptr)
     {
-        while(currNode != iterator_type::m_pHead && filter.eval(this->getValue(currNode)) == false)
+        while(currNode != iterator_type::m_pHead && ytl::eval(filter,this->getValue(currNode)) == false)
         {
             currNode = this->getNextElem(currNode);
         }
@@ -93,7 +93,7 @@ typename cConstIterableBaseImpl<PrivateInterface,PublicInterface,Iterator>::cons
 
     if(filter != null_ptr)
     {
-        while(currNode != iterator_type::m_pHead && filter.eval(this->getValue(currNode)) == false)
+        while(currNode != iterator_type::m_pHead && ytl::eval(filter,this->getValue(currNode)) == false)
         {
             currNode = this->getNextElem(currNode);
         }
@@ -221,7 +221,7 @@ typename cReversableBaseIterableImpl<PrivateInterface,PublicInterface,Iterator,B
 
     if(filter != null_ptr)
     {
-        while(currNode != iterator_type::m_pHead && filter.eval(this->getValue(currNode)) == false)
+        while(currNode != iterator_type::m_pHead && ytl::eval(filter,this->getValue(currNode)) == false)
         {
             currNode = this->getPrevElem(currNode);
         }
@@ -247,7 +247,7 @@ typename cReversableBaseIterableImpl<PrivateInterface,PublicInterface,Iterator,B
 
     if(filter != null_ptr)
     {
-        while(currNode != iterator_type::m_pHead && filter.eval(this->getValue(currNode)) == false)
+        while(currNode != iterator_type::m_pHead && ytl::eval(filter,this->getValue(currNode)) == false)
         {
             currNode = this->getPrevElem(currNode);
         }
