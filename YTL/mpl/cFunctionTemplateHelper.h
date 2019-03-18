@@ -151,7 +151,8 @@ struct function_signature<ytl::function<Return(Types...)>>
 public:
     typedef Return (ytl::function<Return(Types...)>::*callable)(Types...) const;
     typedef Return  callable_return_type;
-    typedef ytl::function<Return(Types...)>callable_class;
+    typedef ytl::function<Return(Types...)> callable_class;
+    typedef ytl::function<Return(Types...)> function_type;
     typedef container::parameter_pack<Types...> callable_args_pack;
 };
 
@@ -164,6 +165,7 @@ public:
     typedef typename nested_traits::callable callable;
     typedef typename nested_traits::callable_return_type callable_return_type;
     typedef typename nested_traits::callable_class callable_class;
+    typedef typename nested_traits::function_type function_type;
     typedef typename nested_traits::callable_args_pack callable_args_pack;
 };
 
@@ -173,6 +175,7 @@ struct function_signature<CallableReturn (CallableClass::*)(CallableTypes...) co
     typedef CallableReturn (CallableClass::*callable)(CallableTypes...) const;
     typedef CallableReturn  callable_return_type;
     typedef CallableClass callable_class;
+    typedef ytl::function<CallableReturn(CallableTypes...)> function_type;
     typedef container::parameter_pack<CallableTypes...> callable_args_pack;
 };
 

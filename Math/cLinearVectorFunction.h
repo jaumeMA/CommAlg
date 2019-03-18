@@ -38,6 +38,8 @@ public:
     using base::operator!=;
 
     linear_vector_function() = default;
+    template<typename ... Args>
+    linear_vector_function(const Args& ... i_args);
     linear_vector_function(const matrix<typename Dom::field,Im::dimension(),Dom::dimension()>& i_linearValue);
     linear_vector_function& operator=(const matrix<typename Dom::field,Im::dimension(),Dom::dimension()>& i_linearValue);
 	inline Im operator()(const Dom& i_point) const;

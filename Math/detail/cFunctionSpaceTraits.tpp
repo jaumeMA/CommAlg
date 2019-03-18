@@ -16,10 +16,10 @@ void FunctionSpaceSetTraits<Im,Dom,Function>::init(underlying_type& o_value, con
 }
 template<set_type Im, set_type Dom, callable_type Function>
 template<typename ... Args>
-requires ( mpl::are_type_of<mpl::is_base_of_function,Args...>::value )
+requires ( mpl::is_constructible<typename FunctionSpaceSetTraits<Im,Dom,Function>::underlying_type,Args...>::value )
 void FunctionSpaceSetTraits<Im,Dom,Function>::init(underlying_type& o_value, const Args& ... i_args)
 {
-    o_value = underlying_type( { i_args ... } );
+    o_value = underlying_type( i_args ... );
 }
 template<set_type Im, set_type Dom, callable_type Function>
 void FunctionSpaceSetTraits<Im,Dom,Function>::deinit(underlying_type& o_value)

@@ -18,7 +18,7 @@ struct FunctionSpaceSetTraits
 	static void init(underlying_type& o_value, const underlying_type& i_value);
 //	static void init(underlying_type& o_value, const detail::linear_vector_function<Im,Dom>& i_value);
     template<typename ... Args>
-    requires ( mpl::are_type_of<mpl::is_base_of_function,Args...>::value )
+    requires ( mpl::is_constructible<underlying_type,Args...>::value )
     static void init(underlying_type& o_value, const Args& ... i_args);
 	static void deinit(underlying_type& o_value);
     static void assign(underlying_type& o_value, const underlying_type& i_value);

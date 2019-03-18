@@ -266,17 +266,6 @@ bool function<Return()>::operator!=(mpl::null_ptr_type) const
 {
     return this->empty() == false;
 }
-
-template<typename Object, typename Return, typename ... Types>
-function<Return(Types...)> make_function(Object* i_object, Return(Object::*i_funcPtr)(Types...))
-{
-    return function<Return(Types...)>(i_object, i_funcPtr);
-}
-template<typename Return, typename ... Types>
-function<Return(Types...)> make_function(Return(*i_funcPtr)(Types...))
-{
-    return function<Return(Types...)>(i_funcPtr);
-}
 template<typename Return>
 detail::function_impl_base<Return,container::parameter_pack<>>* function<Return()>::getFuncPtr()
 {
@@ -298,6 +287,24 @@ function<Return()> function<Return()>::clone(const detail::function_impl_base<Re
     }
 
     return res;
+}
+
+template<typename Object, typename Return, typename ... Types>
+function<Return(Types...)> make_function(Object* i_object, Return(Object::*i_funcPtr)(Types...))
+{
+    return function<Return(Types...)>(i_object, i_funcPtr);
+}
+template<typename Return, typename ... Types>
+function<Return(Types...)> make_function(Return(*i_funcPtr)(Types...))
+{
+    return function<Return(Types...)>(i_funcPtr);
+}
+template<typename Functor>
+typename mpl::function_signature<Functor>::function_type make_function(const Functor& i_functor)
+{
+    typedef typename mpl::function_signature<Functor>::function_type function_type;
+
+    return function_type(i_functor);
 }
 
 template<typename Return, typename ... Types, typename ... Args>

@@ -20,7 +20,8 @@ namespace detail
 template<affine_space_type Im, affine_space_type Dom>
 class affine_function
 {
-    friend Im eval(const affine_function<Im,Dom>& i_function, const Dom& i_point);
+    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION(sum,+)
+    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION(subs,-)
 
 public:
     typedef typename Dom::vector_space dom_vector_space;
@@ -35,9 +36,6 @@ public:
     {
         typedef affine_function<IIm,DDom> type;
     };
-
-    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION(sum,+)
-    DEFINE_MATH_HIGHER_ORDER_BINARY_FRIEND_FUNCTION(subs,-)
 
     affine_function() = default;
     affine_function(const set_function_t& i_originFunction, const vector_function_t& i_vectorFunction);
@@ -55,6 +53,9 @@ private:
 
     container::cPair<set_function_t,vector_function_t> m_function;
 };
+
+template<affine_space_type Im, affine_space_type Dom>
+Im eval(const affine_function<Im,Dom>& i_function, const Dom& i_point);
 
 }
 

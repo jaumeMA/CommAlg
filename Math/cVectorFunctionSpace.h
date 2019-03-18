@@ -18,18 +18,6 @@
 #define x_8 x_(8)
 #define x_9 x_(9)
 
-#define DECLARE_MATH_FUNCTION_SPACE(FUNC_NAME, NESTED_FUNC_NAME) \
-namespace yame \
-{ \
-namespace math \
-{ \
-static VFR1 FUNC_NAME##Real = VFR1(NESTED_FUNC_NAME##r); \
-static VFC1 FUNC_NAME##Complex = VFC1(NESTED_FUNC_NAME##c); \
-template<module_type Im, vector_space_type Dom> \
-static VF<Im,Dom> FUNC_NAME = VF<Im,Dom>(NESTED_FUNC_NAME##_function_t<typename Im::ring,Dom>());\
-} \
-}
-
 namespace yame
 {
 namespace math
@@ -137,10 +125,5 @@ using LFCn = LFC<Cn<N>>;
 }
 }
 
-DECLARE_MATH_FUNCTION_SPACE(Sin, sin);
-DECLARE_MATH_FUNCTION_SPACE(Cos, cos);
-DECLARE_MATH_FUNCTION_SPACE(Tan, tan);
-DECLARE_MATH_FUNCTION_SPACE(Exp, exp);
-DECLARE_MATH_FUNCTION_SPACE(Log, log);
-
+#include "Math/detail/cVectorFunctionOps.h"
 #include "Math/detail/cVectorFunctionSpace.tpp"

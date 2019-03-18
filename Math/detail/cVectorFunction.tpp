@@ -13,6 +13,12 @@ vector_function<Im,Dom>::vector_function(const mpl::sequence<Indexs...>&, const 
 {
 }
 template<module_type Im , vector_space_type Dom>
+template<typename ... Args>
+vector_function<Im,Dom>::vector_function(const Args& ... i_args)
+: base( { i_args ...} )
+{
+}
+template<module_type Im , vector_space_type Dom>
 vector_function<Im,Dom>::vector_function(const matrix<typename Dom::field,Im::dimension(),Dom::dimension()>& i_linearValue)
 : vector_function(typename mpl::create_range_rank<0,Im::dimension()>::type{},i_linearValue)
 {
