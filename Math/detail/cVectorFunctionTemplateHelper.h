@@ -91,9 +91,9 @@ struct _specialization
         }
 
     public:
-        template<typename FFunction, typename DDom, typename ... DDoms>
-        requires ( is_vector_space<DDom>::value && mpl::are_same_type<DDom,DDoms...>::value && Dom::dimension() == mpl::get_num_types<DDoms...>::value + 1 )
-        inline typename Function::template move_to<Im,DDom>::type operator()(const cFunctionSpace<Im,Dom,Function>& i_func, const cFunctionSpace<typename vector_subspace<Dom,1>::type,DDom,FFunction>& other, const cFunctionSpace<typename vector_subspace<Dom,1>::type,DDoms,FFunction>& ... others) const
+        template<callable_type FFunction, vector_space_type DDom, typename ... DDoms>
+        requires ( mpl::are_same_type<DDom,DDoms...>::value && Dom::dimension() == mpl::get_num_types<DDoms...>::value + 1 )
+        inline cFunctionSpace<Im,DDom,typename Function::template move_to<Im,DDom>::type> operator()(const cFunctionSpace<Im,Dom,Function>& i_func, const cFunctionSpace<typename vector_subspace<Dom,1>::type,DDom,FFunction>& other, const cFunctionSpace<typename vector_subspace<Dom,1>::type,DDoms,FFunction>& ... others) const
         {
             return invoke(typename mpl::create_range_rank<0,Im::dimension()>::type{},i_func.getValue(),other.getValue(),others.getValue() ...);
         }

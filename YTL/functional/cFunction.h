@@ -97,10 +97,11 @@ private:
 };
 
 template<typename Object, typename Return, typename ... Types>
-function<Return(Types...)> make_function(Object* i_object, Return(Object::*i_funcPtr)(Types...));
+inline function<Return(Types...)> make_function(Object* i_object, Return(Object::*i_funcPtr)(Types...));
 template<typename Return, typename ... Types>
-function<Return(Types...)> make_function(Return(*i_funcPtr)(Types...));
-
+inline function<Return(Types...)> make_function(Return(*i_funcPtr)(Types...));
+template<typename Functor>
+inline typename mpl::function_signature<Functor>::function_type make_function(const Functor&);
 
 template<typename Return, typename ... Types>
 using curried_function = typename yame::mpl::curry_function<yame::ytl::function<Return(Types...)>>::type;
