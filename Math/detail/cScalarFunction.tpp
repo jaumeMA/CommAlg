@@ -50,7 +50,7 @@ Return scalar_function<Im,Dom>::specialize(Args&& ... i_args) const
 }
 
 template<set_type Im, set_type Dom, int ... Indexs>
-Im eval(const mpl::sequence<Indexs...>&, const scalar_function<Im,Dom>& i_function, const Dom& i_point)
+Im _eval(const mpl::sequence<Indexs...>&, const scalar_function<Im,Dom>& i_function, const Dom& i_point)
 {
     return eval(static_cast<typename scalar_function<Im,Dom>::base_function>(i_function),i_point.template get<Indexs>() ...);
 }
@@ -58,7 +58,7 @@ template<set_type Im, set_type Dom>
 Im eval(const scalar_function<Im,Dom>& i_function, const Dom& i_point)
 {
     typedef typename mpl::create_range_rank<0,Dom::dimension()>::type typeSeq;
-    return eval(typeSeq{},i_function,i_point);
+    return _eval(typeSeq{},i_function,i_point);
 }
 template<set_type Im, set_type Dom, typename ... Args>
 Im eval(const scalar_function<Im,Dom>& i_function, Args&& ... i_args)

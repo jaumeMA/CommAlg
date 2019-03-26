@@ -102,6 +102,10 @@ using cvector = cMetricVectorSpace<ComplexVectorSpaceTraits<N>>;
 template<int N, int M>
 using cmatrix = cVectorSpace<ComplexMatrixSpaceTraits<N,M>>;
 
+//general K x...x K
+template<ring_type K, int N>
+using Kn = cVectorSpace<cVectorSpaceTraits<K,K,N>>;
+
 //vector related definitions
 template<vector_space_type Vector>
 using vector_base = container::cArray<Vector>;

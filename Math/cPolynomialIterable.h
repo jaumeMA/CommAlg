@@ -23,7 +23,7 @@ namespace yame
 namespace math
 {
 
-template<typename T, template<typename> class A = memory::cTypedSystemAllocator>
+template<ring_type T, template<typename> class A = memory::cTypedSystemAllocator>
 class cPolynomialIterable : public container::cMultiMapIterable<typename cPolynomial<T,A>::key_type,typename cPolynomial<T,A>::value_type,cMonomial<T>>
 {
     typedef container::cMultiMapIterable<typename cPolynomial<T,A>::key_type,typename cPolynomial<T,A>::value_type,cMonomial<T>> base;

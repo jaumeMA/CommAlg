@@ -41,21 +41,21 @@ const typename cVectorSpaceGroupTraits<V,N>::underlying_type cVectorSpaceGroupTr
 template<group_type V, int N, int M>
 const typename cMatrixVectorSpaceGroupTraits<V,N,M>::underlying_type cMatrixVectorSpaceGroupTraits<V,N,M>::neutral_element = CreateVectorSpaceGroupNeutralElement<V,N>();
 
-template<typename Traits>
+template<set_traits_type Traits>
 typename VectorSpaceExtendedAccess<Traits>::particle& VectorSpaceExtendedAccess<Traits>::operator[](size_t i_index)
 {
     underlying_type& thisValue = this->getValue();
 
     return thisValue[i_index];
 }
-template<typename Traits>
+template<set_traits_type Traits>
 const typename VectorSpaceExtendedAccess<Traits>::particle& VectorSpaceExtendedAccess<Traits>::operator[](size_t i_index) const
 {
     const underlying_type& thisValue = this->getValue();
 
     return thisValue[i_index];
 }
-template<typename Traits>
+template<set_traits_type Traits>
 template<int ... Indexs>
 typename VectorSpaceExtendedAccess<Traits>::particle& VectorSpaceExtendedAccess<Traits>::get()
 {
@@ -63,7 +63,7 @@ typename VectorSpaceExtendedAccess<Traits>::particle& VectorSpaceExtendedAccess<
 
     return thisValue.get<Indexs...>();
 }
-template<typename Traits>
+template<set_traits_type Traits>
 template<int ... Indexs>
 const typename VectorSpaceExtendedAccess<Traits>::particle& VectorSpaceExtendedAccess<Traits>::get() const
 {
@@ -71,37 +71,37 @@ const typename VectorSpaceExtendedAccess<Traits>::particle& VectorSpaceExtendedA
 
     return thisValue.get<Indexs...>();
 }
-template<typename Traits>
+template<set_traits_type Traits>
 typename VectorSpaceExtendedAccess<Traits>::iterator_type VectorSpaceExtendedAccess<Traits>::begin(const ytl::function<bool(const_reference)>& filter)
 {
     return this->getValue().begin(filter);
 }
-template<typename Traits>
+template<set_traits_type Traits>
 typename VectorSpaceExtendedAccess<Traits>::iterator_type VectorSpaceExtendedAccess<Traits>::end()
 {
     return this->getValue().end();
 }
-template<typename Traits>
+template<set_traits_type Traits>
 typename VectorSpaceExtendedAccess<Traits>::const_iterator_type VectorSpaceExtendedAccess<Traits>::cbegin(const ytl::function<bool(const_reference)>& filter) const
 {
     return this->getValue().cbegin(filter);
 }
-template<typename Traits>
+template<set_traits_type Traits>
 typename VectorSpaceExtendedAccess<Traits>::const_iterator_type VectorSpaceExtendedAccess<Traits>::cend() const
 {
     return this->getValue().cend();
 }
-template<typename Traits>
+template<set_traits_type Traits>
 size_t VectorSpaceExtendedAccess<Traits>::getSize() const
 {
     return this->getValue().getSize();
 }
-template<typename Traits>
+template<set_traits_type Traits>
 bool VectorSpaceExtendedAccess<Traits>::empty() const
 {
     return this->getValue().empty();
 }
-template<typename Traits>
+template<set_traits_type Traits>
 typename VectorSpaceExtendedAccess<Traits>::view_type VectorSpaceExtendedAccess<Traits>::view() const
 {
     return view_type(this->getValue());
@@ -230,21 +230,21 @@ double cVectorSpaceMetricSpaceTraits<V,N>::distance(const typename cVectorSpaceS
     }
 }
 
-template<typename Traits>
+template<set_traits_type Traits>
 auto MatrixVectorSpaceExtendedAccess<Traits>::operator[](size_t i_index)
 {
     underlying_type& thisValue = this->getValue();
 
     return thisValue[i_index];
 }
-template<typename Traits>
+template<set_traits_type Traits>
 auto MatrixVectorSpaceExtendedAccess<Traits>::operator[](size_t i_index) const
 {
     const underlying_type& thisValue = this->getValue();
 
     return thisValue[i_index];
 }
-template<typename Traits>
+template<set_traits_type Traits>
 template<int Index>
 typename MatrixVectorSpaceExtendedAccess<Traits>::particle MatrixVectorSpaceExtendedAccess<Traits>::get() const
 {
@@ -252,37 +252,37 @@ typename MatrixVectorSpaceExtendedAccess<Traits>::particle MatrixVectorSpaceExte
 
     return particle(thisValue[Index]);
 }
-template<typename Traits>
+template<set_traits_type Traits>
 typename MatrixVectorSpaceExtendedAccess<Traits>::iterator_type MatrixVectorSpaceExtendedAccess<Traits>::begin(const ytl::function<bool(const_reference)>& filter)
 {
     return this->getValue().begin(filter);
 }
-template<typename Traits>
+template<set_traits_type Traits>
 typename MatrixVectorSpaceExtendedAccess<Traits>::iterator_type MatrixVectorSpaceExtendedAccess<Traits>::end()
 {
     return this->getValue().end();
 }
-template<typename Traits>
+template<set_traits_type Traits>
 typename MatrixVectorSpaceExtendedAccess<Traits>::const_iterator_type MatrixVectorSpaceExtendedAccess<Traits>::cbegin(const ytl::function<bool(const_reference)>& filter) const
 {
     return this->getValue().cbegin(filter);
 }
-template<typename Traits>
+template<set_traits_type Traits>
 typename MatrixVectorSpaceExtendedAccess<Traits>::const_iterator_type MatrixVectorSpaceExtendedAccess<Traits>::cend() const
 {
     return this->getValue().cend();
 }
-template<typename Traits>
+template<set_traits_type Traits>
 size_t MatrixVectorSpaceExtendedAccess<Traits>::getSize() const
 {
     return this->getValue().getSize();
 }
-template<typename Traits>
+template<set_traits_type Traits>
 bool MatrixVectorSpaceExtendedAccess<Traits>::empty() const
 {
     return this->getValue().empty();
 }
-template<typename Traits>
+template<set_traits_type Traits>
 typename MatrixVectorSpaceExtendedAccess<Traits>::view_type MatrixVectorSpaceExtendedAccess<Traits>::view() const
 {
     return view_type(this->getValue());

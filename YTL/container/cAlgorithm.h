@@ -113,14 +113,14 @@ inline typename Iterator::value_type apply(Iterator& itInit, Iterator& itEnd, co
 {
     ASSERT(itInit!=itEnd, "You shall provide a non empty iterator pair");
 
-    typename Iterator::value_type cmpValue = *itInit++;
+    typename Iterator::value_type partialValue = *itInit++;
 
     for(;itInit!=itEnd;++itInit)
     {
-        cmpValue = ytl::eval(i_op,cmpValue,*itInit);
+        partialValue = ytl::eval(i_op,partialValue,*itInit);
     }
 
-    return cmpValue;
+    return partialValue;
 }
 
 template<typename Traits>
@@ -175,8 +175,8 @@ inline void sort(impl::cRandomAccessIteratorImpl<Traits>& itInit, impl::cRandomA
     return;
 }
 
-template<typename IteratorIn, typename IteratorOut>
-inline IteratorOut merge(IteratorIn& itInitA, IteratorIn& itEndA, IteratorIn& itInitB, IteratorIn& itEndB, cIterableBase<IteratorOut>& iterableOut, const ytl::function<typename IteratorIn::value_type(ytl::optional<typename IteratorIn::const_reference>,ytl::optional<typename IteratorIn::const_reference>)>& i_merge)
+template<typename IteratorA, typename IteratorB, typename IteratorOut>
+inline IteratorOut merge(IteratorA& itInitA, IteratorA& itEndA, IteratorB& itInitB, IteratorB& itEndB, cIterableBase<IteratorOut>& iterableOut, const ytl::function<typename IteratorOut::value_type(ytl::optional<typename IteratorA::const_reference>,ytl::optional<typename IteratorB::const_reference>)>& i_merge)
 {
     bool done = false;
     IteratorOut itOut = iterableOut.begin();
@@ -494,18 +494,18 @@ inline void sort(container::cConstRandomAccessIterable<T>& iterable)
 
     return;
 }
-template<typename T, typename TT>
-inline typename TT::iterator_type merge(T itInitA, T itEndA, T itInitB, T itEndB, TT itInitOut, const ytl::function<typename T::value_type(ytl::optional<typename T::const_reference>,ytl::optional<typename T::const_reference>)>& i_moreOp)
+template<typename TA, typename TB, typename TOut>
+inline typename TOut::iterator_type merge(TA itInitA, TA itEndA, TB itInitB, TB itEndB, TOut itInitOut, const ytl::function<typename TOut::value_type(ytl::optional<typename TA::const_reference>,ytl::optional<typename TB::const_reference>)>& i_moreOp)
 {
     return container::detail::merge(itInitA, itEndA, itInitB, itEndB, itInitOut, i_moreOp);
 }
-template<typename Iterator, typename IIterator>
-inline IIterator merge(const container::detail::cConstIterableBase<Iterator>& iterableA, const container::detail::cConstIterableBase<Iterator>& iterableB, container::detail::cIterableBase<IIterator>& iterableOut, const ytl::function<typename Iterator::value_type(ytl::optional<typename Iterator::const_reference>,ytl::optional<typename Iterator::const_reference>)>& i_moreOp)
+template<typename IteratorA, typename IteratorB, typename IteratorOut>
+inline IteratorOut merge(const container::detail::cConstIterableBase<IteratorA>& iterableA, const container::detail::cConstIterableBase<IteratorB>& iterableB, container::detail::cIterableBase<IteratorOut>& iterableOut, const ytl::function<typename IteratorOut::value_type(ytl::optional<typename IteratorA::const_reference>,ytl::optional<typename IteratorB::const_reference>)>& i_moreOp)
 {
-    typename Iterator::const_iterator_type itInitA = iterableA.cbegin();
-    typename Iterator::const_iterator_type itEndA = iterableA.cend();
-    typename Iterator::const_iterator_type itInitB = iterableB.cbegin();
-    typename Iterator::const_iterator_type itEndB = iterableB.cend();
+    typename IteratorA::const_iterator_type itInitA = iterableA.cbegin();
+    typename IteratorA::const_iterator_type itEndA = iterableA.cend();
+    typename IteratorB::const_iterator_type itInitB = iterableB.cbegin();
+    typename IteratorB::const_iterator_type itEndB = iterableB.cend();
 
     return container::detail::merge(itInitA, itEndA, itInitB, itEndB, iterableOut, i_moreOp);
 }

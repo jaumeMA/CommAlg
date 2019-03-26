@@ -3,6 +3,7 @@
 #include "YTL/container/cTupla.h"
 #include "Math/detail/cSetInterface.h"
 #include "gmp.h"
+#include "Math/detail/cMathTraitsConceptHelper.h"
 
 namespace yame
 {
@@ -11,7 +12,7 @@ namespace math
 
 typedef container::cTupla<int, 2> rationalPair;
 
-template<typename Traits>
+template<set_traits_type Traits>
 struct ExtendedRationalSet : virtual public detail::ISet<Traits>
 {
     typedef rationalPair raw_type;
@@ -25,7 +26,6 @@ struct ExtendedRationalSet : virtual public detail::ISet<Traits>
 struct RationalSetTraits
 {
 	typedef mpq_t underlying_type;
-    typedef ExtendedRationalSet<RationalSetTraits> extended_structure;
 
 	static void init(underlying_type& o_value);
 	static void init(underlying_type& o_value, const underlying_type& i_value);
@@ -34,6 +34,8 @@ struct RationalSetTraits
 	static void deinit(underlying_type& o_value);
     static void assign(underlying_type& o_value, const underlying_type& i_value);
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);
+
+    typedef ExtendedRationalSet<RationalSetTraits> extended_structure;
 };
 
 
@@ -85,7 +87,7 @@ struct RationalDivisionRingTraits
 	static void inv(underlying_type& res, const underlying_type& value);
 };
 
-template<typename Traits>
+template<set_traits_type Traits>
 struct ExtendedRealSet : virtual public detail::ISet<Traits>
 {
     typedef double raw_type;
@@ -97,7 +99,6 @@ template<unsigned char Precision>
 struct RealSetTraits
 {
 	typedef mpf_t underlying_type;
-    typedef ExtendedRealSet<RealSetTraits> extended_structure;
 
 	static void init(underlying_type& o_value);
 	static void init(underlying_type& o_value, const underlying_type& i_value);
@@ -107,6 +108,8 @@ struct RealSetTraits
     static void assign(underlying_type& o_value, double i_value);
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);
     static bool cmp(const underlying_type& i_lhs, const double& i_rhs);
+
+    typedef ExtendedRealSet<RealSetTraits> extended_structure;
 };
 
 template<unsigned char Precision>
@@ -173,7 +176,7 @@ struct RealMetricSpaceTraits
 
 typedef container::cTupla<double,2> complexPair;
 
-template<typename Traits>
+template<set_traits_type Traits>
 struct ExtendedComplexSet : virtual public detail::ISet<Traits>
 {
     typedef complexPair raw_type;
@@ -196,7 +199,6 @@ struct ComplexSetTraits
 	};
 
 	typedef complex_pair underlying_type;
-    typedef ExtendedComplexSet<ComplexSetTraits> extended_structure;
 
 	static void init(underlying_type& o_value);
 	static void init(underlying_type& o_value, const underlying_type& i_value);
@@ -206,6 +208,8 @@ struct ComplexSetTraits
     static void assign(underlying_type& o_value, double real, double imag = 0.f);
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);
     static void conjugate(underlying_type& o_value, const underlying_type& i_value);
+
+    typedef ExtendedComplexSet<ComplexSetTraits> extended_structure;
 };
 
 template<unsigned char Precision>
@@ -275,7 +279,7 @@ struct ComplexMetricSpaceTraits
 
 typedef container::cTupla<double, 4> quaternionQuartet;
 
-template<typename Traits>
+template<set_traits_type Traits>
 struct ExtendedQuaternionSet : virtual public detail::ISet<Traits>
 {
     typedef quaternionQuartet raw_type;
@@ -300,7 +304,6 @@ struct QuaternionSetTraits
 	};
 
 	typedef quat_type underlying_type;
-    typedef ExtendedQuaternionSet<QuaternionSetTraits> extended_structure;
 
 	static void init(underlying_type& o_value);
 	static void init(underlying_type& o_value, const underlying_type& i_value);
@@ -310,6 +313,8 @@ struct QuaternionSetTraits
     static void assign(underlying_type& o_value, double i_n, double i_i = 0.f, double i_j = 0.f, double i_k = 0.f);
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);
     void conjugate(underlying_type& res, const underlying_type& i_quat);
+
+    typedef ExtendedQuaternionSet<QuaternionSetTraits> extended_structure;
 };
 
 template<unsigned char Precision>
@@ -374,7 +379,7 @@ struct QuaternionMetricSpaceTraits
     static double distance(const typename QuaternionSetTraits<Precision>::underlying_type& i_lhs, const typename QuaternionSetTraits<Precision>::underlying_type& i_rhs);
 };
 
-template<typename Traits>
+template<set_traits_type Traits>
 struct ExtendedZpSet : virtual public detail::ISet<Traits>
 {
     typedef int raw_type;
@@ -387,7 +392,6 @@ struct ZpSetTraits
 {
     //pnding to add compile time check for weather p is prime or not
     typedef mpz_t underlying_type;
-    typedef ExtendedZpSet<ZpSetTraits> extended_structure;
 
 	static void init(underlying_type& o_value);
 	static void init(underlying_type& o_value, const underlying_type& i_value);
@@ -396,6 +400,8 @@ struct ZpSetTraits
     static void assign(underlying_type& o_value, const underlying_type& i_value);
     static void assign(underlying_type& o_value, int i_value);
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);
+
+    typedef ExtendedZpSet<ZpSetTraits> extended_structure;
 };
 
 template<int p>

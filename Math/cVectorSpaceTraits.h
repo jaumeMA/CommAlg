@@ -10,7 +10,7 @@ namespace yame
 namespace math
 {
 
-template<typename Traits>
+template<set_traits_type Traits>
 struct VectorSpaceExtendedAccess : virtual public detail::ISet<Traits>
 {
     typedef typename Traits::underlying_type underlying_type;
@@ -40,7 +40,6 @@ struct VectorSpaceExtendedAccess : virtual public detail::ISet<Traits>
 template<set_type V, int N>
 struct cVectorSpaceSetTraits
 {
-    typedef VectorSpaceExtendedAccess<cVectorSpaceSetTraits<V,N>> extended_structure;
     typedef container::cTupla<V,N> underlying_type;
     typedef V particle;
     static const size_t dimension = N;
@@ -54,6 +53,8 @@ struct cVectorSpaceSetTraits
     static void assign(underlying_type& o_value, const underlying_type& i_value);
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);
     static container::string format(const underlying_type& i_value);
+
+    typedef VectorSpaceExtendedAccess<cVectorSpaceSetTraits<V,N>> extended_structure;
 };
 
 template<group_type V, int N>
@@ -108,7 +109,7 @@ struct cVectorSpaceMetricSpaceTraits
     static double distance(const typename cVectorSpaceSetTraits<V,N>::underlying_type& i_lhs, const typename cVectorSpaceSetTraits<V,N>::underlying_type& i_rhs);
 };
 
-template<typename Traits>
+template<set_traits_type Traits>
 struct MatrixVectorSpaceExtendedAccess : virtual public detail::ISet<Traits>
 {
     typedef typename Traits::underlying_type underlying_type;
@@ -135,7 +136,6 @@ struct MatrixVectorSpaceExtendedAccess : virtual public detail::ISet<Traits>
 template<set_type V, int N, int M>
 struct cMatrixVectorSpaceSetTraits
 {
-    typedef MatrixVectorSpaceExtendedAccess<cMatrixVectorSpaceSetTraits<V,N,M>> extended_structure;
     typedef container::cTupla<V,N,M> underlying_type;
     typedef container::cTupla<V,M> particle;
     static const size_t dimension = N * M;
@@ -154,6 +154,8 @@ struct cMatrixVectorSpaceSetTraits
     static void assign(underlying_type& o_value, const underlying_type& i_value);
     static bool cmp(const underlying_type& i_lhs, const underlying_type& i_rhs);
     static container::string format(const underlying_type& i_value);
+
+    typedef MatrixVectorSpaceExtendedAccess<cMatrixVectorSpaceSetTraits<V,N,M>> extended_structure;
 };
 
 template<group_type V, int N, int M>

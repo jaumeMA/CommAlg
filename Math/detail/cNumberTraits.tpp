@@ -4,12 +4,12 @@ namespace yame
 namespace math
 {
 
-template<typename Traits>
+template<set_traits_type Traits>
 void ExtendedRationalSet<Traits>::init()
 {
     Traits::assign(this->getValue(), 0);
 }
-template<typename Traits>
+template<set_traits_type Traits>
 int ExtendedRationalSet<Traits>::numerator() const
 {
     const typename Traits::underlying_type& thisValue = this->getValue();
@@ -23,7 +23,7 @@ int ExtendedRationalSet<Traits>::numerator() const
 
     return res;
 }
-template<typename Traits>
+template<set_traits_type Traits>
 int ExtendedRationalSet<Traits>::denominator() const
 {
     const typename Traits::underlying_type& thisValue = this->getValue();
@@ -38,7 +38,7 @@ int ExtendedRationalSet<Traits>::denominator() const
 
     return res;
 }
-template<typename Traits>
+template<set_traits_type Traits>
 rationalPair ExtendedRationalSet<Traits>::get_raw() const
 {
     const typename Traits::underlying_type& thisValue = this->getValue();
@@ -60,79 +60,79 @@ rationalPair ExtendedRationalSet<Traits>::get_raw() const
 
     return rationalPair({num, den});
 }
-template<typename Traits>
+template<set_traits_type Traits>
 double ExtendedRealSet<Traits>::get_raw() const
 {
     return mpf_get_d(this->getValue());
 }
-template<typename Traits>
+template<set_traits_type Traits>
 detail::ISet<Traits>& ExtendedRealSet<Traits>::operator=(double i_value)
 {
     Traits::assign(this->getValue(), i_value);
 }
 
-template<typename Traits>
+template<set_traits_type Traits>
 complexPair ExtendedComplexSet<Traits>::get_raw() const
 {
     const typename Traits::underlying_type& thisValue = this->getValue();
 
     return complexPair({mpf_get_d(thisValue.real), mpf_get_d(thisValue.imag)});
 }
-template<typename Traits>
+template<set_traits_type Traits>
 double ExtendedComplexSet<Traits>::real() const
 {
     const typename Traits::underlying_type& thisValue = this->getValue();
 
     return mpf_get_d(thisValue.real);
 }
-template<typename Traits>
+template<set_traits_type Traits>
 double ExtendedComplexSet<Traits>::imag() const
 {
     const typename Traits::underlying_type& thisValue = this->getValue();
 
     return mpf_get_d(thisValue.imag);
 }
-template<typename Traits>
+template<set_traits_type Traits>
 quaternionQuartet ExtendedQuaternionSet<Traits>::get_raw() const
 {
     const typename Traits::underlying_type& thisValue = this->getValue();
 
     return quaternionQuartet({mpf_get_d(thisValue.n), mpf_get_d(thisValue.i), mpf_get_d(thisValue.j), mpf_get_d(thisValue.k)});
 }
-template<typename Traits>
+template<set_traits_type Traits>
 double ExtendedQuaternionSet<Traits>::n_part() const
 {
     const typename Traits::underlying_type& thisValue = this->getValue();
 
     return mpf_get_d(thisValue.n);
 }
-template<typename Traits>
+template<set_traits_type Traits>
 double ExtendedQuaternionSet<Traits>::i_part() const
 {
     const typename Traits::underlying_type& thisValue = this->getValue();
 
     return mpf_get_d(thisValue.i);
 }
-template<typename Traits>
+template<set_traits_type Traits>
 double ExtendedQuaternionSet<Traits>::j_part() const
 {
     const typename Traits::underlying_type& thisValue = this->getValue();
 
     return mpf_get_d(thisValue.j);
 }
-template<typename Traits>
+template<set_traits_type Traits>
 double ExtendedQuaternionSet<Traits>::k_part() const
 {
     const typename Traits::underlying_type& thisValue = this->getValue();
 
     return mpf_get_d(thisValue.k);
 }
-template<typename Traits>
+template<set_traits_type Traits>
 int ExtendedZpSet<Traits>::get_raw() const
 {
     return mpz_get_ui(this->getValue());
 }
-template<typename Traits>
+template<set_traits_type Traits>
 detail::ISet<Traits>& ExtendedZpSet<Traits>::operator=(const int& i_value)
 {
     Traits::assign(this->getValue(), i_value);

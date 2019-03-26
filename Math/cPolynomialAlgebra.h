@@ -27,7 +27,7 @@ namespace math
 template<typename>
 class cMonomial;
 
-template<typename T, template<typename> class A = memory::cTypedSystemAllocator>
+template<ring_type T, template<typename> class A = memory::cTypedSystemAllocator>
 class polynomial : public detail::cAlgebraImpl<PolynomialAlgebraTraits<T,A>,polynomial<T,A>>, public cSet<PolynomialSetTraits<T,A>>
 {
 public:
@@ -50,6 +50,13 @@ public:
 typedef polynomial<Rational,memory::cTypedSystemAllocator> rational_polynomial;
 typedef polynomial<Real,memory::cTypedSystemAllocator> real_polynomial;
 typedef polynomial<Complex,memory::cTypedSystemAllocator> complex_polynomial;
+
+template<ring_type T, template<typename> class A, typename ... Args>
+requires ( mpl::are_same_type<T,Args...>::value )
+T eval(const polynomial<T,A>& i_poly, Args&& ... i_args);
+template<ring_type T, template<typename> class A, int ... Indexs, typename ... Args>
+requires ( mpl::are_same_type<T,Args...>::value && mpl::get_num_ranks<Indexs...>::value == mpl::get_num_types<Args...>::value )
+T _eval(const polynomial<T,A>& i_poly, const mpl::sequence<Indexs...>&, Args&& ... i_args);
 
 }
 }

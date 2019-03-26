@@ -60,7 +60,7 @@ template<typename Functor,typename Im, set_type Dom>
 using functor_impl = decltype(functor_type<Functor>(std::declval<scalar_function<Im,Dom>>()));
 
 template<set_type Im, set_type Dom, int ... Indexs>
-inline Im eval(const mpl::sequence<Indexs...>&, const scalar_function<Im,Dom>& i_function, const Dom& i_point);
+inline Im _eval(const mpl::sequence<Indexs...>&, const scalar_function<Im,Dom>& i_function, const Dom& i_point);
 template<set_type Im, set_type Dom>
 inline Im eval(const scalar_function<Im,Dom>& i_function, const Dom& i_point);
 template<set_type Im, set_type Dom, typename ... Args>

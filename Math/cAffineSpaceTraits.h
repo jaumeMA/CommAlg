@@ -26,7 +26,6 @@ struct cAffineSpaceSetTraits
     typedef V vector_space;
     typedef X set;
 
-    typedef AffineSpaceExtendedAccess<cAffineSpaceSetTraits<X,V,Tag>> extended_structure;
     static void init(underlying_type& o_value);
     static void init(underlying_type& o_value, const underlying_type& i_value);
     static void init(underlying_type& o_value, const V& i_point);
@@ -40,7 +39,8 @@ struct cAffineSpaceSetTraits
 
     static X action(const X& i_lhs, const V& i_rhs);
 
-    static const detail::right_group_action<X,V> s_action;
+    const static detail::right_group_action<X,V> s_action;
+    typedef AffineSpaceExtendedAccess<cAffineSpaceSetTraits<X,V,Tag>> extended_structure;
 };
 
 template<set_type X, vector_space_type V, typename Tag>

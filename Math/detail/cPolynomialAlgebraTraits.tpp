@@ -4,34 +4,34 @@ namespace yame
 namespace math
 {
 
-template<typename T, template<typename> class A>
+template<group_type T, template<typename> class A>
 const typename PolynomialGroupTraits<T,A>::underlying_type PolynomialGroupTraits<T,A>::neutral_element = typename PolynomialGroupTraits<T,A>::underlying_type();
 
-template<typename Traits>
+template<set_traits_type Traits>
 size_t PolynomialSetExtended<Traits>::getNumMonomials() const
 {
     const underlying_type& thisValue = this->getValue();
 
-    return thisValue.getTotalSize([](const container::cPair<key_type,value_type>& i_pair){ return i_pair.second.getValue() != field_type(); });
+    return thisValue.getTotalSize([](const container::cPair<key_type,value_type>& i_pair){ return i_pair.second.getValue() != ring_type(); });
 }
-template<typename Traits>
+template<set_traits_type Traits>
 template<typename ... Degrees>
-typename PolynomialSetExtended<Traits>::field_type& PolynomialSetExtended<Traits>::at(Degrees ... degrees)
+typename PolynomialSetExtended<Traits>::ring_type& PolynomialSetExtended<Traits>::at(Degrees ... degrees)
 {
     underlying_type& thisValue = this->getValue();
 
     return thisValue.getAt(degrees...);
 }
-template<typename Traits>
+template<set_traits_type Traits>
 template<typename ... Degrees>
-const typename PolynomialSetExtended<Traits>::field_type& PolynomialSetExtended<Traits>::at(Degrees ... degrees) const
+const typename PolynomialSetExtended<Traits>::ring_type& PolynomialSetExtended<Traits>::at(Degrees ... degrees) const
 {
     const underlying_type& thisValue = this->getValue();
 
     return thisValue.getAt(degrees...);
 }
-template<typename Traits>
-typename PolynomialSetExtended<Traits>::field_type& PolynomialSetExtended<Traits>::incognita(size_t index)
+template<set_traits_type Traits>
+typename PolynomialSetExtended<Traits>::ring_type& PolynomialSetExtended<Traits>::incognita(size_t index)
 {
     underlying_type& thisValue = this->getValue();
 
@@ -52,10 +52,10 @@ typename PolynomialSetExtended<Traits>::field_type& PolynomialSetExtended<Traits
     }
 
     //for code path completion
-    return *reinterpret_cast<field_type*>(0xDEAD);
+    return *reinterpret_cast<ring_type*>(0xDEAD);
 }
-template<typename Traits>
-const typename PolynomialSetExtended<Traits>::field_type& PolynomialSetExtended<Traits>::incognita(size_t index) const
+template<set_traits_type Traits>
+const typename PolynomialSetExtended<Traits>::ring_type& PolynomialSetExtended<Traits>::incognita(size_t index) const
 {
     const underlying_type& thisValue = this->getValue();
     const value_type* currValueNode = &thisValue[1];
@@ -73,24 +73,29 @@ const typename PolynomialSetExtended<Traits>::field_type& PolynomialSetExtended<
     }
 
     //for code path completion
-    return *reinterpret_cast<const field_type*>(0xDEAD);
+    return *reinterpret_cast<const ring_type*>(0xDEAD);
 }
-template<typename Traits>
+template<set_traits_type Traits>
 typename PolynomialSetExtended<Traits>::value_type& PolynomialSetExtended<Traits>::operator[](size_t i_index)
 {
     underlying_type& thisValue = this->getValue();
 
     return thisValue[i_index];
 }
-template<typename Traits>
+template<set_traits_type Traits>
 const typename PolynomialSetExtended<Traits>::value_type& PolynomialSetExtended<Traits>::operator[](size_t i_index) const
 {
     const underlying_type& thisValue = this->getValue();
 
     return thisValue[i_index];
 }
-template<typename Traits>
+template<set_traits_type Traits>
 const typename PolynomialSetExtended<Traits>::underlying_type& PolynomialSetExtended<Traits>::get_raw() const
+{
+    return this->getValue();
+}
+template<set_traits_type Traits>
+typename PolynomialSetExtended<Traits>::view_type PolynomialSetExtended<Traits>::view() const
 {
     return this->getValue();
 }

@@ -17,39 +17,41 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 #include "Math/cPolynomial.h"
 #include "Math/detail/cSetInterface.h"
 #include "Math/detail/cMathTypeConceptHelper.h"
+#include "YTL/container/cContainerView.h"
 
 namespace yame
 {
 namespace math
 {
 
-template<typename Traits>
+template<set_traits_type Traits>
 struct PolynomialSetExtended : virtual public detail::ISet<Traits>
 {
     typedef typename Traits::underlying_type underlying_type;
     typedef typename underlying_type::value_type value_type;
     typedef typename underlying_type::key_type key_type;
-    typedef typename Traits::field_type field_type;
+    typedef typename Traits::ring_type ring_type;
+    typedef container::cBidirectionalView<ring_type> view_type;
 
     template<typename ... Degrees>
-    field_type& at(Degrees ... degrees);
+    ring_type& at(Degrees ... degrees);
     template<typename ... Degrees>
-    const field_type& at(Degrees ... degrees) const;
-    field_type& incognita(size_t index);
-    const field_type& incognita(size_t index) const;
+    const ring_type& at(Degrees ... degrees) const;
+    ring_type& incognita(size_t index);
+    const ring_type& incognita(size_t index) const;
     size_t getNumMonomials() const;
     value_type& operator[](size_t i_index);
     const value_type& operator[](size_t i_index) const;
     const underlying_type& get_raw() const;
+    view_type view() const;
 };
 
-template<typename T, template<typename> class A>
+template<set_type T, template<typename> class A>
 struct PolynomialSetTraits
 {
-    typedef T field_type;
+    typedef T ring_type;
 	typedef cPolynomial<T,A> underlying_type;
     typedef typename underlying_type::MapNode particle;
-    typedef PolynomialSetExtended<PolynomialSetTraits<T,A>> extended_structure;
 
     static const particle& access(const underlying_type& i_value, size_t i_index);
     static particle& access(underlying_type& i_value, size_t i_index);
@@ -63,6 +65,8 @@ struct PolynomialSetTraits
     static container::string format(const underlying_type& i_value);
 
     static container::string formatMonomial(size_t i_varCounter, size_t i_expCounter, const cPolynomialValue<T,A>& i_polyValue);
+
+    typedef PolynomialSetExtended<PolynomialSetTraits<T,A>> extended_structure;
 };
 
 

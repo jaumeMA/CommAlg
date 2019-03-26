@@ -52,6 +52,18 @@ INSTANTIATE_AFFINE_SPACE(AC1,C1,C1)
 INSTANTIATE_AFFINE_SPACE(AC2,C2,C2)
 INSTANTIATE_AFFINE_SPACE(AC3,C3,C3)
 
+//affine space as the n-copies of the field k
+struct AKn_t;
+template<field_type K, int N>
+using AKn = cAffineSpace<cAffineSpaceTraits<Kn<K,N>,Kn<K,N>,AKn_t>>;
+template<field_type K, int N>
+struct AKn_set_traits : cAffineSpaceSetTraits<Kn<K,N>,Kn<K,N>,AKn_t>
+{
+    const static detail::right_group_action<Kn<K,N>,Kn<K,N>> s_action;
+};
+template<field_type K, int N>
+const detail::right_group_action<Kn<K,N>,Kn<K,N>> AKn_set_traits<K,N>::s_action = usual_vector_space_displacement<Kn<K,N>,Kn<K,N>>;
+
 }
 }
 

@@ -15,7 +15,7 @@ namespace math
 namespace detail
 {
 
-template<template<typename> class A, typename T>
+template<template<typename> class A, ring_type T>
 polynomial<T,A> createPolyFromMonomial(const cMonomial<T>& i_monomial)
 {
     polynomial<T,A> res;
@@ -53,7 +53,7 @@ polynomial<T,A> createPolyFromMonomial(const cMonomial<T>& i_monomial)
     return res;
 }
 
-template<size_t Component, typename T, template<typename> class A>
+template<size_t Component, ring_type T, template<typename> class A>
 cPolynomialValue<T,A> derivative(const cPolynomialValue<T,A>& i_subPoly, size_t currDepth)
 {
     cPolynomialValue<T,A> res;
@@ -81,7 +81,7 @@ cPolynomialValue<T,A> derivative(const cPolynomialValue<T,A>& i_subPoly, size_t 
     return res;
 }
 
-template<size_t Component, typename T, template<typename> class A>
+template<size_t Component, ring_type T, template<typename> class A>
 container::detail::cMultiMapImpl<cPolynomialValue<T,A>,signed short,container::cAVLtree,A,container::MultiBalancer<container::cAVLtree>::Balancer> derivative(const container::detail::cMultiMapImpl<cPolynomialValue<T,A>,signed short,container::cAVLtree,A,container::MultiBalancer<container::cAVLtree>::Balancer>& i_subPoly)
 {
     container::detail::cMultiMapImpl<cPolynomialValue<T,A>,signed short,container::cAVLtree,A,container::MultiBalancer<container::cAVLtree>::Balancer> res;
@@ -197,7 +197,7 @@ container::cTupla<polynomial<typename Im::traits::module_traits::ring,A>,Im::dim
 
 }
 
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 yame::container::cArray<yame::math::polynomial<T,A>> grobnerBase(const yame::container::cArray<yame::math::polynomial<T,A>>& i_ideal, const ytl::function<bool(yame::math::cMonomial<T>,yame::math::cMonomial<T>)>& i_compOp)
 {
     typedef typename yame::math::cPolynomialIterable<T,A>::const_iterator_type const_poly_iterator;
@@ -319,7 +319,7 @@ yame::container::cArray<yame::math::polynomial<T,A>> grobnerBase(const yame::con
     return res;
 }
 
-template<size_t ... Components, typename T, template<typename> class A>
+template<size_t ... Components, ring_type T, template<typename> class A>
 container::cTupla<polynomial<T,A>, mpl::get_num_ranks<Components...>::value> derivative(const polynomial<T,A>& i_poly)
 {
     return { polynomial<T,A>(detail::derivative<Components>(i_poly.get_raw())) ...};
@@ -332,64 +332,81 @@ container::cTupla<polynomial<typename Im::traits::module_traits::ring,A>,Im::dim
     return detail::_taylorSeries(typename mpl::create_range_rank<0,Im::dimension()>::type{},i_function.getValue(),i_point);
 }
 
-template<typename T>
+template<ring_type T, template<typename> class A>
+polynomial<T,A> truncate(const polynomial<T,A>& other, size_t i_dim)
+{
+    polynomial<T,A> res;
+    cPolynomialIterable<T,A> polyIterable(other);
+
+    auto filterOutBeyondDim = [&i_dim](const cMonomial<T>& i_monomial){ return i_monomial.size() < i_dim; };
+
+    typename cPolynomialIterable<T,A>::cons_iterator_type itPoly = polyIterable.begin(filterOutBeyondDim);
+    for(;itPoly!=polyIterable.end();++itPoly)
+    {
+        res += *itPoly;
+    }
+
+    return res;
+}
+
+template<ring_type T>
 yame::math::polynomial<T> operator+(const yame::math::cMonomial<T>& i_lhs, const yame::math::cMonomial<T>& i_rhs)
 {
     return yame::math::detail::createPolyFromMonomial<yame::memory::cTypedSystemAllocator>(i_lhs) + yame::math::detail::createPolyFromMonomial<yame::memory::cTypedSystemAllocator>(i_rhs);
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 yame::math::polynomial<T,A> operator+(const yame::math::polynomial<T,A>& i_lhs, const yame::math::cMonomial<T>& i_rhs)
 {
     return i_lhs + yame::math::detail::createPolyFromMonomial<A>(i_rhs);
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 const yame::math::polynomial<T,A>& operator+=(yame::math::polynomial<T,A>& i_lhs, const yame::math::cMonomial<T>& i_rhs)
 {
     i_lhs += yame::math::detail::createPolyFromMonomial<A>(i_rhs);
 
     return i_lhs;
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 yame::math::polynomial<T,A> operator+(const yame::math::cMonomial<T>& i_lhs, const yame::math::polynomial<T,A>& i_rhs)
 {
     return yame::math::detail::createPolyFromMonomial<A>(i_lhs) + i_rhs;
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 yame::math::polynomial<T,A> operator-(const yame::math::polynomial<T,A>& i_lhs, const yame::math::cMonomial<T>& i_rhs)
 {
     return i_lhs - yame::math::detail::createPolyFromMonomial<A>(i_rhs);
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 const yame::math::polynomial<T,A>& operator-=(yame::math::polynomial<T,A>& i_lhs, const yame::math::cMonomial<T>& i_rhs)
 {
     i_lhs -= yame::math::detail::createPolyFromMonomial<A>(i_rhs);
 
     return i_lhs;
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 yame::math::polynomial<T,A> operator-(const yame::math::cMonomial<T>& i_lhs, const yame::math::polynomial<T,A>& i_rhs)
 {
     return yame::math::detail::createPolyFromMonomial<A>(i_lhs) - i_rhs;
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 yame::math::polynomial<T,A> operator*(const yame::math::polynomial<T,A>& i_lhs, const yame::math::cMonomial<T>& i_rhs)
 {
     return i_lhs * yame::math::detail::createPolyFromMonomial<A>(i_rhs);
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 const yame::math::polynomial<T,A>& operator*=(yame::math::polynomial<T,A>& i_lhs, const yame::math::cMonomial<T>& i_rhs)
 {
     i_lhs *= yame::math::detail::createPolyFromMonomial<A>(i_rhs);
 
     return i_lhs;
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 yame::math::polynomial<T,A> operator*(const yame::math::cMonomial<T>& i_lhs, const yame::math::polynomial<T,A>& i_rhs)
 {
     return yame::math::detail::createPolyFromMonomial<A>(i_lhs) * i_rhs;
 }
 
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 yame::container::cArray<yame::math::polynomial<T,A>> operator/(yame::math::polynomial<T,A> i_lhs, const yame::container::cArray<yame::math::polynomial<T,A>>& i_rhs)
 {
     typedef typename yame::math::cPolynomialIterable<T,A>::const_iterator_type const_poly_iterator;
@@ -441,7 +458,7 @@ yame::container::cArray<yame::math::polynomial<T,A>> operator/(yame::math::polyn
     return res;
 }
 
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 inline yame::math::polynomial<T,A> operator^(yame::math::polynomial<T,A> i_lhs, size_t i_rhs)
 {
     yame::math::polynomial<T,A> res;
@@ -457,7 +474,7 @@ inline yame::math::polynomial<T,A> operator^(yame::math::polynomial<T,A> i_lhs, 
 
 }
 
-template<typename T, template<typename> class A>
+template<math::ring_type T, template<typename> class A>
 container::string format(const math::polynomial<T,A>& i_value)
 {
     container::string res;

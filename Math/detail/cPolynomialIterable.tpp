@@ -7,51 +7,51 @@ namespace yame
 namespace math
 {
 
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 cPolynomialIterable<T,A>::cPolynomialIterable(const polynomial<T,A>& i_polynomial)
 : container::cMultiMapIterable<typename cPolynomial<T,A>::key_type,typename cPolynomial<T,A>::value_type,cMonomial<T>>(i_polynomial.getValue(), &cPolynomialIterable<T,A>::fromIterableNodeToMonomial)
 , m_compare(null_ptr)
 {
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 cPolynomialIterable<T,A>::cPolynomialIterable(const cPolynomial<T,A>& i_polynomial)
 : container::cMultiMapIterable<typename cPolynomial<T,A>::key_type,typename cPolynomial<T,A>::value_type,cMonomial<T>>(i_polynomial, &cPolynomialIterable<T,A>::fromIterableNodeToMonomial)
 , m_compare(null_ptr)
 {
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 cPolynomialIterable<T,A>::cPolynomialIterable(const polynomial<T,A>& i_polynomial, const compare_func& i_compare)
 : container::cMultiMapIterable<typename cPolynomial<T,A>::key_type,typename cPolynomial<T,A>::value_type,cMonomial<T>>(i_polynomial.getValue(), &cPolynomialIterable<T,A>::fromIterableNodeToMonomial)
 , m_compare(i_compare)
 {
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 cPolynomialIterable<T,A>::cPolynomialIterable(const cPolynomial<T,A>& i_polynomial, const compare_func& i_compare)
 : container::cMultiMapIterable<typename cPolynomial<T,A>::key_type,typename cPolynomial<T,A>::value_type,cMonomial<T>>(i_polynomial.getValue(), &cPolynomialIterable<T,A>::fromIterableNodeToMonomial)
 , m_compare(i_compare)
 {
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 typename cPolynomialIterable<T,A>::iterator_type cPolynomialIterable<T,A>::begin(const ytl::function<bool(const_reference)>& filter)
 {
     return container::cMultiMapIterable<typename cPolynomial<T,A>::key_type,typename cPolynomial<T,A>::value_type,cMonomial<T>>::begin( ytl::function<bool(const_reference)>([](const value_type& i_value) { return i_value.getCoeff() != T::group::neutral_element(); }) && filter);
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 typename cPolynomialIterable<T,A>::const_iterator_type cPolynomialIterable<T,A>::cbegin(const ytl::function<bool(const_reference)>& filter) const
 {
     return container::cMultiMapIterable<typename cPolynomial<T,A>::key_type,typename cPolynomial<T,A>::value_type,cMonomial<T>>::cbegin( ytl::function<bool(const_reference)>([](const value_type& i_value){ return i_value.getCoeff() != T::group::neutral_element(); }) && filter);
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 typename cPolynomialIterable<T,A>::reverse_iterator_type cPolynomialIterable<T,A>::rbegin(const ytl::function<bool(const_reference)>& filter)
 {
     return container::cMultiMapIterable<typename cPolynomial<T,A>::key_type,typename cPolynomial<T,A>::value_type,cMonomial<T>>::rbegin( ytl::function<bool(const_reference)>([](const value_type& i_value) { return i_value.getCoeff() != T::group::neutral_element(); }) && filter);
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 typename cPolynomialIterable<T,A>::const_reverse_iterator_type cPolynomialIterable<T,A>::crbegin(const ytl::function<bool(const_reference)>& filter) const
 {
     return container::cMultiMapIterable<typename cPolynomial<T,A>::key_type,typename cPolynomial<T,A>::value_type,cMonomial<T>>::crbegin( ytl::function<bool(const_reference)>([](const value_type& i_value){ return i_value.getCoeff() != T::group::neutral_element(); }) && filter);
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 typename cPolynomialIterable<T,A>::node_pointer_type cPolynomialIterable<T,A>::getNextElem(node_pointer_type currNode) const
 {
     if(m_compare != null_ptr)
@@ -92,7 +92,7 @@ typename cPolynomialIterable<T,A>::node_pointer_type cPolynomialIterable<T,A>::g
         return base::getNextElem(currNode);
     }
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 typename cPolynomialIterable<T,A>::node_pointer_type cPolynomialIterable<T,A>::getPrevElem(node_pointer_type currNode) const
 {
     if(m_compare != null_ptr)
@@ -133,7 +133,7 @@ typename cPolynomialIterable<T,A>::node_pointer_type cPolynomialIterable<T,A>::g
         return base::getPrevElem(currNode);
     }
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 typename cPolynomialIterable<T,A>::node_pointer_type cPolynomialIterable<T,A>::getFirstElem() const
 {
     if(m_compare != null_ptr)
@@ -173,7 +173,7 @@ typename cPolynomialIterable<T,A>::node_pointer_type cPolynomialIterable<T,A>::g
         return base::getFirstElem();
     }
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 typename cPolynomialIterable<T,A>::node_pointer_type cPolynomialIterable<T,A>::getLastElem() const
 {
     if(m_compare != null_ptr)
@@ -213,7 +213,7 @@ typename cPolynomialIterable<T,A>::node_pointer_type cPolynomialIterable<T,A>::g
         return base::getLastElem();
     }
 }
-template<typename T, template<typename> class A>
+template<ring_type T, template<typename> class A>
 cMonomial<T> cPolynomialIterable<T,A>::fromIterableNodeToMonomial(container::cPair<typename cPolynomial<T,A>::key_type,typename cPolynomial<T,A>::value_type>& i_val)
 {
     cMonomial<T>res;
