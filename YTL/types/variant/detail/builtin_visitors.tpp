@@ -9,7 +9,7 @@ namespace detail
 template<typename ... Types>
 template<typename Type>
 template<typename TType>
-void constructor_visitor<Types...>::_constructor<Type>::construct(data_type* address, TType&& val)
+void constructor_visitor<Types...>::_constructor<Type>::construct(void* address, TType&& val)
 {
     static_assert(mpl::is_among_types<Type, Types...>::value, "Constructing type non present in variant types!");
 
@@ -18,16 +18,16 @@ void constructor_visitor<Types...>::_constructor<Type>::construct(data_type* add
     return;
 }
 template<typename ... Types>
-constructor_visitor<Types...>::constructor_visitor<Types...>(void* address)
+constructor_visitor<Types...>::constructor_visitor(void* address)
 : m_address(address)
 {
     ASSERT(m_address, "Providing null address to visitor");
 }
 template<typename ... Types>
 template<size_t _pos, typename Type>
-void constructor_visitor<Types...>::construct(data_type* address, Type&& val)
+void constructor_visitor<Types...>::construct(void* address, Type&& val)
 {
-    static_assert(_pos >= 0 && _pos < _numTypes, "Type out of bounds!");
+    static_assert(_pos >= 0 && _pos < mpl::get_num_types<Types...>::value, "Type out of bounds!");
 
     typedef typename mpl::nth_type_of<_pos, Types...>::type TType;
 
@@ -36,12 +36,12 @@ void constructor_visitor<Types...>::construct(data_type* address, Type&& val)
     return;
 }
 template<typename ... Types>
-template<typename Type, typename T>
-void constructor_visitor<Types...>::operator()(T&& other)
+template<typename Type>
+void constructor_visitor<Types...>::operator()(Type&& other)
 {
     static_assert(mpl::is_among_types<Type, Types...>::value, "Not present type!");
 
-    new(m_address)embedded_type<Type>(mpl::forward<T>(other));
+    new(m_address)embedded_type<Type>(mpl::forward<Type>(other));
 
     return;
 }
@@ -53,8 +53,8 @@ destructor_visitor<Types...>::destructor_visitor(void *address)
     ASSERT(m_address, "Providing null address to visitor");
 }
 template<typename ... Types>
-template<typename Type, typename T>
-void destructor_visitor<Types...>::operator()(T&&)
+template<typename Type>
+void destructor_visitor<Types...>::operator()(Type&&)
 {
     static_assert(mpl::is_among_types<Type, Types...>::value, "Not present type!");
 
@@ -66,7 +66,7 @@ template<typename ... Types>
 template<size_t _pos>
 void destructor_visitor<Types...>::destroy()
 {
-    static_assert(_pos >= 0 && _pos < _numTypes, "Type out of bounds!");
+    static_assert(_pos >= 0 && _pos < mpl::get_num_types<Types...>::value, "Type out of bounds!");
 
     typedef typename mpl::nth_type_of<_pos,Types...>::type Type;
 
@@ -78,7 +78,7 @@ void destructor_visitor<Types...>::destroy()
 template<typename ... Types>
 template<typename Type>
 template<typename TType>
-void assigner_visitor<Types...>::_assigner_visitor<Type>::assign(data_type* address, TType&& val)
+void assigner_visitor<Types...>::_assigner<Type>::assign(void* address, TType&& val)
 {
     static_assert(mpl::is_among_types<Type, Types...>::value, "Assigning type non present in variant types!");
     //static_assert(jtl::mpl::detail::is_among_constructible_types<TType, Types...>::value, "Cannot assign any variant types with forwarded value!");
@@ -94,52 +94,51 @@ assigner_visitor<Types...>::assigner_visitor(void* address)
 }
 template<typename ... Types>
 template<size_t _pos, typename Type>
-void assigner_visitor<Types...>::assign(data_type* address, Type&& val)
+void assigner_visitor<Types...>::assign(void* address, Type&& val)
 {
     typedef typename mpl::nth_type_of<_pos, Types...>::type TType;
 
-    _assigner_visitor<TType>::template assign<Type>(address, mpl::forward<Type>(val));
+    _assigner<TType>::template assign<Type>(address, mpl::forward<Type>(val));
 
     return;
 }
 
 template<typename ... Types>
-template<typename Type, typename T>
-void assigner_visitor<Types...>::operator()(T&& other)
+template<typename Type>
+void assigner_visitor<Types...>::operator()(Type&& other)
 {
     static_assert(mpl::is_among_types<Type, Types...>::value, "Not present type!");
 
-    embedded_type<Type>::assign(m_address, mpl::forward<T>(other));
+    embedded_type<Type>::assign(m_address, mpl::forward<Type>(other));
 
     return;
 }
 
-template<typename ... Types, typename retType>
-template<typename Type>
-typename embedded_type<retType>::ref_type val_retriever_visitor<Types...,retType>::operator()(typename embedded_type<retType>::ref_type val)
+template<typename retType, typename ... Types>
+typename embedded_type<retType>::ref_type val_retriever_visitor<retType,Types...>::operator()(typename embedded_type<retType>::ref_type val)
 {
     typedef typename embedded_type<retType>::ref_type ref_type;
 
     return mpl::forward<ref_type>(val);
 }
-template<typename ... Types, typename retType>
-template<typename Type, typename T>
-typename embedded_type<retType>::ref_type val_retriever_visitor<Types...,retType>::operator()(T&& val, rawType* _foo)
+template<typename retType, typename ... Types>
+template<typename Type>
+typename embedded_type<retType>::ref_type val_retriever_visitor<retType,Types...>::operator()(Type&& val, rawType* _foo)
 {
     ASSERT(false, "You shouldnt reach this point!");
 
     return mpl::forward<typename embedded_type<retType>::ref_type>(*_foo);
 }
 
-template<typename ... Types, typename Variant>
-swaper_visitor<Types...,Variant>::swaper_visitor(Variant& _thisVariant, Variant& _otherVariant)
+template<typename Variant, typename ... Types>
+swaper_visitor<Variant,Types...>::swaper_visitor(Variant& _thisVariant, Variant& _otherVariant)
 : m_thisVariant(_thisVariant)
 , m_otherVariant(_otherVariant)
 {
 }
-template<typename ... Types, typename Variant>
-template<typename Type, typename T>
-void swaper_visitor<Types...,Variant>::operator()(T&& otherVal)
+template<typename Variant, typename ... Types>
+template<typename Type>
+void swaper_visitor<Variant,Types...>::operator()(Type&& otherVal)
 {
     static_assert(mpl::is_among_types<Type, Types...>::value, "Not present type!");
 
@@ -148,33 +147,33 @@ void swaper_visitor<Types...,Variant>::operator()(T&& otherVal)
     val_retriever_visitor<Types...,ref_type> getter;
 
     //this reference here is ok by reference collapsing
-    CREATE_INNER_VISITOR(getter);
-    ref_type thisVal = CALL_INNER_VISITOR(m_thisVariant);
+    CREATE_INNER_VISITOR(getter,Types);
+    ref_type thisVal = CALL_INNER_VISITOR(getter,m_thisVariant);
 
-    embedded_type<Type>::swap(&m_thisVariant.m_storage, mpl::forward<ref_type>(thisVal), &m_otherVariant.m_storage, mpl::forward<T>(otherVal));
+    embedded_type<Type>::swap(&m_thisVariant.m_storage, mpl::forward<ref_type>(thisVal), &m_otherVariant.m_storage, mpl::forward<Type>(otherVal));
 
     return;
 }
 
-template<typename ... Types, typename Variant>
-comparison_visitor<Types...,Variant>::comparison_visitor(const Variant& _variant)
+template<typename Variant, typename ... Types>
+comparison_visitor<Variant,Types...>::comparison_visitor(const Variant& _variant)
 : static_visitor<bool>()
 , m_variant(_variant)
 {
 }
-template<typename ... Types, typename Variant>
-template<typename Type, typename T>
-bool comparison_visitor<Types...,Variant>::operator()(T&& otherVal)
+template<typename Variant, typename ... Types>
+template<typename Type>
+bool comparison_visitor<Variant,Types...>::operator()(Type&& otherVal)
 {
     typedef typename embedded_type<Type>::ref_type ref_type;
 
     val_retriever_visitor<ref_type> getter;
 
     //this reference here is ok by reference collapsing
-    CREATE_INNER_VISITOR(getter);
-    ref_type thisVal = CALL_INNER_VISITOR(m_variant);
+    CREATE_INNER_VISITOR(getter,Types);
+    ref_type thisVal = CALL_INNER_VISITOR(getter,m_variant);
 
-    return thisVal == mpl::forward<T>(otherVal);
+    return thisVal == mpl::forward<Type>(otherVal);
 }
 
 }

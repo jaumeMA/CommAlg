@@ -9,19 +9,20 @@ namespace yame
 namespace ytl
 {
 
-#ifdef LENT_WITH_LOGIC
-
-template<typename>
-class lent_ref;
 template<typename>
 class unique_ptr;
 template<typename>
 class unique_ref;
 
+#ifdef LENT_WITH_LOGIC
+
+template<typename>
+class lent_ref;
+
 template<typename T>
 class lent_ptr
 {
-	typedef tagged_pointer<unique_reference_counter> tagged_reference_counter;
+	typedef tagged_pointer<lent_reference_counter> tagged_reference_counter;
     template<typename TT>
     friend class lent_ptr;
     template<typename TT>
@@ -82,85 +83,10 @@ private:
 	T* m_data = NULL;
 };
 
-template<typename T>
-class lent_ref : public lent_ptr<T>
-{
-	typedef tagged_pointer<unique_reference_counter> tagged_reference_counter;
-    template<typename TT>
-    friend lent_ref<TT> promote_to_ref(const lent_ptr<TT>& other);
-    template<typename TTT, typename TT>
-    friend lent_ptr<TTT> dynamic_lent_cast(const lent_ptr<TT>& other);
-    template<typename TTT, typename TT>
-    friend lent_ptr<TTT> static_lent_cast(const lent_ptr<TT>& other);
-    template<typename TTT, typename TT>
-    friend lent_ptr<TTT> dynamic_lent_cast(const lent_ref<TT>& other);
-    template<typename TTT, typename TT>
-    friend lent_ref<TTT> static_lent_cast(const lent_ref<TT>& other);
-    template<typename TT>
-    friend lent_ptr<TT> const_lent_cast(const lent_ptr<const TT>& other);
-    template<typename TT>
-    friend lent_ref<TT> const_lent_cast(const lent_ref<const TT>& other);
-
-	lent_ref(T* i_data, tagged_reference_counter i_refCounter);
-
-public:
-    using lent_ptr<T>::getData;
-    using lent_ptr<T>::getReferenceCounter;
-    using lent_ptr<T>::operator==;
-    using lent_ptr<T>::operator!=;
-    using lent_ptr<T>::operator*;
-    using lent_ptr<T>::operator->;
-    using lent_ptr<T>::operator=;
-
-    template<typename TT>
-    lent_ref(const lent_ref<TT>& other);
-    template<typename TT>
-    lent_ref(lent_ref<TT>&& other);
-    template<typename TT>
-    lent_ref(const unique_ref<TT>& other);
-    lent_ref(T *pData, enable_ref_from_this& referenceCounter);
-};
-
-template<typename T>
-inline lent_ref<T> promote_to_ref(const lent_ptr<T>& other);
-template<typename TT, typename T>
-lent_ptr<TT> dynamic_lent_cast(const lent_ptr<T>& other);
-template<typename TT, typename T>
-lent_ptr<TT> static_lent_cast(const lent_ptr<T>& other);
-template<typename TT, typename T>
-lent_ptr<TT> dynamic_lent_cast(const lent_ref<T>& other);
-template<typename TT, typename T>
-lent_ref<TT> static_lent_cast(const lent_ref<T>& other);
-template<typename T>
-lent_ptr<T> const_lent_cast(const lent_ptr<const T>& other);
-template<typename T>
-lent_ref<T> const_lent_cast(const lent_ref<const T>& other);
-template<typename T>
-lent_ref<T> lend(T& other, const typename T::lendable_tag* _foo = NULL);
-
 #else
 
 template<typename T>
 using lent_ptr = T*;
-
-template<typename T>
-using lent_ref = T*;
-
-template<typename>
-class unique_ptr;
-template<typename>
-class unique_ref;
-
-template<typename T>
-lent_ref<T> promote_to_ref(const lent_ptr<T>& other);
-template<typename TT, typename T>
-lent_ptr<TT> dynamic_lent_cast(const lent_ptr<T>& other);
-template<typename TT, typename T>
-lent_ptr<TT> static_lent_cast(const lent_ptr<T>& other);
-template<typename T>
-lent_ptr<T> const_lent_cast(const lent_ptr<const T>& other);
-template<typename T>
-lent_ref<T> lend(T& other, const typename T::lendable_tag* _foo = NULL);
 
 #endif
 

@@ -1,5 +1,6 @@
 #include "System/cException.h"
 #include "YTL/mpl/cIterableTemplateHelper.h"
+#include "YTL/types/smartPtr/smart_ptr.h"
 
 namespace yame
 {

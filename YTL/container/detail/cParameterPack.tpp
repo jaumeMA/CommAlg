@@ -1,5 +1,6 @@
 
 #include "System/cException.h"
+#include "YTL/mpl/cParameterPackTemplateHelper.h"
 
 #define PACK_STORAGE_ADDRESS(_STORAGE) reinterpret_cast<char*>(const_cast<decltype(_STORAGE)*>(&_STORAGE))
 

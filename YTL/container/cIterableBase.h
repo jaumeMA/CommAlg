@@ -291,7 +291,7 @@ class cConstIterableBaseImpl : protected PrivateInterface, public PublicInterfac
     template<size_t,typename,size_t>
     friend class cIterableImplBackEnd;
     template<typename>
-    friend class cPackIterableImpl;
+    friend class cIterablePackIterableImpl;
 
 public:
     typedef PrivateInterface iterable_private_interface;

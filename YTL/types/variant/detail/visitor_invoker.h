@@ -28,35 +28,26 @@ class variant_visitor_invoker
 public:
     typedef typename visitor::result_type result_type;
 
-    template<typename Type>
+    template<size_t TypePos>
     inline static result_type inner_invoke(visitor& _visitor, const variant_impl<Types...>& var);
 
-    template<typename Type>
+    template<size_t TypePos>
     inline static result_type inner_invoke(visitor& _visitor, variant_impl<Types...>& var);
 
-    template<typename Type>
+    template<size_t TypePos>
     inline static result_type outer_invoke(visitor& _visitor, const variant_impl<Types...>& var);
 
-    template<typename Type>
+    template<size_t TypePos>
     inline static result_type outer_invoke(visitor& _visitor, variant_impl<Types...>& var);
 
 public:
-    //non const
-    template<typename vvisitor>
-    inline static result_type invoke(const uint8_t& currType, const visitor& _visitor, const variant_impl<Types...>& var, typename vvisitor::t_visitor* foo);
-
-    template<typename vvisitor>
-    inline static result_type invoke(const uint8_t& currType, const visitor& _visitor, const variant_impl<Types...>& var, ...);
-
-    //const
-    template<typename vvisitor>
-    inline static result_type invoke(const uint8_t& currType, const visitor& _visitor, variant_impl<Types...>& var, typename vvisitor::t_visitor* foo);
-
-    template<typename vvisitor>
-    inline static result_type invoke(const uint8_t& currType, const visitor& _visitor, variant_impl<Types...>& var, ...);
+    template<int ... TypeIndexs>
+    inline static result_type invoke(const mpl::sequence<TypeIndexs...>&, const visitor& _visitor, const variant_impl<Types...>& var);
+    template<int ... TypeIndexs>
+    inline static result_type invoke(const mpl::sequence<TypeIndexs...>&, const visitor& _visitor, variant_impl<Types...>& var);
 };
 }
 }
 }
 
-#include "YTL/variant/detail/visitor_invoker.tpp"
+#include "YTL/types/variant/detail/visitor_invoker.tpp"

@@ -39,6 +39,8 @@ class parameter_pack<Type,Types...>
 
     template<typename...>
     friend class parameter_pack;
+    template<typename ...>
+    friend class parameter_pack_iterable;
 
 public:
     parameter_pack<Type,Types...>() = delete;
@@ -94,6 +96,16 @@ private:
         return reinterpret_cast<ytl::embedded_type<TType> *>(const_cast<void*>(i_address))->get();
     }
     template<typename TType>
+    inline typename ytl::embedded_type<TType>::pointer_type get_ptr(const void* i_address)
+    {
+        return reinterpret_cast<ytl::embedded_type<TType> *>(const_cast<void*>(i_address))->get_ptr();
+    }
+    template<typename TType>
+    inline typename ytl::embedded_type<TType>::pointer_type get_ptr(const void* i_address) const
+    {
+        return reinterpret_cast<ytl::embedded_type<TType> *>(const_cast<void*>(i_address))->get_ptr();
+    }
+    template<typename TType>
     inline typename ytl::embedded_type<TType>::rref_type extract(void* i_address)
     {
         return reinterpret_cast<ytl::embedded_type<TType> *>(i_address)->extract();
@@ -121,7 +133,6 @@ struct add_constness<container::parameter_pack<Types...>>
 };
 
 }
-
 }
 
 #include "YTL/container/detail/cParameterPack.tpp"

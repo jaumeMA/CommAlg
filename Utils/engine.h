@@ -20,7 +20,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 #include "YTL/container/cString.h"
 #include "YTL/container/cQueue.h"
 #include "YTL/container/cTupla.h"
-#include "YTL/types/smartPtr/ptr_utils.h"
 #include <SDL/SDL_image.h>
 #include "System/time/cTime.h"
 

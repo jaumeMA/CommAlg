@@ -24,14 +24,13 @@ class static_visitor
 public:
     typedef T result_type;
 
-template<typename TT>
+    template<typename TT>
     result_type operator()(TT&&, Args ... args)
     {
         static_assert(sizeof(TT)==0, "You haven't provided a call operator for this type in your static_visitor implementation!");
     }
 
 protected:
-//we don't want to allow direct instances, but only by inheritance
     static_visitor() {};
     virtual ~static_visitor(){};
 };
@@ -41,8 +40,11 @@ namespace detail
 template<typename T>
 struct visitor_invoker
 {    typedef typename T::result_type result_type;    typedef T Visitor;
+
 public:    visitor_invoker(T& visitor) : m_visitor(visitor) {};
     template<typename TT, typename ... Args>    result_type outer_visit(TT&& t_instance, void* foo, Args&& ... args)    {        return m_visitor(mpl::forward<TT>(t_instance), mpl::forward<Args>(args)...);    }
-    template<typename Type, typename TT>    result_type inner_visit(TT&& t_instance)    {        return m_visitor.template operator()<Type,TT>(mpl::forward<TT>(t_instance));    }private:    T& m_visitor;};}
+    template<typename Type, typename TT>    result_type inner_visit(TT&& t_instance)    {        return m_visitor.template operator()<Type,TT>(mpl::forward<TT>(t_instance));    }
+
+private:    T& m_visitor;};}
 }
 }

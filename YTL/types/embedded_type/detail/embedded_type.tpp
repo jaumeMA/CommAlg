@@ -20,6 +20,12 @@ typename embedded_type<T&>::ref_type embedded_type<T&>::get()
     return m_data;
 }
 template<typename T>
+typename embedded_type<T&>::pointer_type embedded_type<T&>::get_ptr()
+{
+    //take care of T*!
+    return &m_data;
+}
+template<typename T>
 typename embedded_type<T&>::rref_type embedded_type<T&>::extract()
 {
     return m_data;
@@ -105,6 +111,12 @@ template<typename T>
 typename embedded_type<T&&>::ref_type embedded_type<T&&>::get()
 {
     return mpl::move(m_data);
+}
+template<typename T>
+typename embedded_type<T&&>::pointer_type embedded_type<T&&>::get_ptr()
+{
+    //take care of T*!
+    return &m_data;
 }
 template<typename T>
 typename embedded_type<T&&>::rref_type embedded_type<T&&>::extract()
@@ -209,6 +221,12 @@ template<typename T>
 typename embedded_type<T>::ref_type embedded_type<T>::get()
 {
     return mpl::forward<embedded_type<T>::ref_type>(m_data);
+}
+template<typename T>
+typename embedded_type<T>::pointer_type embedded_type<T>::get_ptr()
+{
+    //take care of T*!
+    return &m_data;
 }
 template<typename T>
 typename embedded_type<T>::rref_type embedded_type<T>::extract()

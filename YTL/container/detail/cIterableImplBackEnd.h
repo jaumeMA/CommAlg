@@ -1,7 +1,7 @@
 #pragma once
 
 #include "YTL/container/detail/cIteratorTag.h"
-#include "YTL/types/smartPtr/lent_ptr.h"
+#include "YTL/types/smartPtr/lent_ref.h"
 
 namespace yame
 {

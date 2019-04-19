@@ -7,46 +7,50 @@ namespace ytl
 namespace detail
 {
 
-template<typename Variant, typename ... Types>
-class variant_interface;
+template<typename Variant, size_t TypePos, typename ... Types>
+class _variant_interface;
 
-template<typename Variant, typename Type, typename ... Types>
-class variant_interface<Variant, Type, Types...> : public variant_interface < Variant, Types... >
+template<typename Variant, size_t TypePos, typename ... Types>
+class _variant_interface : public _variant_interface<Variant,TypePos-1,Types...>
 {
-    typedef typename mpl::drop_constness<typename mpl::drop_reference<Type>::type>::type rawType;
+    typedef typename mpl::nth_type_of<TypePos-1,Types...>::type CurrType;
+    typedef typename mpl::drop_constness<typename mpl::drop_reference<CurrType>::type>::type rawType;
+    typedef _variant_interface<Variant,TypePos-1,Types...> variant_base_t;
 
 public:
-    using variant_interface<Variant, Types...>::variant_interface;
-    using variant_interface<Variant, Types...>::operator=;
-    using variant_interface<Variant, Types...>::operator==;
-    using variant_interface<Variant, Types...>::operator!=;
-    using variant_interface<Variant, Types...>::get;
-    using variant_interface<Variant, Types...>::extract;
-    using variant_interface<Variant, Types...>::empty;
-    using variant_interface<Variant, Types...>::is;
-    using variant_interface<Variant, Types...>::which;
-    using variant_interface<Variant, Types...>::reset;
-    using variant_interface<Variant, Types...>::swap;
-    using variant_interface<Variant, Types...>::apply_visitor;
+    using variant_base_t::_variant_interface;
+    using variant_base_t::operator=;
+    using variant_base_t::operator==;
+    using variant_base_t::operator!=;
+    using variant_base_t::construct;
+    using variant_base_t::get;
+    using variant_base_t::extract;
+    using variant_base_t::empty;
+    using variant_base_t::is;
+    using variant_base_t::which;
+    using variant_base_t::reset;
+    using variant_base_t::swap;
+    using variant_base_t::apply_visitor;
 
-    variant_interface() = default;
-    variant_interface(const rawType& other);
-    variant_interface(rawType& other);
-    variant_interface(rawType&& other);
-    variant_interface& operator=(const rawType& other);
-    variant_interface& operator=(rawType& other);
-    variant_interface& operator=(rawType&& other);
+    _variant_interface() = default;
+    template<typename T>
+    requires ( mpl::is_same_type<T,typename mpl::nth_type_of<TypePos-1,Types...>::type>::value )
+    _variant_interface(T&& other);
+    template<typename T>
+    requires ( mpl::is_same_type<T,typename mpl::nth_type_of<TypePos-1,Types...>::type>::value )
+    _variant_interface& operator=(T&& other);
     bool operator==(const rawType& other) const;
     bool operator==(rawType&& other) const;
 };
 
-template<typename Variant>
-class variant_interface < Variant > : public Variant
+template<typename Variant, typename ... Types>
+class _variant_interface<Variant,0,Types...> : public Variant
 {
 public:
     using Variant::operator=;
     using Variant::operator==;
     using Variant::operator!=;
+    using Variant::construct;
     using Variant::get;
     using Variant::extract;
     using Variant::empty;
@@ -56,10 +60,32 @@ public:
     using Variant::swap;
     using Variant::apply_visitor;
 
-    variant_interface() = default;
+    _variant_interface() = default;
 };
 
 }
+
+template<typename Variant, typename ... Types>
+class variant_interface : public detail::_variant_interface<Variant,mpl::get_num_types<Types...>::value,Types...>
+{
+    typedef detail::_variant_interface<Variant,mpl::get_num_types<Types...>::value,Types...> variant_base_t;
+
+public:
+    using variant_base_t::_variant_interface;
+    using variant_base_t::operator=;
+    using variant_base_t::operator==;
+    using variant_base_t::operator!=;
+    using variant_base_t::construct;
+    using variant_base_t::get;
+    using variant_base_t::extract;
+    using variant_base_t::empty;
+    using variant_base_t::is;
+    using variant_base_t::which;
+    using variant_base_t::reset;
+    using variant_base_t::swap;
+    using variant_base_t::apply_visitor;
+};
+
 }
 }
 

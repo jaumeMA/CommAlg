@@ -12,18 +12,19 @@ namespace ytl
 template<typename T>
 class shared_ptr
 {
-	typedef shared_reference_counter* shared_reference_counter_ptr;
-	typedef tagged_pointer<shared_reference_counter> tagged_reference_counter;
 	template<typename>
 	friend class shared_ptr;
 	template<typename TT, typename ... Args>
 	friend shared_ptr<TT> make_shared_reference(Args&& ...);
 	template<typename TT,typename TTT>
 	friend shared_ptr<TTT> dynamic_shared_cast(const shared_ptr<TT>&);
+	template<typename TT>
+	friend lent_ptr<TT> lend(shared_ptr<TT>&);
 
 public:
+	typedef tagged_pointer<shared_reference_counter> tagged_reference_counter;
+
 	shared_ptr();
-	shared_ptr(T* i_data, ISmartPtrDeleter* i_refDeleter = NULL);
 	shared_ptr(const shared_ptr& other);
 	shared_ptr(shared_ptr&& other);
 	template<typename TT>
@@ -50,17 +51,13 @@ public:
 	void clear();
 
 private:
-	shared_ptr(T* i_data, tagged_reference_counter i_refCounter);
-	shared_ptr(T* i_data, shared_reference_counter* i_refCounter);
+	shared_ptr(T* i_data, tagged_reference_counter i_refCounter, ISmartPtrDeleter* i_refDeleter = NULL);
 	void clearCounter();
 
 	tagged_reference_counter m_refCounter;
 	T* m_data;
 	ISmartPtrDeleter* m_deleter;
 };
-
-template<typename T, typename ... Args>
-shared_ptr<T> make_shared_reference(Args&& ... i_args);
 
 }
 }

@@ -14,20 +14,6 @@ shared_ptr<T>::shared_ptr()
 {
 }
 template<typename T>
-shared_ptr<T>::shared_ptr(T* i_data, ISmartPtrDeleter* i_refDeleter)
-: m_refCounter(NULL)
-, m_data(i_data)
-, m_deleter(i_refDeleter)
-{
-    if (m_data)
-    {
-        if(m_refCounter = make_tagged_pointer<shared_reference_counter>(0))
-        {
-            m_refCounter->incrementReference();
-        }
-    }
-}
-template<typename T>
 shared_ptr<T>::shared_ptr(const shared_ptr& other)
 : m_refCounter(NULL)
 , m_data(NULL)
@@ -254,23 +240,12 @@ void shared_ptr<T>::clear()
     }
 }
 template<typename T>
-shared_ptr<T>::shared_ptr(T* i_data, tagged_reference_counter i_refCounter)
+shared_ptr<T>::shared_ptr(T* i_data, tagged_reference_counter i_refCounter, ISmartPtrDeleter* i_refDeleter)
 : m_data(i_data)
 , m_refCounter(NULL)
-, m_deleter(NULL)
+, m_deleter(i_refDeleter)
 {
     if(m_refCounter = i_refCounter)
-    {
-        m_refCounter->incrementReference();
-    }
-}
-template<typename T>
-shared_ptr<T>::shared_ptr(T* i_data, shared_reference_counter* i_refCounter)
-: m_data(i_data)
-, m_refCounter(NULL)
-, m_deleter(NULL)
-{
-    if(m_refCounter = tagged_pointer<shared_reference_counter>(i_refCounter,0x01))
     {
         m_refCounter->incrementReference();
     }
@@ -301,9 +276,6 @@ void shared_ptr<T>::clearCounter()
 
     m_data = NULL;
 }
-
-template<typename T, typename ... Args>
-shared_ptr<T> make_shared_reference(Args&& ... i_args);
 
 }
 }

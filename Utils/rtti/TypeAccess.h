@@ -2,6 +2,7 @@
 
 #include "Utils/rtti/TypeInfo.h"
 #include <typeinfo>
+#include "YTL/types/variant/static_visitor.h"
 
 //macro for type pointers
 #define __RTTI_EXPAND_METHOD_POINTER_TYPE(_MEMBER) \
@@ -17,21 +18,35 @@
 #define RTTI_EXPAND_METHOD_POINTER_TYPE(_INDEX,_MEMBER) \
     _RTTI_EXPAND_METHOD_POINTER_TYPE(QUANTITY(_INDEX),_MEMBER)
 
-//macro for types
-#define __RTTI_EXPAND_MEMBER_TYPE(_MEMBER) \
-    decltype(_rtti_member_class::_MEMBER)
-#define _RTTI_EXPAND_MEMBER_TYPE_TWOORMORE(_MEMBER) \
-    __RTTI_EXPAND_MEMBER_TYPE(_MEMBER),
-#define _RTTI_EXPAND_MEMBER_TYPE_ONE(_MEMBER) \
-    __RTTI_EXPAND_MEMBER_TYPE(_MEMBER)
-#define _RTTI_EXPAND_MEMBER_TYPE_(_QUANT,_MEMBER) \
-    _RTTI_EXPAND_MEMBER_TYPE_##_QUANT(_MEMBER)
-#define _RTTI_EXPAND_MEMBER_TYPE(_QUANT,_MEMBER) \
-    _RTTI_EXPAND_MEMBER_TYPE_(_QUANT,_MEMBER)
-#define RTTI_EXPAND_MEMBER_TYPE(_INDEX,_MEMBER) \
-    _RTTI_EXPAND_MEMBER_TYPE(QUANTITY(_INDEX),_MEMBER)
+//macro for name x types decl
+#define __RTTI_EXPAND_MEMBER_NAME_TYPE_DECL(_MEMBER) \
+    yame::container::cPair<yame::container::string,decltype(&_rtti_member_class::_MEMBER)>
+#define _RTTI_EXPAND_MEMBER_NAME_TYPE_DECL_TWOORMORE(_MEMBER) \
+    __RTTI_EXPAND_MEMBER_NAME_TYPE_DECL(_MEMBER),
+#define _RTTI_EXPAND_MEMBER_NAME_TYPE_DECL_ONE(_MEMBER) \
+    __RTTI_EXPAND_MEMBER_NAME_TYPE_DECL(_MEMBER)
+#define _RTTI_EXPAND_MEMBER_NAME_TYPE_DECL_(_QUANT,_MEMBER) \
+    _RTTI_EXPAND_MEMBER_NAME_TYPE_DECL_##_QUANT(_MEMBER)
+#define _RTTI_EXPAND_MEMBER_NAME_TYPE_DECL(_QUANT,_MEMBER) \
+    _RTTI_EXPAND_MEMBER_NAME_TYPE_DECL_(_QUANT,_MEMBER)
+#define RTTI_EXPAND_MEMBER_NAME_TYPE_DECL(_INDEX,_MEMBER) \
+    _RTTI_EXPAND_MEMBER_NAME_TYPE_DECL(QUANTITY(_INDEX),_MEMBER)
 
-//macro for types + names
+//macro for name x types impl
+#define __RTTI_EXPAND_MEMBER_NAME_TYPE_IMPL(_MEMBER) \
+    yame::container::make_pair(yame::container::string(#_MEMBER),&_rtti_member_class::_MEMBER)
+#define _RTTI_EXPAND_MEMBER_NAME_TYPE_IMPL_TWOORMORE(_MEMBER) \
+    __RTTI_EXPAND_MEMBER_NAME_TYPE_IMPL(_MEMBER),
+#define _RTTI_EXPAND_MEMBER_NAME_TYPE_IMPL_ONE(_MEMBER) \
+    __RTTI_EXPAND_MEMBER_NAME_TYPE_IMPL(_MEMBER)
+#define _RTTI_EXPAND_MEMBER_NAME_TYPE_IMPL_(_QUANT,_MEMBER) \
+    _RTTI_EXPAND_MEMBER_NAME_TYPE_IMPL_##_QUANT(_MEMBER)
+#define _RTTI_EXPAND_MEMBER_NAME_TYPE_IMPL(_QUANT,_MEMBER) \
+    _RTTI_EXPAND_MEMBER_NAME_TYPE_IMPL_(_QUANT,_MEMBER)
+#define RTTI_EXPAND_MEMBER_NAME_TYPE_IMPL(_INDEX,_MEMBER) \
+    _RTTI_EXPAND_MEMBER_NAME_TYPE_IMPL(QUANTITY(_INDEX),_MEMBER)
+
+//macro for member name x typeinfo
 #define ___RTTI_EXPAND_MEMBER_TYPE_INFO(_MEMBER) \
     yame::container::make_pair(yame::container::string(#_MEMBER),yame::rtti::detail::_getTypeInfo<decltype(_rtti_member_class::_MEMBER)>(NULL))
 #define __RTTI_EXPAND_MEMBER_TYPE_INFO(_MEMBER) \
@@ -93,37 +108,20 @@
 
 #define PUBLISH_RTTI_TYPE_MEMBERS(_TYPE,...) \
     typedef _TYPE _rtti_member_class; \
-    typedef yame::container::parameter_pack<FOREACH(RTTI_EXPAND_MEMBER_TYPE,  __VA_ARGS__)> rtti_members; \
-    friend const yame::rtti::TypeInfo* yame::rtti::detail::_getTypeInfo<_TYPE>(typename _TYPE::rtti_members*); \
-    friend inline const yame::container::cArray<yame::container::cPair<yame::container::string,const yame::rtti::TypeInfo*>>& __get_rtti_members(const _TYPE*) \
+    typedef yame::container::parameter_pack<FOREACH(RTTI_EXPAND_MEMBER_NAME_TYPE_DECL,  __VA_ARGS__)> rtti_members_t; \
+    friend const yame::rtti::TypeInfo* yame::rtti::detail::_getTypeInfo<_TYPE>(typename _TYPE::rtti_members_t*); \
+    friend inline const yame::container::cArray<yame::container::cPair<yame::container::string,const yame::rtti::TypeInfo*>>& __get_rtti_members_type_info(const _TYPE*) \
     { \
         static const yame::container::cArray<yame::container::cPair<yame::container::string,const yame::rtti::TypeInfo*>> __rtti_member_type_info = { FOREACH(RTTI_EXPAND_MEMBER_TYPE_INFO, __VA_ARGS__ ) }; \
         \
         return __rtti_member_type_info; \
     } \
-    friend inline size_t __get_rtti_member_pos(const _TYPE*, const yame::container::string& i_memberName) \
+    friend inline rtti_members_t& __get_rtti_members_pack(const _TYPE*) \
     { \
-        static const size_t __rtti_num_member_types = yame::mpl::get_parameter_pack_num_types<_TYPE::rtti_members>::value; \
-        static const yame::container::string __rtti_member_names[__rtti_num_member_types] = { FOREACH(RTTI_EXPAND_MEMBER_NAME,__VA_ARGS__) }; \
-        \
-        for(size_t memberIndex=0;memberIndex<__rtti_num_member_types;++memberIndex) \
-        { \
-            if(i_memberName == __rtti_member_names[memberIndex]) \
-            { \
-                return memberIndex; \
-            } \
-        } \
-        \
-        return -1; \
-    } \
-    friend inline size_t _TYPE::* __get_rtti_member_address(const _TYPE* i_foo, const yame::container::string& i_memberName) \
-    { \
-        static size_t _TYPE::* rtti_members[] = { FOREACH(RTTI_EXPAND_MEMBER_ADDRESS,__VA_ARGS__)}; \
-        \
-        const size_t memberPos = __get_rtti_member_pos(i_foo,i_memberName); \
+       static rtti_members_t __rtti_members_pack = rtti_members_t(FOREACH(RTTI_EXPAND_MEMBER_NAME_TYPE_IMPL,  __VA_ARGS__)); \
        \
-        return (memberPos != -1) ? rtti_members[memberPos] : NULL; \
-    }
+        return __rtti_members_pack; \
+    } \
 
 #define PUBLISH_RTTI_TYPE_METHODS(_TYPE,...) \
     typedef _TYPE _rtti_method_class; \
@@ -178,12 +176,43 @@ namespace detail
 template<typename T, typename TT>
 inline const TypeInfo* __get_rtti_type_info(const T*,const TT&);
 template<typename T>
-inline const TypeInfo* _getTypeInfo(typename T::rtti_members*);
+inline const TypeInfo* _getTypeInfo(typename T::rtti_members_t*);
 template<typename T>
 inline const TypeInfo* _getTypeInfo(...);
 
+template<typename T>
+class member_address_visitor : public ytl::static_visitor<size_t T::*>
+{
+public:
+    member_address_visitor(const container::string& i_memberName);
+
+    template<typename TT>
+    size_t T::* operator()(const container::cPair<container::string,TT T::*>& i_value) const;
+
+private:
+    const container::string m_memberName;
+};
+
+template<typename T, typename Visitor>
+class member_pass_by_reference_visitor : public ytl::static_visitor<typename Visitor::result_type>
+{
+public:
+    member_pass_by_reference_visitor(T& i_currObj, const Visitor& i_nestedVisitor);
+
+    template<typename TT>
+    typename Visitor::result_type operator()(const container::cPair<container::string,TT T::*>& i_value) const;
+
+private:
+    T& m_currObject;
+    const Visitor& m_nestedVisitor;
+};
+
 }
 
+template<typename T, typename Visitor>
+inline void visit_members(T* i_ptr, Visitor& i_visitor);
+template<typename T, typename Visitor>
+inline void visit_members(T* i_ptr, const Visitor& i_visitor);
 template<typename TT, typename T>
 inline TT& access(T* i_ptr, const yame::container::string& i_memberName);
 template<typename TT, typename T>

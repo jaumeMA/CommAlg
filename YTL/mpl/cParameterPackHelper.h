@@ -113,6 +113,10 @@ struct _acc_sizeof<sequence<Indexs...>>
     {
         return (i_index == 0) ? 0 : value[i_index-1];
     }
+    static constexpr size_t index(size_t i_ptrDiff, size_t i_initialIndex = 0)
+    {
+        return (i_ptrDiff == 0) ? 0 : (value[i_initialIndex] == i_ptrDiff) ? i_initialIndex + 1 : index(i_ptrDiff,i_initialIndex + 1);
+    }
 };
 
 template<int ... Indexs>

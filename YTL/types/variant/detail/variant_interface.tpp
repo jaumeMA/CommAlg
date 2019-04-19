@@ -8,58 +8,31 @@ namespace ytl
 namespace detail
 {
 
-template<typename Variant, typename Type, typename ... Types>
-variant_interface<Variant, Type, Types...>::variant_interface(rawType& other)
+template<typename Variant, size_t TypePos, typename ... Types>
+template<typename T>
+requires ( mpl::is_same_type<T,typename mpl::nth_type_of<TypePos-1,Types...>::type>::value )
+_variant_interface<Variant,TypePos,Types...>::_variant_interface(T&& other)
 {
-    Variant::template construct<Type>(other);
+    Variant::template construct<TypePos>(mpl::forward<T>(other));
 }
-
-template<typename Variant, typename Type, typename ... Types>
-variant_interface<Variant, Type, Types...>::variant_interface(const rawType& other)
+template<typename Variant, size_t TypePos, typename ... Types>
+template<typename T>
+requires ( mpl::is_same_type<T,typename mpl::nth_type_of<TypePos-1,Types...>::type>::value )
+_variant_interface<Variant,TypePos,Types...>& _variant_interface<Variant,TypePos,Types...>::operator=(T&& other)
 {
-    Variant::template construct<Type>(other);
-}
-
-template<typename Variant, typename Type, typename ... Types>
-variant_interface<Variant, Type, Types...>::variant_interface(rawType&& other)
-{
-    Variant::template construct<Type>(std::move(other));
-}
-
-template<typename Variant, typename Type, typename ... Types>
-variant_interface<Variant, Type, Types...>& variant_interface<Variant, Type, Types...>::operator=(rawType& other)
-{
-    Variant::template assign<Type>(other);
+    Variant::template assign<TypePos>(mpl::forward<T>(other));
 
     return *this;
 }
-
-template<typename Variant, typename Type, typename ... Types>
-variant_interface<Variant, Type, Types...>& variant_interface<Variant, Type, Types...>::operator=(const rawType& other)
+template<typename Variant, size_t TypePos, typename ... Types>
+bool _variant_interface<Variant,TypePos,Types...>::operator==(const rawType& other) const
 {
-    Variant::template assign<Type>(other);
-
-    return *this;
+    return Variant::template compare<TypePos>(other);
 }
-
-template<typename Variant, typename Type, typename ... Types>
-variant_interface<Variant, Type, Types...>& variant_interface<Variant, Type, Types...>::operator=(rawType&& other)
+template<typename Variant, size_t TypePos, typename ... Types>
+bool _variant_interface<Variant,TypePos,Types...>::operator==(rawType&& other) const
 {
-    Variant::template assign<Type, rawType&&>(mpl::move(other));
-
-    return *this;
-}
-
-template<typename Variant, typename Type, typename ... Types>
-bool variant_interface<Variant, Type, Types...>::operator==(const rawType& other) const
-{
-    return Variant::template compare<Type>(other);
-}
-
-template<typename Variant, typename Type, typename ... Types>
-bool variant_interface<Variant, Type, Types...>::operator==(rawType&& other) const
-{
-    return Variant::template compare<Type>(mpl::move(other));
+    return Variant::template compare<TypePos>(mpl::move(other));
 }
 
 }

@@ -52,6 +52,7 @@ public:
     bool operator==(embedded_type<T&>&& other) const;
     rref_type extract();
     ref_type get();
+    pointer_type get_ptr();
     pointer_type operator->();
     cpointer_type operator->() const;
     template<typename Type>
@@ -90,6 +91,7 @@ public:
     bool operator==(const embedded_type<T&&>& other) const;
     bool operator==(embedded_type<T&&>&& other) const;
     ref_type get();
+    pointer_type get_ptr();
     rref_type extract();
     pointer_type operator->();
     cpointer_type operator->() const;
@@ -149,6 +151,7 @@ public:
     bool operator==(const embedded_type<T>& other) const;
     bool operator==(embedded_type<T>&& other) const;
     ref_type get();
+    pointer_type get_ptr();
     rref_type extract();
     pointer_type operator->();
     cpointer_type operator->() const;

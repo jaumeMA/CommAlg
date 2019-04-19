@@ -15,7 +15,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 #pragma once
 
 #include "YTL/container/cParameterPack.h"
-#include "YTL/mpl/cParameterPackTemplateHelper.h"
 #include "YTL/mpl/cFunctionTemplateHelper.h"
 #include "YTL/types/taggedPtr/tagged_pointer.h"
 #include "Utils/rtti/rtti.h"
