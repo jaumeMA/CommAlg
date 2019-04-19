@@ -1,143 +1,173 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
+	<File name="Math/cAffineFunction.h" open="0" top="0" tabpos="0">
+		<Cursor position="2080" topLine="12" />
+	</File>
 	<File name="Math/cAffineOps.h" open="0" top="0" tabpos="0">
 		<Cursor position="49" topLine="0" />
 	</File>
 	<File name="Math/cAffineSpace.h" open="0" top="0" tabpos="3">
-		<Cursor position="1179" topLine="4" />
+		<Cursor position="450" topLine="30" />
 	</File>
 	<File name="Math/cAffineSpaceTraits.h" open="0" top="0" tabpos="1">
-		<Cursor position="801" topLine="0" />
+		<Cursor position="156" topLine="6" />
+	</File>
+	<File name="Math/cAlgebraOps.h" open="0" top="0" tabpos="0">
+		<Cursor position="239" topLine="0" />
 	</File>
 	<File name="Math/cFunctionSpace.h" open="0" top="0" tabpos="0">
-		<Cursor position="1231" topLine="9" />
+		<Cursor position="2157" topLine="3" />
+	</File>
+	<File name="Math/cFunctionSpaceOps.h" open="0" top="0" tabpos="0">
+		<Cursor position="199" topLine="0" />
 	</File>
 	<File name="Math/cFunctionSpaceTraits.h" open="0" top="0" tabpos="0">
-		<Cursor position="304" topLine="0" />
+		<Cursor position="286" topLine="3" />
 	</File>
 	<File name="Math/cGroupAction.h" open="0" top="0" tabpos="4">
-		<Cursor position="266" topLine="0" />
+		<Cursor position="314" topLine="0" />
 	</File>
-	<File name="Math/cLinearFunction.h" open="1" top="0" tabpos="6">
-		<Cursor position="1142" topLine="12" />
+	<File name="Math/cLinearFunction.h" open="0" top="0" tabpos="6">
+		<Cursor position="1976" topLine="27" />
 	</File>
-	<File name="Math/cLinearVectorFunction.h" open="1" top="0" tabpos="4">
-		<Cursor position="1942" topLine="27" />
+	<File name="Math/cLinearVectorFunction.h" open="0" top="0" tabpos="4">
+		<Cursor position="769" topLine="10" />
 	</File>
 	<File name="Math/cMath.h" open="0" top="0" tabpos="0">
-		<Cursor position="14879" topLine="632" />
+		<Cursor position="10003" topLine="388" />
 	</File>
 	<File name="Math/cMathOps.h" open="0" top="0" tabpos="0">
-		<Cursor position="2053" topLine="12" />
+		<Cursor position="1724" topLine="9" />
 	</File>
 	<File name="Math/cMathTemplateHelper.h" open="0" top="0" tabpos="0">
 		<Cursor position="1141" topLine="41" />
 	</File>
 	<File name="Math/cMonomial.h" open="0" top="0" tabpos="10">
-		<Cursor position="1576" topLine="24" />
+		<Cursor position="2193" topLine="24" />
+	</File>
+	<File name="Math/cNumberOps.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="101" topLine="0" />
+	</File>
+	<File name="Math/cNumberOps.h" open="0" top="0" tabpos="0">
+		<Cursor position="46" topLine="0" />
 	</File>
 	<File name="Math/cNumberSpaces.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="415" topLine="0" />
+		<Cursor position="52" topLine="0" />
 	</File>
 	<File name="Math/cNumberSpaces.h" open="0" top="0" tabpos="0">
-		<Cursor position="1583" topLine="30" />
+		<Cursor position="554" topLine="78" />
 	</File>
 	<File name="Math/cNumberTraits.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="1391" topLine="12" />
+		<Cursor position="1143" topLine="12" />
 	</File>
 	<File name="Math/cNumberTraits.h" open="0" top="0" tabpos="0">
-		<Cursor position="1499" topLine="89" />
+		<Cursor position="13875" topLine="425" />
 	</File>
 	<File name="Math/cPolynomial.h" open="0" top="0" tabpos="0">
-		<Cursor position="2391" topLine="43" />
+		<Cursor position="2391" topLine="14" />
 	</File>
 	<File name="Math/cPolynomialAlgebra.h" open="0" top="0" tabpos="0">
-		<Cursor position="1476" topLine="18" />
+		<Cursor position="2297" topLine="26" />
 	</File>
 	<File name="Math/cPolynomialAlgebraTraits.h" open="0" top="0" tabpos="0">
-		<Cursor position="4232" topLine="4" />
+		<Cursor position="2854" topLine="30" />
+	</File>
+	<File name="Math/cPolynomialFunction.h" open="0" top="0" tabpos="0">
+		<Cursor position="2142" topLine="31" />
+	</File>
+	<File name="Math/cPolynomialFunctionSpace.h" open="0" top="0" tabpos="0">
+		<Cursor position="949" topLine="11" />
 	</File>
 	<File name="Math/cPolynomialIterable.h" open="0" top="0" tabpos="0">
-		<Cursor position="858" topLine="0" />
+		<Cursor position="4648" topLine="34" />
 	</File>
 	<File name="Math/cPolynomialOps.h" open="0" top="0" tabpos="0">
-		<Cursor position="3361" topLine="46" />
+		<Cursor position="423" topLine="0" />
 	</File>
-	<File name="Math/cScalarFunction.h" open="1" top="0" tabpos="7">
-		<Cursor position="2795" topLine="66" />
+	<File name="Math/cScalarFunction.h" open="0" top="0" tabpos="7">
+		<Cursor position="1832" topLine="23" />
 	</File>
 	<File name="Math/cSet.h" open="0" top="0" tabpos="0">
-		<Cursor position="833" topLine="0" />
+		<Cursor position="472" topLine="6" />
 	</File>
-	<File name="Math/cVectorFunction.h" open="1" top="0" tabpos="3">
-		<Cursor position="1722" topLine="18" />
+	<File name="Math/cVectorFunction.h" open="0" top="0" tabpos="3">
+		<Cursor position="1176" topLine="12" />
 	</File>
 	<File name="Math/cVectorFunctionSpace.h" open="0" top="0" tabpos="0">
-		<Cursor position="2433" topLine="50" />
+		<Cursor position="2119" topLine="54" />
 	</File>
 	<File name="Math/cVectorOps.h" open="0" top="0" tabpos="0">
-		<Cursor position="444" topLine="0" />
+		<Cursor position="1877" topLine="38" />
 	</File>
 	<File name="Math/cVectorOps.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="442" topLine="24" />
+		<Cursor position="955" topLine="39" />
 	</File>
 	<File name="Math/cVectorSpace.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="66" topLine="0" />
 	</File>
 	<File name="Math/cVectorSpace.h" open="0" top="0" tabpos="7">
-		<Cursor position="3895" topLine="0" />
+		<Cursor position="4066" topLine="6" />
 	</File>
 	<File name="Math/cVectorSpaceTraits.h" open="0" top="0" tabpos="2">
-		<Cursor position="3053" topLine="15" />
+		<Cursor position="6491" topLine="18" />
+	</File>
+	<File name="Math/detail/cAffineFunction.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="377" topLine="20" />
+	</File>
+	<File name="Math/detail/cAffineFunctionSpace.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="357" topLine="0" />
 	</File>
 	<File name="Math/detail/cAffineSpaceImpl.h" open="0" top="0" tabpos="8">
 		<Cursor position="172" topLine="0" />
 	</File>
 	<File name="Math/detail/cAffineSpaceTraits.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="896" topLine="0" />
+		<Cursor position="2300" topLine="21" />
 	</File>
 	<File name="Math/detail/cAlgebraImpl.h" open="0" top="0" tabpos="6">
-		<Cursor position="1402" topLine="107" />
+		<Cursor position="6249" topLine="150" />
 	</File>
 	<File name="Math/detail/cAlgebraImpl.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="3123" topLine="70" />
+		<Cursor position="55" topLine="0" />
 	</File>
 	<File name="Math/detail/cAlgebraTemplateHelper.h" open="0" top="0" tabpos="0">
-		<Cursor position="1466" topLine="24" />
+		<Cursor position="1600" topLine="30" />
 	</File>
 	<File name="Math/detail/cFunctionSpace.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="198" topLine="0" />
+		<Cursor position="313" topLine="0" />
+	</File>
+	<File name="Math/detail/cFunctionSpaceOps.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="36" topLine="0" />
 	</File>
 	<File name="Math/detail/cFunctionSpaceTemplateHelper.h" open="0" top="0" tabpos="0">
-		<Cursor position="261" topLine="0" />
+		<Cursor position="290" topLine="0" />
 	</File>
 	<File name="Math/detail/cFunctionSpaceTraits.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="578" topLine="0" />
+		<Cursor position="558" topLine="6" />
 	</File>
-	<File name="Math/detail/cLinearFunction.tpp" open="1" top="0" tabpos="11">
-		<Cursor position="1301" topLine="40" />
+	<File name="Math/detail/cLinearFunction.tpp" open="0" top="0" tabpos="11">
+		<Cursor position="2467" topLine="48" />
 	</File>
-	<File name="Math/detail/cLinearVectorFunction.tpp" open="1" top="0" tabpos="2">
-		<Cursor position="2785" topLine="31" />
+	<File name="Math/detail/cLinearVectorFunction.tpp" open="0" top="0" tabpos="2">
+		<Cursor position="545" topLine="0" />
 	</File>
 	<File name="Math/detail/cMathDerivativeHelper.h" open="0" top="0" tabpos="0">
-		<Cursor position="131" topLine="105" />
+		<Cursor position="6595" topLine="190" />
 	</File>
 	<File name="Math/detail/cMathDerivativeHelper.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="6905" topLine="406" />
+		<Cursor position="639" topLine="0" />
 	</File>
 	<File name="Math/detail/cMathOps.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="3645" topLine="51" />
+		<Cursor position="660" topLine="6" />
 	</File>
 	<File name="Math/detail/cMathTags.h" open="0" top="0" tabpos="0">
-		<Cursor position="239" topLine="0" />
+		<Cursor position="243" topLine="0" />
 	</File>
 	<File name="Math/detail/cMathTraitsConceptHelper.h" open="0" top="0" tabpos="10">
-		<Cursor position="2387" topLine="3" />
+		<Cursor position="3255" topLine="38" />
 	</File>
 	<File name="Math/detail/cMathTypeConceptHelper.h" open="0" top="0" tabpos="0">
-		<Cursor position="336" topLine="5" />
+		<Cursor position="220" topLine="0" />
 	</File>
 	<File name="Math/detail/cMetricSpaceImpl.h" open="0" top="0" tabpos="0">
 		<Cursor position="1005" topLine="9" />
@@ -148,59 +178,74 @@
 	<File name="Math/detail/cMonomial.tpp" open="0" top="0" tabpos="0">
 		<Cursor position="2501" topLine="73" />
 	</File>
+	<File name="Math/detail/cNumberOps.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="52" topLine="0" />
+	</File>
 	<File name="Math/detail/cNumberSpaces.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="18" topLine="0" />
+		<Cursor position="30" topLine="0" />
 	</File>
 	<File name="Math/detail/cNumberTraits.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="2428" topLine="81" />
+		<Cursor position="2693" topLine="89" />
 	</File>
 	<File name="Math/detail/cPolynomial.tpp" open="0" top="0" tabpos="0">
 		<Cursor position="492" topLine="0" />
 	</File>
 	<File name="Math/detail/cPolynomialAlgebra.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="157" topLine="6" />
+		<Cursor position="2279" topLine="39" />
 	</File>
 	<File name="Math/detail/cPolynomialAlgebraTraits.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="9087" topLine="264" />
+		<Cursor position="1239" topLine="49" />
+	</File>
+	<File name="Math/detail/cPolynomialFunction.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="546" topLine="0" />
+	</File>
+	<File name="Math/detail/cPolynomialFunctionSpace.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="107" topLine="0" />
 	</File>
 	<File name="Math/detail/cPolynomialIterable.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="9942" topLine="201" />
+		<Cursor position="9397" topLine="185" />
 	</File>
 	<File name="Math/detail/cPolynomialOps.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="15087" topLine="310" />
+		<Cursor position="2737" topLine="74" />
 	</File>
-	<File name="Math/detail/cScalarFunction.tpp" open="1" top="0" tabpos="12">
-		<Cursor position="1485" topLine="20" />
+	<File name="Math/detail/cScalarFunction.tpp" open="0" top="0" tabpos="12">
+		<Cursor position="1329" topLine="33" />
+	</File>
+	<File name="Math/detail/cScalarFunctionOps.h" open="0" top="0" tabpos="0">
+		<Cursor position="2700" topLine="46" />
 	</File>
 	<File name="Math/detail/cSet.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="717" topLine="12" />
+		<Cursor position="809" topLine="7" />
 	</File>
 	<File name="Math/detail/cSetInterface.h" open="0" top="0" tabpos="0">
-		<Cursor position="134" topLine="0" />
+		<Cursor position="578" topLine="0" />
 	</File>
 	<File name="Math/detail/cStdMathOps.h" open="0" top="0" tabpos="0">
-		<Cursor position="637" topLine="18" />
+		<Cursor position="1133" topLine="0" />
 	</File>
-	<File name="Math/detail/cVectorFunction.tpp" open="1" top="0" tabpos="1">
-		<Cursor position="1677" topLine="15" />
+	<File name="Math/detail/cVectorFunction.tpp" open="0" top="0" tabpos="1">
+		<Cursor position="517" topLine="0" />
 	</File>
-	<File name="Math/detail/cVectorFunctionSpace.tpp" open="1" top="0" tabpos="9">
-		<Cursor position="1611" topLine="4" />
+	<File name="Math/detail/cVectorFunctionOps.h" open="0" top="0" tabpos="0">
+		<Cursor position="581" topLine="0" />
 	</File>
-	<File name="Math/detail/cVectorFunctionTemplateHelper.h" open="1" top="0" tabpos="5">
-		<Cursor position="1939" topLine="30" />
+	<File name="Math/detail/cVectorFunctionSpace.tpp" open="0" top="0" tabpos="9">
+		<Cursor position="968" topLine="6" />
+	</File>
+	<File name="Math/detail/cVectorFunctionTemplateHelper.h" open="0" top="0" tabpos="5">
+		<Cursor position="4779" topLine="57" />
 	</File>
 	<File name="Math/detail/cVectorSpace.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="26" topLine="0" />
+		<Cursor position="61" topLine="0" />
 	</File>
 	<File name="Math/detail/cVectorSpaceImpl.h" open="0" top="0" tabpos="9">
-		<Cursor position="544" topLine="0" />
+		<Cursor position="256" topLine="4" />
 	</File>
 	<File name="Math/detail/cVectorSpaceTraits.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="4429" topLine="132" />
+		<Cursor position="1721" topLine="43" />
 	</File>
 	<File name="Math/detail/cVectorTemplateHelper.h" open="0" top="0" tabpos="0">
-		<Cursor position="1530" topLine="15" />
+		<Cursor position="1955" topLine="19" />
 	</File>
 	<File name="System/cException.h" open="0" top="0" tabpos="0">
 		<Cursor position="2120" topLine="55" />
@@ -224,76 +269,97 @@
 		<Cursor position="1951" topLine="63" />
 	</File>
 	<File name="Utils/detail/engine.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="1116" topLine="20" />
+		<Cursor position="1122" topLine="18" />
 	</File>
 	<File name="Utils/engine.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="787" topLine="15" />
 	</File>
 	<File name="Utils/engine.h" open="0" top="0" tabpos="4">
-		<Cursor position="1516" topLine="12" />
+		<Cursor position="1846" topLine="12" />
 	</File>
 	<File name="Utils/rtti/ProdBigNum.h" open="0" top="0" tabpos="0">
-		<Cursor position="7326" topLine="56" />
+		<Cursor position="3614" topLine="102" />
 	</File>
 	<File name="Utils/rtti/TypeAccess.h" open="0" top="0" tabpos="21">
 		<Cursor position="4199" topLine="72" />
 	</File>
 	<File name="Utils/rtti/TypeConversion.h" open="0" top="0" tabpos="0">
-		<Cursor position="4734" topLine="116" />
+		<Cursor position="1420" topLine="35" />
 	</File>
 	<File name="Utils/rtti/TypeConversionInstantiator.h" open="0" top="0" tabpos="16">
-		<Cursor position="3126" topLine="0" />
+		<Cursor position="3126" topLine="89" />
 	</File>
 	<File name="Utils/rtti/TypeInfo.cpp" open="0" top="0" tabpos="15">
 		<Cursor position="1250" topLine="0" />
 	</File>
 	<File name="Utils/rtti/TypeInfo.h" open="0" top="0" tabpos="14">
-		<Cursor position="1123" topLine="35" />
+		<Cursor position="1123" topLine="24" />
 	</File>
 	<File name="Utils/rtti/TypePrimeId.h" open="0" top="0" tabpos="0">
-		<Cursor position="2344" topLine="42" />
+		<Cursor position="350" topLine="42" />
+	</File>
+	<File name="Utils/rtti/TypeTable.h" open="0" top="0" tabpos="0">
+		<Cursor position="418" topLine="0" />
 	</File>
 	<File name="Utils/rtti/detail/TypeAccess.tpp" open="0" top="0" tabpos="22">
-		<Cursor position="551" topLine="24" />
+		<Cursor position="551" topLine="15" />
 	</File>
 	<File name="Utils/rtti/rtti.h" open="0" top="0" tabpos="17">
-		<Cursor position="4615" topLine="84" />
+		<Cursor position="4573" topLine="87" />
+	</File>
+	<File name="XmlParser/lexParser.tab.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="2866" topLine="68" />
 	</File>
 	<File name="YTL/container/cAVLtree.h" open="0" top="0" tabpos="0">
 		<Cursor position="1538" topLine="25" />
 	</File>
 	<File name="YTL/container/cAlgorithm.h" open="0" top="0" tabpos="0">
-		<Cursor position="7546" topLine="227" />
+		<Cursor position="20460" topLine="562" />
 	</File>
 	<File name="YTL/container/cArray.h" open="0" top="0" tabpos="0">
-		<Cursor position="6061" topLine="27" />
+		<Cursor position="1173" topLine="21" />
 	</File>
 	<File name="YTL/container/cContainerView.h" open="0" top="0" tabpos="0">
-		<Cursor position="872" topLine="15" />
+		<Cursor position="1268" topLine="15" />
+	</File>
+	<File name="YTL/container/cIterable.h" open="0" top="0" tabpos="0">
+		<Cursor position="5615" topLine="90" />
 	</File>
 	<File name="YTL/container/cIterableBase.h" open="0" top="0" tabpos="0">
-		<Cursor position="9633" topLine="142" />
+		<Cursor position="1038" topLine="7" />
 	</File>
 	<File name="YTL/container/cIterator.h" open="0" top="0" tabpos="0">
-		<Cursor position="632" topLine="0" />
+		<Cursor position="1705" topLine="36" />
+	</File>
+	<File name="YTL/container/cMap.h" open="0" top="0" tabpos="0">
+		<Cursor position="1796" topLine="44" />
+	</File>
+	<File name="YTL/container/cMultiMapIterable.h" open="0" top="0" tabpos="0">
+		<Cursor position="4650" topLine="30" />
+	</File>
+	<File name="YTL/container/cPackIterable.h" open="0" top="0" tabpos="0">
+		<Cursor position="644" topLine="9" />
 	</File>
 	<File name="YTL/container/cPair.h" open="0" top="0" tabpos="0">
-		<Cursor position="2036" topLine="49" />
+		<Cursor position="1061" topLine="20" />
 	</File>
 	<File name="YTL/container/cParameterPack.h" open="0" top="0" tabpos="18">
-		<Cursor position="3926" topLine="76" />
+		<Cursor position="1167" topLine="39" />
+	</File>
+	<File name="YTL/container/cQueue.h" open="0" top="0" tabpos="0">
+		<Cursor position="0" topLine="27" />
 	</File>
 	<File name="YTL/container/cRope.h" open="0" top="0" tabpos="0">
-		<Cursor position="4194" topLine="95" />
+		<Cursor position="88" topLine="0" />
 	</File>
 	<File name="YTL/container/cStack.h" open="0" top="0" tabpos="8">
-		<Cursor position="160" topLine="0" />
+		<Cursor position="200" topLine="24" />
 	</File>
 	<File name="YTL/container/cString.h" open="0" top="0" tabpos="0">
 		<Cursor position="2582" topLine="52" />
 	</File>
 	<File name="YTL/container/cTupla.h" open="0" top="0" tabpos="0">
-		<Cursor position="1231" topLine="6" />
+		<Cursor position="5482" topLine="94" />
 	</File>
 	<File name="YTL/container/cUnorderedMap.h" open="0" top="0" tabpos="0">
 		<Cursor position="865" topLine="0" />
@@ -305,19 +371,25 @@
 		<Cursor position="20633" topLine="725" />
 	</File>
 	<File name="YTL/container/detail/cContainerViewImpl.h" open="0" top="0" tabpos="0">
-		<Cursor position="1704" topLine="23" />
+		<Cursor position="3038" topLine="199" />
 	</File>
 	<File name="YTL/container/detail/cIterable.tpp" open="0" top="0" tabpos="0">
 		<Cursor position="2093" topLine="14" />
 	</File>
+	<File name="YTL/container/detail/cIterableBase.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="10599" topLine="231" />
+	</File>
+	<File name="YTL/container/detail/cIterableImpl.h" open="0" top="0" tabpos="0">
+		<Cursor position="15450" topLine="275" />
+	</File>
 	<File name="YTL/container/detail/cIterableImpl.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="1360" topLine="4" />
+		<Cursor position="16493" topLine="392" />
 	</File>
 	<File name="YTL/container/detail/cIterableImplBackEnd.h" open="0" top="0" tabpos="0">
-		<Cursor position="81" topLine="0" />
+		<Cursor position="5917" topLine="81" />
 	</File>
 	<File name="YTL/container/detail/cIterator.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="7006" topLine="146" />
+		<Cursor position="790" topLine="0" />
 	</File>
 	<File name="YTL/container/detail/cIteratorTag.h" open="0" top="0" tabpos="0">
 		<Cursor position="2488" topLine="27" />
@@ -325,80 +397,116 @@
 	<File name="YTL/container/detail/cIteratorTypeConceptHelper.h" open="0" top="0" tabpos="0">
 		<Cursor position="54" topLine="0" />
 	</File>
+	<File name="YTL/container/detail/cMap.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="101" topLine="0" />
+	</File>
+	<File name="YTL/container/detail/cMultiMap.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="10329" topLine="201" />
+	</File>
+	<File name="YTL/container/detail/cPackIterableImpl.h" open="0" top="0" tabpos="0">
+		<Cursor position="1688" topLine="35" />
+	</File>
+	<File name="YTL/container/detail/cPackIterableImpl.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="7372" topLine="0" />
+	</File>
+	<File name="YTL/container/detail/cPair.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="124" topLine="0" />
+	</File>
 	<File name="YTL/container/detail/cParameterPack.tpp" open="0" top="0" tabpos="19">
-		<Cursor position="5651" topLine="79" />
+		<Cursor position="3500" topLine="37" />
 	</File>
 	<File name="YTL/container/detail/cRope.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="35416" topLine="1075" />
+		<Cursor position="32187" topLine="982" />
+	</File>
+	<File name="YTL/container/detail/cStack.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="3469" topLine="108" />
 	</File>
 	<File name="YTL/container/detail/cString.tpp" open="0" top="0" tabpos="0">
 		<Cursor position="5971" topLine="194" />
 	</File>
+	<File name="YTL/container/detail/cTupla.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="10386" topLine="275" />
+	</File>
 	<File name="YTL/container/detail/cTuplaTemplateHelper.h" open="0" top="0" tabpos="0">
-		<Cursor position="527" topLine="0" />
+		<Cursor position="100" topLine="9" />
 	</File>
-	<File name="YTL/container/detail/cTupla_impl.h" open="1" top="0" tabpos="13">
-		<Cursor position="7104" topLine="168" />
+	<File name="YTL/container/detail/cTupla_impl.h" open="0" top="0" tabpos="13">
+		<Cursor position="1064" topLine="6" />
 	</File>
-	<File name="YTL/container/detail/cTupla_impl.tpp" open="1" top="1" tabpos="14">
-		<Cursor position="8148" topLine="279" />
+	<File name="YTL/container/detail/cTupla_impl.tpp" open="0" top="0" tabpos="14">
+		<Cursor position="1107" topLine="0" />
 	</File>
-	<File name="YTL/container/detail/cTupla_interface.h" open="0" top="0" tabpos="0">
-		<Cursor position="717" topLine="14" />
+	<File name="YTL/container/detail/cTupla_storage.h" open="0" top="0" tabpos="0">
+		<Cursor position="2609" topLine="51" />
+	</File>
+	<File name="YTL/container/detail/cTupla_storage.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="2242" topLine="72" />
 	</File>
 	<File name="YTL/container/detail/cUnorderedMap.tpp" open="0" top="0" tabpos="0">
 		<Cursor position="17108" topLine="525" />
 	</File>
 	<File name="YTL/functional/cAgnosticCallable.h" open="0" top="0" tabpos="0">
-		<Cursor position="244" topLine="0" />
+		<Cursor position="776" topLine="5" />
 	</File>
-	<File name="YTL/functional/cFunction.h" open="1" top="0" tabpos="10">
-		<Cursor position="3466" topLine="70" />
+	<File name="YTL/functional/cComposedCallable.h" open="0" top="0" tabpos="0">
+		<Cursor position="1916" topLine="29" />
+	</File>
+	<File name="YTL/functional/cFunction.h" open="0" top="0" tabpos="10">
+		<Cursor position="4709" topLine="75" />
 	</File>
 	<File name="YTL/functional/cFunctionOps.h" open="0" top="0" tabpos="0">
-		<Cursor position="3243" topLine="94" />
+		<Cursor position="2835" topLine="66" />
 	</File>
 	<File name="YTL/functional/cFunctionStorage.h" open="0" top="0" tabpos="0">
-		<Cursor position="68" topLine="0" />
+		<Cursor position="519" topLine="4" />
 	</File>
 	<File name="YTL/functional/cPassByValueFunctor.h" open="0" top="0" tabpos="0">
 		<Cursor position="248" topLine="0" />
 	</File>
 	<File name="YTL/functional/detail/cAgnosticCallable.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="1906" topLine="0" />
+		<Cursor position="711" topLine="12" />
 	</File>
 	<File name="YTL/functional/detail/cComposedCallable.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="425" topLine="42" />
+		<Cursor position="3358" topLine="54" />
 	</File>
 	<File name="YTL/functional/detail/cFunction.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="6287" topLine="81" />
+		<Cursor position="11993" topLine="276" />
 	</File>
 	<File name="YTL/functional/detail/cFunctionConceptHelper.h" open="0" top="0" tabpos="0">
-		<Cursor position="109" topLine="0" />
+		<Cursor position="115" topLine="0" />
 	</File>
 	<File name="YTL/functional/detail/cFunctionImpl.h" open="0" top="0" tabpos="0">
-		<Cursor position="5067" topLine="88" />
+		<Cursor position="6738" topLine="118" />
 	</File>
 	<File name="YTL/functional/detail/cFunctionImpl.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="7448" topLine="99" />
+		<Cursor position="12807" topLine="221" />
 	</File>
 	<File name="YTL/functional/detail/cFunctionOps.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="4964" topLine="124" />
+		<Cursor position="1174" topLine="7" />
+	</File>
+	<File name="YTL/functional/detail/cFunctionParameterPack.h" open="0" top="0" tabpos="0">
+		<Cursor position="734" topLine="8" />
 	</File>
 	<File name="YTL/functional/detail/cFunctionStorage.tpp" open="0" top="0" tabpos="0">
 		<Cursor position="4088" topLine="107" />
 	</File>
 	<File name="YTL/functional/detail/cFunctionTemplateHelper.h" open="0" top="0" tabpos="0">
-		<Cursor position="389" topLine="0" />
+		<Cursor position="1086" topLine="18" />
+	</File>
+	<File name="YTL/functional/detail/cPassByValueFunctor.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="459" topLine="0" />
 	</File>
 	<File name="YTL/mpl/cAccessBase.h" open="0" top="0" tabpos="0">
 		<Cursor position="470" topLine="0" />
 	</File>
 	<File name="YTL/mpl/cFunctionTemplateHelper.h" open="0" top="0" tabpos="0">
-		<Cursor position="2047" topLine="61" />
+		<Cursor position="3979" topLine="131" />
+	</File>
+	<File name="YTL/mpl/cIterableTemplateHelper.h" open="0" top="0" tabpos="0">
+		<Cursor position="2385" topLine="0" />
 	</File>
 	<File name="YTL/mpl/cIteratorTemplateHelper.h" open="0" top="0" tabpos="0">
-		<Cursor position="2066" topLine="6" />
+		<Cursor position="2463" topLine="63" />
 	</File>
 	<File name="YTL/mpl/cOptionalTemplateHelper.h" open="0" top="0" tabpos="0">
 		<Cursor position="773" topLine="0" />
@@ -410,19 +518,25 @@
 		<Cursor position="8239" topLine="239" />
 	</File>
 	<File name="YTL/mpl/cStaticCounter.h" open="0" top="0" tabpos="0">
-		<Cursor position="44" topLine="0" />
+		<Cursor position="44" topLine="36" />
 	</File>
 	<File name="YTL/mpl/cTemplateHelper.h" open="0" top="0" tabpos="0">
-		<Cursor position="24417" topLine="1217" />
+		<Cursor position="4872" topLine="247" />
 	</File>
 	<File name="YTL/mpl/cVariantTemplateHelper.h" open="0" top="0" tabpos="0">
 		<Cursor position="436" topLine="0" />
 	</File>
+	<File name="YTL/signal/cSignalFunctor.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="1015" topLine="8" />
+	</File>
+	<File name="YTL/signal/detail/cSignalFunctor.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="1332" topLine="24" />
+	</File>
 	<File name="YTL/types/embedded_type/detail/embedded_type.tpp" open="0" top="0" tabpos="7">
-		<Cursor position="5707" topLine="216" />
+		<Cursor position="5409" topLine="198" />
 	</File>
 	<File name="YTL/types/embedded_type/embedded_type.h" open="0" top="0" tabpos="0">
-		<Cursor position="4817" topLine="51" />
+		<Cursor position="4078" topLine="73" />
 	</File>
 	<File name="YTL/types/optional/detail/optional.tpp" open="0" top="0" tabpos="0">
 		<Cursor position="2713" topLine="91" />
@@ -430,14 +544,17 @@
 	<File name="YTL/types/optional/optional.h" open="0" top="0" tabpos="0">
 		<Cursor position="1765" topLine="24" />
 	</File>
-	<File name="YTL/types/smartPtr/detail/lent_ptr.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="10318" topLine="441" />
+	<File name="YTL/types/smartPtr/detail/lent_ptr.tpp" open="1" top="0" tabpos="8">
+		<Cursor position="9132" topLine="397" />
 	</File>
 	<File name="YTL/types/smartPtr/detail/ptr_utils.tpp" open="0" top="0" tabpos="0">
 		<Cursor position="2730" topLine="38" />
 	</File>
-	<File name="YTL/types/smartPtr/detail/unique_ptr.tpp" open="0" top="0" tabpos="0">
-		<Cursor position="0" topLine="339" />
+	<File name="YTL/types/smartPtr/detail/shared_ptr.tpp" open="0" top="0" tabpos="0">
+		<Cursor position="6959" topLine="296" />
+	</File>
+	<File name="YTL/types/smartPtr/detail/unique_ptr.tpp" open="1" top="1" tabpos="10">
+		<Cursor position="6910" topLine="312" />
 	</File>
 	<File name="YTL/types/smartPtr/enable_ref_from_this.cpp" open="0" top="0" tabpos="11">
 		<Cursor position="728" topLine="0" />
@@ -445,8 +562,8 @@
 	<File name="YTL/types/smartPtr/enable_ref_from_this.h" open="0" top="0" tabpos="0">
 		<Cursor position="652" topLine="13" />
 	</File>
-	<File name="YTL/types/smartPtr/lent_ptr.h" open="0" top="0" tabpos="0">
-		<Cursor position="4523" topLine="131" />
+	<File name="YTL/types/smartPtr/lent_ptr.h" open="1" top="0" tabpos="7">
+		<Cursor position="2629" topLine="72" />
 	</File>
 	<File name="YTL/types/smartPtr/ptr_utils.h" open="0" top="0" tabpos="5">
 		<Cursor position="1947" topLine="6" />
@@ -454,17 +571,20 @@
 	<File name="YTL/types/smartPtr/reference_counter.cpp" open="0" top="0" tabpos="12">
 		<Cursor position="31" topLine="0" />
 	</File>
-	<File name="YTL/types/smartPtr/shared_ptr.h" open="0" top="0" tabpos="6">
-		<Cursor position="129" topLine="32" />
+	<File name="YTL/types/smartPtr/reference_counter.h" open="1" top="0" tabpos="6">
+		<Cursor position="2698" topLine="123" />
 	</File>
-	<File name="YTL/types/smartPtr/unique_ptr.h" open="0" top="0" tabpos="3">
-		<Cursor position="4879" topLine="128" />
+	<File name="YTL/types/smartPtr/shared_ptr.h" open="0" top="0" tabpos="6">
+		<Cursor position="683" topLine="0" />
+	</File>
+	<File name="YTL/types/smartPtr/unique_ptr.h" open="1" top="0" tabpos="9">
+		<Cursor position="2736" topLine="80" />
 	</File>
 	<File name="YTL/types/taggedPtr/detail/tagged_pointer.tpp" open="0" top="0" tabpos="0">
 		<Cursor position="32" topLine="0" />
 	</File>
 	<File name="YTL/types/taggedPtr/tagged_pointer.h" open="0" top="0" tabpos="0">
-		<Cursor position="2755" topLine="54" />
+		<Cursor position="239" topLine="0" />
 	</File>
 	<File name="YTL/types/variant/detail/builtin_visitors.h" open="0" top="0" tabpos="0">
 		<Cursor position="138" topLine="48" />
@@ -476,7 +596,7 @@
 		<Cursor position="787" topLine="11" />
 	</File>
 	<File name="YTL/types/variant/detail/variant_impl.h" open="0" top="0" tabpos="0">
-		<Cursor position="1104" topLine="10" />
+		<Cursor position="2630" topLine="41" />
 	</File>
 	<File name="YTL/types/variant/detail/variant_impl.tpp" open="0" top="0" tabpos="0">
 		<Cursor position="6347" topLine="234" />
