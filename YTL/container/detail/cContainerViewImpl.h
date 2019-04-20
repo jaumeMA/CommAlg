@@ -178,6 +178,8 @@ public:
     iterator_type end();
     const_iterator_type cbegin(const ytl::function<bool(const_reference)>& filter = null_ptr) const;
     const_iterator_type cend() const;
+    pointer_type getData();
+    const_pointer_type getData() const;
     size_t getSize() const;
     size_t empty() const;
 
@@ -219,6 +221,7 @@ public:
     const_reference back() const;
     const_iterator_type cbegin(const ytl::function<bool(const_reference)>& filter = null_ptr) const;
     const_iterator_type cend() const;
+    const_pointer_type getData() const;
     size_t getSize() const;
     size_t empty() const;
 

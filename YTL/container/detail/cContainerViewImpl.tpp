@@ -227,6 +227,16 @@ typename cContainerViewImpl<cConstRandomAccessIterable<T>,Traits>::const_iterato
     return (m_endOffset == 0) ? this->m_iterable->cend() : const_iterator_type(this->m_iterable->crbegin(m_filter) + (m_endOffset-1));
 }
 template<typename T, typename Traits>
+typename cContainerViewImpl<cConstRandomAccessIterable<T>,Traits>::pointer_type cContainerViewImpl<cConstRandomAccessIterable<T>,Traits>::getData()
+{
+        return &(*this->m_iterable->begin());
+}
+template<typename T, typename Traits>
+typename cContainerViewImpl<cConstRandomAccessIterable<T>,Traits>::const_pointer_type cContainerViewImpl<cConstRandomAccessIterable<T>,Traits>::getData() const
+{
+        return &(*this->m_iterable->cbegin());
+}
+template<typename T, typename Traits>
 size_t cContainerViewImpl<cConstRandomAccessIterable<T>,Traits>::getSize() const
 {
     const const_iterator_type initIterator = this->m_iterable->cbegin(m_filter) + m_initOffset;
@@ -320,6 +330,11 @@ template<typename T, typename Traits>
 typename cContainerViewImpl<const cConstRandomAccessIterable<T>,Traits>::const_iterator_type cContainerViewImpl<const cConstRandomAccessIterable<T>,Traits>::cend() const
 {
     return (m_endOffset == 0) ? this->m_iterable->cend() : const_iterator_type(this->m_iterable->crbegin(m_filter) + (m_endOffset-1));
+}
+template<typename T, typename Traits>
+typename cContainerViewImpl<const cConstRandomAccessIterable<T>,Traits>::const_pointer_type cContainerViewImpl<const cConstRandomAccessIterable<T>,Traits>::getData() const
+{
+        return &(*this->m_iterable->cbegin());
 }
 template<typename T, typename Traits>
 size_t cContainerViewImpl<const cConstRandomAccessIterable<T>,Traits>::getSize() const

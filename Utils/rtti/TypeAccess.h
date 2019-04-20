@@ -78,20 +78,6 @@
 #define RTTI_EXPAND_MEMBER_NAME(_INDEX,_MEMBER) \
     _RTTI_EXPAND_MEMBER_NAME(QUANTITY(_INDEX),_MEMBER)
 
-//macro for pair of member address
-#define __RTTI_EXPAND_MEMBER_ADDRESS(_MEMBER) \
-    reinterpret_cast<size_t _rtti_member_class::*>(&_rtti_member_class::_MEMBER)
-#define _RTTI_EXPAND_MEMBER_ADDRESS_TWOORMORE(_MEMBER) \
-    __RTTI_EXPAND_MEMBER_ADDRESS(_MEMBER),
-#define _RTTI_EXPAND_MEMBER_ADDRESS_ONE(_MEMBER) \
-    __RTTI_EXPAND_MEMBER_ADDRESS(_MEMBER)
-#define _RTTI_EXPAND_MEMBER_ADDRESS_(_QUANT, _MEMBER) \
-    _RTTI_EXPAND_MEMBER_ADDRESS_##_QUANT(_MEMBER)
-#define _RTTI_EXPAND_MEMBER_ADDRESS(_QUANT, _MEMBER) \
-    _RTTI_EXPAND_MEMBER_ADDRESS_(_QUANT, _MEMBER)
-#define RTTI_EXPAND_MEMBER_ADDRESS(_INDEX, _MEMBER) \
-    _RTTI_EXPAND_MEMBER_ADDRESS(QUANTITY(_INDEX),_MEMBER)
-
 //macro for pair of method address
 #define __RTTI_EXPAND_METHOD_ADDRESS(_MEMBER) \
     reinterpret_cast<void (_rtti_method_class::*)()>(&_rtti_method_class::_MEMBER)

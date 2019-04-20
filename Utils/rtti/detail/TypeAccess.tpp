@@ -69,7 +69,7 @@ template<typename T, typename Visitor>
 template<typename TT>
 typename Visitor::result_type member_pass_by_reference_visitor<T,Visitor>::operator()(const container::cPair<container::string,TT T::*>& i_value) const
 {
-    return m_nestedVisitor.operator()(container::make_pair<container::string,typename mpl::add_reference<TT>::type>(i_value.first,m_currObject.*i_value.second));
+    return m_nestedVisitor.operator()(container::make_pair<container::string_view,typename mpl::add_reference<TT>::type>(i_value.first,m_currObject.*i_value.second));
 }
 
 }
